@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4406498791046923679}
   - component: {fileID: 4406498791046923678}
   - component: {fileID: 4406498791046923677}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: WaterMovement
   m_TagString: Untagged
   m_Icon: {fileID: 0}

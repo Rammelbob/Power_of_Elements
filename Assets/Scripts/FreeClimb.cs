@@ -70,7 +70,7 @@ public class FreeClimb : MonoBehaviour
         targetPos = hit.point + (hit.normal * offsetFromWall);
         t = 0;
         inPosition = false;
-        animatorManager.PlayTargetAnimation("Ledge_Idle", false, 0.1f);
+        animatorManager.PlayTargetAnimation("Ledge_Idle", false, 0.1f, false);
     }
 
     public void Tick(float d_time, Vector2 input)

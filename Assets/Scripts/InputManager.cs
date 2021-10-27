@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class InputManager : MonoBehaviour
     PlayerInput playerControls;
     PlayerLocomotion playerLocomotion;
     AnimatorManager animatorManager;
+    CombatManager combatManager;
 
     public Vector2 movementInput;
     public Vector2 changeElementInput;
@@ -17,6 +19,14 @@ public class InputManager : MonoBehaviour
 
     public bool sprinting;
     public bool startJump;
+
+    public bool attack1;
+    bool attack1wasRealeased;
+    public bool attack2;
+    bool attack2wasRealeased;
+    public bool attack3;
+    bool attack3wasRealeased;
+
     Vector2[] pressedElement = { Vector2.up, Vector2.right, Vector2.down, Vector3.left };
     public int currentElementpressed;
     public bool elementalMovement;
@@ -29,6 +39,7 @@ public class InputManager : MonoBehaviour
     {
         animatorManager = GetComponent<AnimatorManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
+        combatManager = GetComponent<CombatManager>();
     }
 
     private void OnEnable()
@@ -46,6 +57,11 @@ public class InputManager : MonoBehaviour
             playerControls.CharacterControls.ElemtalMovement.canceled += OnElementalMovement;
             playerControls.CharacterControls.Jump.started += OnJump;
             playerControls.CharacterControls.ChangeElement.performed += OnChangeElement;
+
+            
+            playerControls.Combat.Attack1.performed += OnAttack1;
+            playerControls.Combat.Attack2.performed += OnAttack2;
+            playerControls.Combat.Attack3.performed += OnAttack3;
         }
         playerControls.Enable();
     }
@@ -58,6 +74,21 @@ public class InputManager : MonoBehaviour
     void OnJump(InputAction.CallbackContext context)
     {
         startJump = context.ReadValueAsButton();
+    }
+
+    void OnAttack1(InputAction.CallbackContext context)
+    {
+        attack1 = context.ReadValueAsButton();
+    }
+
+    void OnAttack2(InputAction.CallbackContext context)
+    {
+        attack2 = context.ReadValueAsButton();
+    }
+
+    void OnAttack3(InputAction.CallbackContext context)
+    {
+        attack3 = context.ReadValueAsButton();
     }
 
     void OnMovementInput(InputAction.CallbackContext context)
@@ -93,7 +124,17 @@ public class InputManager : MonoBehaviour
     {
         HandleMovementInput();
         HandleSprintingInput();
+        HandleCombatInput();
         HandleJumpInput();
+    }
+
+    private void HandleCombatInput()
+    {
+        if (attack1)
+        {
+            combatManager.Attack2();
+            attack1 = false;
+        }
     }
 
     private void HandleMovementInput()
@@ -106,7 +147,7 @@ public class InputManager : MonoBehaviour
 
     private void HandleSprintingInput()
     {
-        if (sprinting && moveAmount > 0.5f)
+        if (sprinting && moveAmount > 0.5f && combatManager.CanUseStamina())
         {
             playerLocomotion.isSprinting = true;
         }

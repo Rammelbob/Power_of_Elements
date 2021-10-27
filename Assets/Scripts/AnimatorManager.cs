@@ -5,6 +5,7 @@ using UnityEngine;
 public class AnimatorManager : MonoBehaviour
 {
     public Animator animator;
+    public bool useRootMotion;
     int horizontal;
     int vertical;
 
@@ -75,9 +76,10 @@ public class AnimatorManager : MonoBehaviour
         animator.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
     }
 
-    public void PlayTargetAnimation(string targetAnimation, bool isInteracting, float transitionTime)
+    public void PlayTargetAnimation(string targetAnimation, bool isInteracting, float transitionTime,bool useRootMotion)
     {
         animator.SetBool("isInteracting", isInteracting);
         animator.CrossFade(targetAnimation, transitionTime);
+        this.useRootMotion = useRootMotion;
     }
 }

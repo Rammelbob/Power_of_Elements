@@ -184,7 +184,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e3ff7418-b259-4a91-995c-48c1434b6f18"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -341,6 +341,104 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Combat"",
+            ""id"": ""a8ff37dc-6baf-47c2-b530-4b7efac2c389"",
+            ""actions"": [
+                {
+                    ""name"": ""Attack1"",
+                    ""type"": ""Button"",
+                    ""id"": ""b1631055-ac20-4989-af72-3c2a92b6cb9c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Attack2"",
+                    ""type"": ""Button"",
+                    ""id"": ""27baebf2-6d0c-48ae-9f23-b34430357ace"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Attack3"",
+                    ""type"": ""Button"",
+                    ""id"": ""458122b6-eb3d-4840-9e5b-ec135f9cf21c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""0e3aae73-16fb-49fd-aaf6-4fe73ecb94b0"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""82926f0c-fb4e-4309-9a3f-7757440ad90d"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6ddfb6c5-1a90-4c88-a3b8-82ef24907260"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""76ccac6f-d225-446c-9e4f-31dc63f5ddc3"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f267721f-c831-4209-b440-313883f8a50d"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f309c6ab-569b-45fb-b546-5afa8742ee07"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -355,6 +453,11 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         // CameraControls
         m_CameraControls = asset.FindActionMap("CameraControls", throwIfNotFound: true);
         m_CameraControls_MoveCamera = m_CameraControls.FindAction("MoveCamera", throwIfNotFound: true);
+        // Combat
+        m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
+        m_Combat_Attack1 = m_Combat.FindAction("Attack1", throwIfNotFound: true);
+        m_Combat_Attack2 = m_Combat.FindAction("Attack2", throwIfNotFound: true);
+        m_Combat_Attack3 = m_Combat.FindAction("Attack3", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -498,6 +601,55 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         }
     }
     public CameraControlsActions @CameraControls => new CameraControlsActions(this);
+
+    // Combat
+    private readonly InputActionMap m_Combat;
+    private ICombatActions m_CombatActionsCallbackInterface;
+    private readonly InputAction m_Combat_Attack1;
+    private readonly InputAction m_Combat_Attack2;
+    private readonly InputAction m_Combat_Attack3;
+    public struct CombatActions
+    {
+        private @PlayerInput m_Wrapper;
+        public CombatActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Attack1 => m_Wrapper.m_Combat_Attack1;
+        public InputAction @Attack2 => m_Wrapper.m_Combat_Attack2;
+        public InputAction @Attack3 => m_Wrapper.m_Combat_Attack3;
+        public InputActionMap Get() { return m_Wrapper.m_Combat; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CombatActions set) { return set.Get(); }
+        public void SetCallbacks(ICombatActions instance)
+        {
+            if (m_Wrapper.m_CombatActionsCallbackInterface != null)
+            {
+                @Attack1.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack1;
+                @Attack1.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack1;
+                @Attack1.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack1;
+                @Attack2.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack2;
+                @Attack2.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack2;
+                @Attack2.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack2;
+                @Attack3.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack3;
+                @Attack3.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack3;
+                @Attack3.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnAttack3;
+            }
+            m_Wrapper.m_CombatActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Attack1.started += instance.OnAttack1;
+                @Attack1.performed += instance.OnAttack1;
+                @Attack1.canceled += instance.OnAttack1;
+                @Attack2.started += instance.OnAttack2;
+                @Attack2.performed += instance.OnAttack2;
+                @Attack2.canceled += instance.OnAttack2;
+                @Attack3.started += instance.OnAttack3;
+                @Attack3.performed += instance.OnAttack3;
+                @Attack3.canceled += instance.OnAttack3;
+            }
+        }
+    }
+    public CombatActions @Combat => new CombatActions(this);
     public interface ICharacterControlsActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -509,5 +661,11 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     public interface ICameraControlsActions
     {
         void OnMoveCamera(InputAction.CallbackContext context);
+    }
+    public interface ICombatActions
+    {
+        void OnAttack1(InputAction.CallbackContext context);
+        void OnAttack2(InputAction.CallbackContext context);
+        void OnAttack3(InputAction.CallbackContext context);
     }
 }

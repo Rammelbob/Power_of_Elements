@@ -133,7 +133,7 @@ public class FreeClimbAnimHook : MonoBehaviour
         }
         else
         {
-            animatorManager.PlayTargetAnimation("Ledge_Idle", false, 0.1f);
+            animatorManager.PlayTargetAnimation("Ledge_Idle", false, 0.1f, false);
         }
     }
 

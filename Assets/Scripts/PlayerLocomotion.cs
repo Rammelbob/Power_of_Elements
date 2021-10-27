@@ -8,6 +8,7 @@ public class PlayerLocomotion : MonoBehaviour
     InputManager inputManager;
     AnimatorManager animatorManager;
     Rigidbody rb;
+    CombatManager combatManager;
 
     FreeClimb freeClimb;
     FreeClimbAnimHook a_hook;
@@ -25,6 +26,7 @@ public class PlayerLocomotion : MonoBehaviour
     public float fallingVelocity;
     public float elementalAirFallingVelocity;
     public float rayCastHeightOffset;
+    Vector3 fallingTargetPosition;
     float groundDistance = 0.3f;
     public LayerMask groundLayer;
 
@@ -39,8 +41,7 @@ public class PlayerLocomotion : MonoBehaviour
     public float runningSpeed = 5;
     public float sprintingSpeed = 7;
     public float rotationSpeed = 15;
-    public float elementalMovementSpeedAir;
-    public float elementalMovementSpeedFire;
+    public float staminaUsedSprinting;
 
     [Header("Jump Speeds")]
     public float jumpHeight = 3;
@@ -70,12 +71,28 @@ public class PlayerLocomotion : MonoBehaviour
     bool doAirMovement;
     bool doFireMovement;
     bool doElectroMovement;
-    public float electroDashSpeed;
-    float dashTime;
-    public float startDashTime;
+    bool doEarthMovement;
     bool doWaterMovement;
+    [Header("Electro")]
+    public float electroDashSpeed;
+    public float startDashTime;
+    public float electroDashCooldown;
+    float dashEndCooldowntime = 0;
+    float dashTime;
+    [Header("Water")]
+    
     GameObject waterMovementtemp;
-    bool doRockMovement;
+
+    [Header("Air")]
+    public float staminaUsedAirMovement;
+    public float elementalMovementSpeedAir;
+
+    [Header("Fire")]
+    public float staminaUsedFireMovement;
+    public float elementalMovementSpeedFire;
+    //[Header("Earth")]
+    //[Header("Ice")]
+
 
 
     private void Awake()
@@ -84,6 +101,7 @@ public class PlayerLocomotion : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerManager = GetComponent<PlayerManager>();
         animatorManager = GetComponent<AnimatorManager>();
+        combatManager = GetComponent<CombatManager>();
         freeClimb = GetComponent<FreeClimb>();
         dashTime = startDashTime;
     }
@@ -92,12 +110,12 @@ public class PlayerLocomotion : MonoBehaviour
     {
         HandleElementalMovement();
         HandleFallingAndLanding();
+        HandleRotation();
         if (playerManager.isInteracting)
             return;
 
         HandleWallClimbing();
         HandleMovement();
-        HandleRotation();
     }
 
     private void HandleElementalMovement()
@@ -106,9 +124,9 @@ public class PlayerLocomotion : MonoBehaviour
         {
             doFireMovement = false;
             doAirMovement = false;
-            doElectroMovement = false;
+            //doElectroMovement = false;
             doWaterMovement = false;
-            doRockMovement = false;
+            doEarthMovement = false;
         }
 
         // ersetzen mit bool = element == Element && inputManager.ElementalMovement;
@@ -117,24 +135,28 @@ public class PlayerLocomotion : MonoBehaviour
             switch (inputManager.currentElement)
             {
                 case InputManager.Elements.Air:
-                    doAirMovement = true;
+                    doAirMovement = combatManager.CanUseStamina();
                     break;
 
                 case InputManager.Elements.Fire:
-                    doFireMovement = true;
+
+                    doFireMovement = combatManager.CanUseStamina();
                     break;
 
                 case InputManager.Elements.Electro:
-                    playerManager.isInteracting = true;
-                    doElectroMovement = true;
+                    if (!doElectroMovement && Time.time > dashEndCooldowntime)
+                    {
+                        dashEndCooldowntime = Time.time + electroDashCooldown;
+                        playerManager.isInteracting = true;
+                        doElectroMovement = true;
+                    }
                     break;
 
                 case InputManager.Elements.Rock:
-                    doRockMovement = true;
+                    doEarthMovement = true;
                     break;
 
                 case InputManager.Elements.Water:
-                    playerManager.isInteracting = true;
                     doWaterMovement = true;
                     break;
 
@@ -147,9 +169,9 @@ public class PlayerLocomotion : MonoBehaviour
         {
             doFireMovement = false;
             doAirMovement = false;
-            doElectroMovement = false;
+            //doElectroMovement = false;
             doWaterMovement = false;
-            doRockMovement = false;
+            doEarthMovement = false;
         }
 
         if (doElectroMovement)
@@ -158,7 +180,7 @@ public class PlayerLocomotion : MonoBehaviour
             moveDirection += direction.right * inputManager.horizontalInput;
             moveDirection.Normalize();
             if (moveDirection == Vector3.zero)
-                moveDirection = direction.forward;
+                moveDirection = body.forward;
 
 
             if (dashTime <= 0)
@@ -181,7 +203,7 @@ public class PlayerLocomotion : MonoBehaviour
                 waterMovementtemp = Instantiate(waterMovement, groundCheck.position, Quaternion.identity);
             }
         }
-        else if (doRockMovement)
+        else if (doEarthMovement)
         {
 
         }
@@ -203,6 +225,7 @@ public class PlayerLocomotion : MonoBehaviour
         if (isSprinting)
         {
             moveDirection *= sprintingSpeed;
+            combatManager.UpdateStamina(-staminaUsedSprinting * Time.deltaTime);
         }
         else
         {
@@ -260,7 +283,15 @@ public class PlayerLocomotion : MonoBehaviour
             targetDirection = body.forward;
 
         targetRotation = Quaternion.LookRotation(targetDirection);
-        playerRotation = Quaternion.Slerp(body.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        if (isGrounded)
+        {
+            playerRotation = Quaternion.Slerp(body.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            playerRotation = Quaternion.Slerp(body.rotation, targetRotation, rotationSpeed/5 * Time.deltaTime);
+        }
+        
 
         body.rotation = playerRotation;
     }
@@ -268,9 +299,10 @@ public class PlayerLocomotion : MonoBehaviour
     private void HandleFallingAndLanding()
     {
         RaycastHit hit;
+        bool isOnMoveable = false;
 
         Vector3 rayCastOrigin = groundCheck.position;
-        Vector3 targetPosition = groundCheck.position;
+        fallingTargetPosition = groundCheck.position;
         rayCastOrigin.y += rayCastHeightOffset;
 
         if (!isClimbing && !turnCorner)
@@ -279,7 +311,7 @@ public class PlayerLocomotion : MonoBehaviour
             {
                 if (!playerManager.isInteracting)
                 {
-                    animatorManager.PlayTargetAnimation("Falling", true, 0.2f);
+                    animatorManager.PlayTargetAnimation("Falling", true, 0.2f, false);
                 }
 
                 if (doFireMovement)
@@ -288,7 +320,7 @@ public class PlayerLocomotion : MonoBehaviour
                     moveDirection += direction.right * inputManager.horizontalInput;
                     moveDirection.Normalize();
                     rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedFire, ForceMode.Acceleration);
-
+                    combatManager.UpdateStamina(-staminaUsedFireMovement * Time.deltaTime);
                 }
                 else if (doAirMovement)
                 {
@@ -297,8 +329,9 @@ public class PlayerLocomotion : MonoBehaviour
                     moveDirection.Normalize();
                     rb.AddForce(-Vector3.up * elementalAirFallingVelocity * Time.deltaTime);
                     rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedAir, ForceMode.Acceleration);
+                    combatManager.UpdateStamina(-staminaUsedAirMovement * Time.deltaTime);
                 }
-                else if(!doWaterMovement)
+                else if (!doWaterMovement)
                 {
                     inAirTimer += Time.deltaTime;
                     rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
@@ -310,16 +343,23 @@ public class PlayerLocomotion : MonoBehaviour
           //  || Physics.CheckSphere(animatorManager.animator.GetBoneTransform(HumanBodyBones.RightFoot).position, groundDistance, groundLayer))
         if (Physics.CheckSphere(groundCheck.position, groundDistance, groundLayer) && !turnCorner)
         {
-            
-            Physics.Raycast(rayCastOrigin, -Vector3.up, out hit, rayCastHeightOffset + groundDistance, groundLayer);
             if (!isGrounded && !playerManager.isInteracting)
             {
-                animatorManager.PlayTargetAnimation("Landing", true, 0.2f);
+                animatorManager.PlayTargetAnimation("Landing", true, 0.2f, false);
             }
-
-            Vector3 rayCastHitPoint = hit.point;
-            targetPosition.y = rayCastHitPoint.y +(transform.position.y - groundCheck.position.y);
-             
+            //Todo
+            if (Physics.Raycast(rayCastOrigin, -Vector3.up, out hit, rayCastHeightOffset + groundDistance, groundLayer))
+            {
+                if (hit.transform.gameObject.layer == 9)
+                {
+                    isOnMoveable = true;
+                }
+                else
+                {
+                    Vector3 rayCastHitPoint = hit.point;
+                    fallingTargetPosition.y = rayCastHitPoint.y + (transform.position.y - groundCheck.position.y);
+                }
+            }
             inAirTimer = 0;
             isGrounded = true;
         }
@@ -327,10 +367,11 @@ public class PlayerLocomotion : MonoBehaviour
         {
             isGrounded = false;
         }
-
-        if (isGrounded && !isJumping && !isClimbing)
+        
+        if (isGrounded && !isJumping && !isClimbing && !isOnMoveable)
         {
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
+            Debug.Log("islerping");
+            transform.position = Vector3.Lerp(transform.position, fallingTargetPosition, Time.deltaTime / 0.1f);
             //if (playerManager.isInteracting || inputManager.moveAmount > 0)
             //{
             //    transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
@@ -348,7 +389,7 @@ public class PlayerLocomotion : MonoBehaviour
         if (isGrounded && !isClimbing)
         {
             animatorManager.animator.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimation("Jump", false, 0.1f);
+            animatorManager.PlayTargetAnimation("Jump", false, 0.1f, false);
 
             float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
             Vector3 playerVelocity = moveDirection;
@@ -359,13 +400,17 @@ public class PlayerLocomotion : MonoBehaviour
 
     void HandleWallClimbing()
     {
+        if (playerManager.isInteracting)
+            return;
+
         if (Physics.Raycast(transform.position, body.forward, out wallFrontHit, wallDistance, wallLayer) && !isGrounded)
         {
             climbingRotation = -wallFrontHit.normal;
             Debug.DrawLine(transform.position, transform.position + body.forward * wallDistance, Color.red, 0.2f);
             if (!isClimbing)
             {
-                animatorManager.PlayTargetAnimation("Ledge_Idle", false, 0.1f);
+                //animatorManager.PlayTargetAnimation("Ledge_Idle", false, 0.1f);
+                animatorManager.PlayTargetAnimation("ClimbingIdle", false, 0.1f, false);
                 isClimbing = true;
             }
         }
@@ -378,7 +423,8 @@ public class PlayerLocomotion : MonoBehaviour
             targetPosition = moveDirHit.point + moveDirHit.normal * offSetFormWall;
         }
         else if(!turnCorner)
-            isClimbing = false;
+                isClimbing = false;
+           
 
         onCorner = false;
 
@@ -398,6 +444,7 @@ public class PlayerLocomotion : MonoBehaviour
             else
             {
                 rb.velocity = Vector3.zero;
+                isClimbing = false;
             }
         }
         else if(turnCorner)
@@ -418,6 +465,7 @@ public class PlayerLocomotion : MonoBehaviour
         Vector3 origin = transform.position;
         Vector3 rayDir = moveDir;
 
+        //make ClimbCheckdistance change depending on the wheather or not the play is climbing up
         Debug.DrawLine(origin, origin + rayDir * climbCheckDistance, Color.blue, 0.2f);
         if (Physics.Raycast(origin, rayDir, out moveDirHit, climbCheckDistance, wallLayer))
         {
@@ -440,8 +488,16 @@ public class PlayerLocomotion : MonoBehaviour
         Debug.DrawLine(origin, origin + rayDir * (climbCheckDistance + 0.1f), Color.black, 0.2f);
         if (Physics.Raycast(origin, rayDir, out moveDirHit, (climbCheckDistance + 0.1f), wallLayer))
         {
-            cornerTurningRotation = -moveDirHit.normal;
-            onCorner = true;
+            if (moveDir.y > 0)
+            {
+                animatorManager.PlayTargetAnimation("ClimbingOverEdge", true, 0.1f, true);
+            }
+            else if (moveDir.y <= 0)
+            {
+                return false;
+            }
+            //cornerTurningRotation = -moveDirHit.normal;
+            //onCorner = true;
             return true;
         }
 
@@ -457,10 +513,15 @@ public class PlayerLocomotion : MonoBehaviour
 
     //    Gizmos.color = Color.green;
     //    Gizmos.DrawLine(Vector3.forward, Vector3.forward + b);
-        
+
     //    Gizmos.color = Color.blue;
     //    Gizmos.DrawLine(Vector3.zero, Vector3.zero + c);
     //}
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(groundCheck.position, 0.1f);
+    }
 
     //void HandleWallClimbing()
     //{
