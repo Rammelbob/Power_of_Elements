@@ -12,7 +12,15 @@ public class CombatManager : MonoBehaviour
     PlayerLocomotion playerLocomotion;
     Vector3 respawnPoint;
     int comboNR = 0;
-    int maxComboNr = 4;
+    Dictionary<InputManager.Elements, int> maxCombNrs = new Dictionary<InputManager.Elements, int>()
+    {
+        {InputManager.Elements.Air,4},
+        {InputManager.Elements.Electro,4},
+        {InputManager.Elements.Fire,5},
+        {InputManager.Elements.Ice,4},
+        {InputManager.Elements.Rock,4},
+        {InputManager.Elements.Water,4}
+    };
     bool canCombo;
     float baseHP = 100, baseStamina = 100;
     int bonusHPLvL = 0, bonusStaminaLvL = 0, maxBonusLvL = 10;
@@ -22,6 +30,7 @@ public class CombatManager : MonoBehaviour
     float staminaLastUsed = 0, hpLastUsed = 0;
     public float staminaRecovertime, hpRecoverTime;
     public float staminaRecover, hpRecover;
+    public GameObject ElectroWeapon;
 
     private void Awake()
     {
@@ -33,7 +42,7 @@ public class CombatManager : MonoBehaviour
         currentStamina = GetMaxStamina();
         barManager.UpdateHpBar(currentHP, false);
         barManager.UpdateStaminaBar(currentStamina);
-        InvokeRepeating("SetRespawnPoint", 0, 2);
+        InvokeRepeating("SetRespawnPoint", 0, 5);
     }
 
     #region DoAttack
@@ -47,6 +56,9 @@ public class CombatManager : MonoBehaviour
         if (comboNR == 0)
         {
             rb.velocity = Vector3.zero;
+            if (inputManager.currentElement == InputManager.Elements.Electro)
+                ElectroWeapon.SetActive(true);
+
             animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR}", true, 0.05f, true);
             comboNR = 1;
             return;
@@ -59,12 +71,11 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    public void ComboAttack2()
+    public void ComboAttack()
     {
-        if (comboNR < maxComboNr)
-        {
-            animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR - 1}", true, 0.01f, true);
-        }
+        if(maxCombNrs.TryGetValue(inputManager.currentElement, out int value))
+            if (comboNR < value)
+                animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR - 1}", true, 0.15f, true);
     }
 
     public void CanCombo()
@@ -74,8 +85,23 @@ public class CombatManager : MonoBehaviour
 
     public void ResetCombo()
     {
+        ElectroWeapon.SetActive(false);
         canCombo = false;
         comboNR = 0;
+    }
+
+    public void DoDamage(List<GameObject> enemies)
+    {
+        EnemyCombat enemyCombat;
+        
+        foreach (GameObject enemy in enemies)
+        {
+            enemyCombat = enemy.GetComponent<EnemyCombat>();
+            if (enemyCombat != null)
+            {
+                enemyCombat.UpdateHP(-10);
+            }
+        }
     }
     #endregion
 
@@ -90,7 +116,7 @@ public class CombatManager : MonoBehaviour
         }
             
 
-        currentHP = currentHP + hpUpdate <= 0 ? 0 : currentHP + hpUpdate;
+        currentHP = currentHP + hpUpdate <= 0 ? 0 : currentHP + hpUpdate >= GetMaxHP() ? GetMaxHP() : currentHP + hpUpdate;
         barManager.UpdateHpBar(currentHP, shouldLerp);
         if (currentHP == 0)
             Respawn();

@@ -19,13 +19,11 @@ public class InputManager : MonoBehaviour
 
     public bool sprinting;
     public bool startJump;
+    public bool startDodge;
 
     public bool attack1;
-    bool attack1wasRealeased;
     public bool attack2;
-    bool attack2wasRealeased;
     public bool attack3;
-    bool attack3wasRealeased;
 
     Vector2[] pressedElement = { Vector2.up, Vector2.right, Vector2.down, Vector3.left };
     public int currentElementpressed;
@@ -56,6 +54,7 @@ public class InputManager : MonoBehaviour
             playerControls.CharacterControls.ElemtalMovement.started += OnElementalMovement;
             playerControls.CharacterControls.ElemtalMovement.canceled += OnElementalMovement;
             playerControls.CharacterControls.Jump.started += OnJump;
+            playerControls.CharacterControls.Dodge.started += OnDodge;
             playerControls.CharacterControls.ChangeElement.performed += OnChangeElement;
 
             
@@ -74,6 +73,11 @@ public class InputManager : MonoBehaviour
     void OnJump(InputAction.CallbackContext context)
     {
         startJump = context.ReadValueAsButton();
+    }
+
+    void OnDodge(InputAction.CallbackContext context)
+    {
+        startDodge = context.ReadValueAsButton();
     }
 
     void OnAttack1(InputAction.CallbackContext context)
@@ -126,6 +130,7 @@ public class InputManager : MonoBehaviour
         HandleSprintingInput();
         HandleCombatInput();
         HandleJumpInput();
+        HandleDodgeInput();
     }
 
     private void HandleCombatInput()
@@ -142,7 +147,7 @@ public class InputManager : MonoBehaviour
         verticalInput = movementInput.y;
         horizontalInput = movementInput.x;
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-        animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.isSprinting);
+        animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.isSprinting, movementInput);
     }
 
     private void HandleSprintingInput()
@@ -163,6 +168,15 @@ public class InputManager : MonoBehaviour
         {
             startJump = false;
             playerLocomotion.HandleJumping();
+        }
+    }
+
+    private void HandleDodgeInput()
+    {
+        if (startDodge)
+        {
+            startDodge = false;
+            playerLocomotion.HandleDodgeing();
         }
     }
 }

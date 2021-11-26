@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnmationEvents : MonoBehaviour
+public class AnimationEvents : MonoBehaviour
 {
     public CombatManager combat;
-    public AnimatorManager animatorManager;
+    public PlayerManager playerManager;
 
     public void CanCombo()
     {
@@ -19,12 +19,12 @@ public class AnmationEvents : MonoBehaviour
 
     public void ComboAttack2()
     {
-        combat.ComboAttack2();
+        combat.ComboAttack();
     }
 
     private void OnAnimatorMove()
     {
-        if (animatorManager.useRootMotion)
+        if (playerManager.useRootMotion)
         {
             Animator animator = GetComponent<Animator>();
             if (animator && animator.deltaPosition != Vector3.zero)
@@ -32,6 +32,7 @@ public class AnmationEvents : MonoBehaviour
                 Vector3 newPosition = transform.parent.position;
                 newPosition.x += animator.deltaPosition.x;
                 newPosition.z += animator.deltaPosition.z;
+                newPosition.y += animator.deltaPosition.y;
                 transform.parent.position = newPosition;
             }
         }

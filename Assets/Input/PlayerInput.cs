@@ -57,6 +57,14 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": ""NormalizeVector2"",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dodge"",
+                    ""type"": ""Button"",
+                    ""id"": ""0fc29e9d-2ae1-4691-9295-308440ea6d2c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": ""NormalizeVector2"",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -301,6 +309,28 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""ElemtalMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64f7fd63-1a78-427d-a83d-9525d72cedc9"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""48d74fff-2d37-45eb-b2f4-eb9a0491b293"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -450,6 +480,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_CharacterControls_Jump = m_CharacterControls.FindAction("Jump", throwIfNotFound: true);
         m_CharacterControls_ChangeElement = m_CharacterControls.FindAction("ChangeElement", throwIfNotFound: true);
         m_CharacterControls_ElemtalMovement = m_CharacterControls.FindAction("ElemtalMovement", throwIfNotFound: true);
+        m_CharacterControls_Dodge = m_CharacterControls.FindAction("Dodge", throwIfNotFound: true);
         // CameraControls
         m_CameraControls = asset.FindActionMap("CameraControls", throwIfNotFound: true);
         m_CameraControls_MoveCamera = m_CameraControls.FindAction("MoveCamera", throwIfNotFound: true);
@@ -512,6 +543,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterControls_Jump;
     private readonly InputAction m_CharacterControls_ChangeElement;
     private readonly InputAction m_CharacterControls_ElemtalMovement;
+    private readonly InputAction m_CharacterControls_Dodge;
     public struct CharacterControlsActions
     {
         private @PlayerInput m_Wrapper;
@@ -521,6 +553,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @Jump => m_Wrapper.m_CharacterControls_Jump;
         public InputAction @ChangeElement => m_Wrapper.m_CharacterControls_ChangeElement;
         public InputAction @ElemtalMovement => m_Wrapper.m_CharacterControls_ElemtalMovement;
+        public InputAction @Dodge => m_Wrapper.m_CharacterControls_Dodge;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -545,6 +578,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @ElemtalMovement.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnElemtalMovement;
                 @ElemtalMovement.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnElemtalMovement;
                 @ElemtalMovement.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnElemtalMovement;
+                @Dodge.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnDodge;
             }
             m_Wrapper.m_CharacterControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -564,6 +600,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @ElemtalMovement.started += instance.OnElemtalMovement;
                 @ElemtalMovement.performed += instance.OnElemtalMovement;
                 @ElemtalMovement.canceled += instance.OnElemtalMovement;
+                @Dodge.started += instance.OnDodge;
+                @Dodge.performed += instance.OnDodge;
+                @Dodge.canceled += instance.OnDodge;
             }
         }
     }
@@ -657,6 +696,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnChangeElement(InputAction.CallbackContext context);
         void OnElemtalMovement(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
     }
     public interface ICameraControlsActions
     {

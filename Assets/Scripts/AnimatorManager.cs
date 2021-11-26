@@ -5,19 +5,29 @@ using UnityEngine;
 public class AnimatorManager : MonoBehaviour
 {
     public Animator animator;
-    public bool useRootMotion;
     int horizontal;
     int vertical;
+    int climbingX;
+    int climbingY;
+    int enemyMovementSpeed;
 
 
     private void Awake()
     {
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
+        climbingX = Animator.StringToHash("InputX");
+        climbingY = Animator.StringToHash("InputY");
+        enemyMovementSpeed = Animator.StringToHash("MovementSpeed");
     }
 
-    public void UpdateAnimatorValues(float horizontalMovement,float verticalMovement,bool isSprinting)
+    public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting, Vector2 moveDir)
     {
+
+        animator.SetFloat(climbingX, moveDir.x, 0.1f, Time.deltaTime);
+        animator.SetFloat(climbingY, moveDir.y, 0.1f, Time.deltaTime);
+
+
         float snappedHorizontal;
         float snappedVertical;
 
@@ -26,7 +36,7 @@ public class AnimatorManager : MonoBehaviour
         {
             snappedHorizontal = 0.5f;
         }
-        else if(horizontalMovement > 0.55f)
+        else if (horizontalMovement > 0.55f)
         {
             snappedHorizontal = 1;
         }
@@ -79,7 +89,17 @@ public class AnimatorManager : MonoBehaviour
     public void PlayTargetAnimation(string targetAnimation, bool isInteracting, float transitionTime,bool useRootMotion)
     {
         animator.SetBool("isInteracting", isInteracting);
+        animator.SetBool("useRootMotion", useRootMotion);
         animator.CrossFade(targetAnimation, transitionTime);
-        this.useRootMotion = useRootMotion;
+    }
+
+    public void SetEnemyAnimatorValues(float movementSpeed)
+    {
+        animator.SetFloat(enemyMovementSpeed, movementSpeed, 0.1f, Time.deltaTime);
+    }
+
+    public void PlayTargetAnimationEnemy(string targetAnimation,float transistionTime)
+    {
+        animator.CrossFade(targetAnimation, transistionTime);
     }
 }

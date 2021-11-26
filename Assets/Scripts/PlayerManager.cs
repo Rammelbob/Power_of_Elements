@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     public Animator animator;
 
     public bool isInteracting;
+    public bool useRootMotion;
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class PlayerManager : MonoBehaviour
     {
         isInteracting = animator.GetBool("isInteracting");
         playerLocomotion.isJumping = animator.GetBool("isJumping");
+        useRootMotion = animator.GetBool("useRootMotion");
         animator.SetBool("isGrounded", playerLocomotion.isGrounded);
     }
 }
