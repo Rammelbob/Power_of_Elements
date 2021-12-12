@@ -18,14 +18,13 @@ public class PlayerLocomotion : MonoBehaviour
     public Transform body;
     public Transform groundCheck;
     public GameObject waterMovement;
-    
 
     [Header("Falling")]
     public float inAirTimer;
     public float leapingVelocity;
     public float fallingVelocity;
     public float elementalAirFallingVelocity;
-    public float rayCastHeightOffset;
+    public float rayCastHeight;
     Vector3 fallingTargetPosition;
     float groundDistance = 0.3f;
     public LayerMask groundLayer;
@@ -63,7 +62,7 @@ public class PlayerLocomotion : MonoBehaviour
     public LayerMask wallLayer;
 
     [Header("ElemetalMovement")]
-    InputManager.Elements lastElement;
+    Elements lastElement;
     bool doAirMovement;
     bool doFireMovement;
     bool doElectroMovement;
@@ -75,8 +74,8 @@ public class PlayerLocomotion : MonoBehaviour
     public float electroDashCooldown;
     float dashEndCooldowntime = 0;
     float dashTime;
+
     [Header("Water")]
-    
     GameObject waterMovementtemp;
 
     [Header("Air")]
@@ -125,9 +124,10 @@ public class PlayerLocomotion : MonoBehaviour
         {
             doFireMovement = false;
             doAirMovement = false;
-            //doElectroMovement = false;
+            doElectroMovement = false;
             doWaterMovement = false;
             doEarthMovement = false;
+            combatManager.ResetCombo();
         }
 
         // ersetzen mit bool = element == Element && inputManager.ElementalMovement;
@@ -135,15 +135,15 @@ public class PlayerLocomotion : MonoBehaviour
         {
             switch (inputManager.currentElement)
             {
-                case InputManager.Elements.Air:
+                case Elements.Air:
                     doAirMovement = combatManager.CanUseStamina();
                     break;
 
-                case InputManager.Elements.Fire:
+                case Elements.Fire:
                     doFireMovement = combatManager.CanUseStamina();
                     break;
 
-                case InputManager.Elements.Electro:
+                case Elements.Electro:
                     if (!doElectroMovement && Time.time > dashEndCooldowntime)
                     {
                         dashEndCooldowntime = Time.time + electroDashCooldown;
@@ -152,15 +152,15 @@ public class PlayerLocomotion : MonoBehaviour
                     }
                     break;
 
-                case InputManager.Elements.Rock:
+                case Elements.Rock:
                     doEarthMovement = true;
                     break;
 
-                case InputManager.Elements.Water:
+                case Elements.Water:
                     doWaterMovement = true;
                     break;
 
-                case InputManager.Elements.Ice:
+                case Elements.Ice:
                     break;
 
             }
@@ -292,9 +292,9 @@ public class PlayerLocomotion : MonoBehaviour
         RaycastHit hit;
         bool isOnMoveable = false;
 
-        Vector3 rayCastOrigin = groundCheck.position;
+        Vector3 rayCastOrigin = transform.position;//groundCheck.position;
         fallingTargetPosition = groundCheck.position;
-        rayCastOrigin.y += rayCastHeightOffset;
+        //rayCastOrigin.y += rayCastHeightOffset;
 
         if (!isClimbing)
         {
@@ -339,24 +339,25 @@ public class PlayerLocomotion : MonoBehaviour
             if (!isGrounded && !playerManager.isInteracting)
                 animatorManager.PlayTargetAnimation("Landing", true, 0.2f, false);
 
-            if (Physics.Raycast(rayCastOrigin, -Vector3.up, out hit, rayCastHeightOffset + groundDistance, groundLayer))
+            if (Physics.Raycast(rayCastOrigin, -Vector3.up, out hit, rayCastHeight, groundLayer))
             {
-                if (hit.transform.gameObject.layer == 9)
-                {
-                    isOnMoveable = true;
-                }
-                else
-                {
-                    Vector3 rayCastHitPoint = hit.point;
-                    fallingTargetPosition.y = rayCastHitPoint.y + (transform.position.y - groundCheck.position.y);
-                }
+                Vector3 rayCastHitPoint = hit.point;
+                fallingTargetPosition.y = rayCastHitPoint.y + (transform.position.y - groundCheck.position.y);
             }
             inAirTimer = 0;
             isGrounded = true;
         }
         else
         {
-            isGrounded = false;
+            //if (Physics.Raycast(rayCastOrigin, -Vector3.up, out hit, rayCastHeight, groundLayer))
+            //{
+            //    Vector3 rayCastHitPoint = hit.point;
+            //    fallingTargetPosition.y = rayCastHitPoint.y + (transform.position.y - groundCheck.position.y);
+            //    inAirTimer = 0;
+            //    isGrounded = true;
+            //}
+            //else
+                isGrounded = false;
         }
         
         if (isGrounded && !isJumping && !isClimbing && !isOnMoveable && !IsDoingElementalMovement())
@@ -364,15 +365,16 @@ public class PlayerLocomotion : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, fallingTargetPosition, Time.deltaTime / 0.1f);
             //if (playerManager.isInteracting || inputManager.moveAmount > 0)
             //{
-            //    transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
+            //    transform.position = Vector3.Lerp(transform.position, fallingTargetPosition, Time.deltaTime / 0.1f);
             //}
-            //else if (transform.position.y < targetPosition.y) 
+            //else if (transform.position.y < fallingTargetPosition.y)
             //{
-            //    transform.position = targetPosition;
+            //    transform.position = fallingTargetPosition;
             //}
 
         }
     }
+
 
     public void HandleJumping()
     {
@@ -412,7 +414,7 @@ public class PlayerLocomotion : MonoBehaviour
                 animatorManager.PlayTargetAnimation("Climbing", false, 0.1f, true);
                 isClimbing = true;
                 rb.velocity = Vector3.zero;
-                SetPositionFromWall(wallFrontHit);
+                SetPositionFromWall(wallFrontHit.point, wallFrontHit.normal);
             }
         }
         else
@@ -433,11 +435,10 @@ public class PlayerLocomotion : MonoBehaviour
         Vector3 origin = transform.position;
         Vector3 rayDir = moveDir;
 
-        //make ClimbCheckdistance change depending on the wheather or not the play is climbing up
         Debug.DrawLine(origin, origin + rayDir * firstWallCheckDistance, Color.blue, 0.2f);
         if (Physics.Raycast(origin, rayDir, out moveDirHit, firstWallCheckDistance, wallLayer))
         {
-            SetPositionFromWall(moveDirHit);
+            SetPositionFromWall(moveDirHit.point, moveDirHit.normal);
             climbingRotation = -moveDirHit.normal;
             return;
         }
@@ -448,8 +449,14 @@ public class PlayerLocomotion : MonoBehaviour
         Debug.DrawLine(origin, origin + rayDir * climbCheckDistance, Color.yellow, 0.2f);
         if (Physics.Raycast(origin, rayDir, out moveDirHit, climbCheckDistance, wallLayer))
         {
+            if (Physics.Raycast(transform.position, body.forward, out moveDirHit, firstWallCheckDistance, wallLayer))
+            {
+                SetPositionFromWall(moveDirHit.point, moveDirHit.normal);
+                climbingRotation = -moveDirHit.normal;
+            }
             return;
         }
+
 
         origin += rayDir * climbCheckDistance;
         rayDir = -moveDir;
@@ -463,21 +470,32 @@ public class PlayerLocomotion : MonoBehaviour
             }
             else if (CheckForCorner())
             {
-                SetPositionFromWall(moveDirHit);
+                FindCorner(origin, rayDir);
                 climbingRotation = -moveDirHit.normal;
             }
             return;
         }
 
         isClimbing = false;
-        return;
     }
 
-    private void SetPositionFromWall(RaycastHit hit)
+    private void SetPositionFromWall(Vector3 hitPoint,Vector3 hitNormal)
     {
-        Debug.DrawLine(hit.point, hit.point + hit.normal * wallDistance, Color.cyan, 5f);
-        transform.position = hit.point + hit.normal * wallDistance;
+        transform.position = hitPoint + hitNormal * wallDistance;
         rb.velocity = Vector3.zero;
+    }
+
+    private void FindCorner(Vector3 origin ,Vector3 rayDir)
+    {
+        origin += -body.forward * (wallDistance - 0.35f);
+        RaycastHit cornerHit;
+        if (Physics.Raycast(origin, rayDir, out cornerHit, firstWallCheckDistance, wallLayer))
+        {
+            SetPositionFromWall(cornerHit.point, cornerHit.normal);
+            return;
+        }
+
+        SetPositionFromWall(moveDirHit.point, moveDirHit.normal);
     }
 
     private bool CheckForCorner()
@@ -507,6 +525,6 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(groundCheck.position, 0.1f);
+        Gizmos.DrawWireSphere(groundCheck.position, 0.3f);
     }
 }

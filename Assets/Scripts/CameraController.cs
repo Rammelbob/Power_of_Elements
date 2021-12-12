@@ -17,7 +17,7 @@ public class CameraController : MonoBehaviour
 
         playerInput.CameraControls.MoveCamera.started += OnInput;
         playerInput.CameraControls.MoveCamera.canceled += OnInput;
-        playerInput.CameraControls.MoveCamera.performed += OnInput;
+        //playerInput.CameraControls.MoveCamera.performed += OnInput;
     }
     void OnInput(InputAction.CallbackContext context)
     {

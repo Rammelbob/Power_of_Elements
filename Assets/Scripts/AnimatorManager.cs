@@ -97,9 +97,4 @@ public class AnimatorManager : MonoBehaviour
     {
         animator.SetFloat(enemyMovementSpeed, movementSpeed, 0.1f, Time.deltaTime);
     }
-
-    public void PlayTargetAnimationEnemy(string targetAnimation,float transistionTime)
-    {
-        animator.CrossFade(targetAnimation, transistionTime);
-    }
 }

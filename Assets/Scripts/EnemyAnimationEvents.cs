@@ -2,34 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationEvents : MonoBehaviour
+public class EnemyAnimationEvents : MonoBehaviour
 {
-    public CombatManager combat;
-    public PlayerManager playerManager;
-
-    public void CanCombo()
-    {
-        combat.CanCombo();
-    }
-
-    public void ResetCombo()
-    {
-        combat.ResetCombo();
-    }
-
-    public void ComboAttack2()
-    {
-        combat.ComboAttack();
-    }
-
-    public void SetIFrame(int value)
-    {
-        combat.SetIFrame(value);
-    }
+    public EnemyLocomotion enemyLocomotion;
 
     private void OnAnimatorMove()
     {
-        if (playerManager.useRootMotion)
+        if (enemyLocomotion.useRootMotion)
         {
             Animator animator = GetComponent<Animator>();
             if (animator && animator.deltaPosition != Vector3.zero)

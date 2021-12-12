@@ -29,7 +29,6 @@ public class InputManager : MonoBehaviour
     public int currentElementpressed;
     public bool elementalMovement;
 
-    public enum Elements {Air, Fire, Electro, Water, Rock, Ice};
     public Elements[] playersElements = { Elements.Air, Elements.Fire, Elements.Electro, Elements.Water, Elements.Rock, Elements.Ice };
     public Elements currentElement;
 

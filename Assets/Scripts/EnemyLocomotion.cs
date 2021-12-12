@@ -6,7 +6,12 @@ using UnityEngine.AI;
 public class EnemyLocomotion : MonoBehaviour
 {
     AnimatorManager animatorManager;
+    public Animator animator;
     NavMeshAgent agent;
+    EnemyCombat enemyCombat;
+
+    public bool isInteracting;
+    public bool useRootMotion;
 
     [Header("Field Of View")]
     public float maxFieldofViewDistance;
@@ -15,20 +20,24 @@ public class EnemyLocomotion : MonoBehaviour
     public float angerResetTime;
     public float angerResetDistance;
     float angerResetEnd;
+    public EnemyStyle enemyStyle;
 
     bool isAngered;
     bool playerInFieldofView;
 
     Transform targetPosition;
     Vector3 startPosition;
-    public float combatRange;
     float distanceToTarget;
+
+    [Header("Defensive")]
+    public float distanceToStart;
 
 
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
         agent = GetComponent<NavMeshAgent>();
+        enemyCombat = GetComponent<EnemyCombat>();
         startPosition = transform.position;
         angerResetEnd = Time.time;
     }
@@ -36,9 +45,11 @@ public class EnemyLocomotion : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isInteracting)
+            return;
         CheckPlayerInFieldofView();
         HandleMovement();
-        //HandleCombat();
+        HandleCombat();
     }
 
     private void HandleMovement()
@@ -58,12 +69,23 @@ public class EnemyLocomotion : MonoBehaviour
 
     private void CheckPlayerInFieldofView()
     {
+        if (enemyStyle == EnemyStyle.Defensive)
+        {
+            if ((startPosition - transform.position).magnitude > distanceToStart)
+            {
+                isAngered = false;
+                return;
+            }
+        }
+
         Collider[] colliderAround = Physics.OverlapSphere(transform.position, maxFieldofViewDistance, targetMask);
 
         if (colliderAround.Length != 0)
         {
             targetPosition = colliderAround[0].transform;
             Vector3 directionToTarget = (targetPosition.position - transform.position).normalized;
+            distanceToTarget = (targetPosition.position - transform.position).magnitude;
+
 
             RaycastHit hit;
             if(Physics.Raycast(transform.position, directionToTarget, out hit, maxFieldofViewDistance))
@@ -74,7 +96,6 @@ public class EnemyLocomotion : MonoBehaviour
                 if (!isAngered)
                     isAngered = true;
 
-                distanceToTarget = (targetPosition.position - transform.position).magnitude;
             }
             else
             {
@@ -89,12 +110,18 @@ public class EnemyLocomotion : MonoBehaviour
 
     private void HandleCombat()
     {
-        if (distanceToTarget < combatRange && isAngered)
+        if (distanceToTarget < enemyCombat.combatRange && isAngered && playerInFieldofView)
         {
             agent.isStopped = true;
-            animatorManager.PlayTargetAnimationEnemy("Fight", 0.2f);
+            enemyCombat.HandleAttack();
         }
-        else if(agent.isStopped)
+        else if (agent.isStopped)
             agent.isStopped = false;
+    }
+
+    private void LateUpdate()
+    {
+        isInteracting = animator.GetBool("isInteracting");
+        useRootMotion = animator.GetBool("useRootMotion");
     }
 }

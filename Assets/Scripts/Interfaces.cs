@@ -8,3 +8,10 @@ public interface ISaveable
 
     void RestoreState(object state);
 }
+
+public interface ICombat
+{
+    void DoAttack(List<GameObject> hitList);
+
+    void GetAttacked(float damage, Vector3 forceDir);
+}
