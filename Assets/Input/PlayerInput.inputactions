@@ -364,7 +364,7 @@
             "id": "a8ff37dc-6baf-47c2-b530-4b7efac2c389",
             "actions": [
                 {
-                    "name": "Attack1",
+                    "name": "LightAttack",
                     "type": "Button",
                     "id": "b1631055-ac20-4989-af72-3c2a92b6cb9c",
                     "expectedControlType": "Button",
@@ -372,7 +372,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Attack2",
+                    "name": "HeavyAttack",
                     "type": "Button",
                     "id": "27baebf2-6d0c-48ae-9f23-b34430357ace",
                     "expectedControlType": "Button",
@@ -380,7 +380,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Attack3",
+                    "name": "SpecialAttack",
                     "type": "Button",
                     "id": "458122b6-eb3d-4840-9e5b-ec135f9cf21c",
                     "expectedControlType": "Button",
@@ -396,7 +396,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack1",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -407,18 +407,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack1",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "6ddfb6c5-1a90-4c88-a3b8-82ef24907260",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack2",
+                    "action": "HeavyAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -429,18 +429,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack2",
+                    "action": "HeavyAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "f267721f-c831-4209-b440-313883f8a50d",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack3",
+                    "action": "SpecialAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -451,7 +451,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack3",
+                    "action": "SpecialAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

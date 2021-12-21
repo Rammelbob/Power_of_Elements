@@ -64,7 +64,6 @@ public class EnemyLocomotion : MonoBehaviour
             agent.SetDestination(startPosition);
             animatorManager.SetEnemyAnimatorValues(agent.velocity.magnitude);
         }
-       
     }
 
     private void CheckPlayerInFieldofView()
@@ -95,7 +94,6 @@ public class EnemyLocomotion : MonoBehaviour
             {
                 if (!isAngered)
                     isAngered = true;
-
             }
             else
             {

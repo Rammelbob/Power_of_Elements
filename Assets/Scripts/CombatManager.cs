@@ -63,10 +63,9 @@ public class CombatManager : MonoBehaviour , ICombat
     {
         if (comboNR == 0)
         {
-            rb.velocity = Vector3.zero;
             HandleAttackCollider(inputManager.currentElement, true, true);
 
-            animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR}", true, 0.05f, true);
+            animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR}", true, 0.05f, true,true);
             comboNR = 1;
             return;
         }
@@ -84,7 +83,7 @@ public class CombatManager : MonoBehaviour , ICombat
             if (comboNR < value)
             {
                 HandleAttackCollider(inputManager.currentElement, true, false);
-                animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR - 1}", true, 0.15f, true);
+                animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR - 1}", true, 0.15f, true, true);
             }
     }
 

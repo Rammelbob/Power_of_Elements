@@ -6,6 +6,13 @@ public class AnimationEvents : MonoBehaviour
 {
     public CombatManager combat;
     public PlayerManager playerManager;
+    Animator animator;
+
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     public void CanCombo()
     {
@@ -27,11 +34,20 @@ public class AnimationEvents : MonoBehaviour
         combat.SetIFrame(value);
     }
 
+    public void EnableCombo()
+    {
+        animator.SetBool("canDoCombo", true);
+    }
+
+    public void DisalbeCombo()
+    {
+        animator.SetBool("canDoCombo", false);
+    }
+
     private void OnAnimatorMove()
     {
         if (playerManager.useRootMotion)
         {
-            Animator animator = GetComponent<Animator>();
             if (animator && animator.deltaPosition != Vector3.zero)
             {
                 Vector3 newPosition = transform.parent.position;
