@@ -18,4 +18,5 @@ public class Weapon : ScriptableObject
     [Header("Heavy Attack")]
     public string heavy_Attack_1;
     public string heavy_Attack_2;
+    public string heavy_Attack_3;
 }

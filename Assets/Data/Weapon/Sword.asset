@@ -17,5 +17,7 @@ MonoBehaviour:
   light_Attack_1: Sword_Light_01
   light_Attack_2: Sword_Light_02
   light_Attack_3: Sword_Light_03
+  light_Attack_4: Sword_Light_04
   heavy_Attack_1: Sword_Heavy_01
   heavy_Attack_2: Sword_Heavy_02
+  heavy_Attack_3: Sword_Heavy_03

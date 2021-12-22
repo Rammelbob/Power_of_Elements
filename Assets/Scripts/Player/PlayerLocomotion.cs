@@ -268,7 +268,7 @@ public class PlayerLocomotion : MonoBehaviour
         RaycastHit hit;
         Vector3 rayCastOrigin = transform.position;
         Vector3 fallingTargetPosition = groundCheck.position;
-
+        
         if (!isClimbing)
         {
             if (!isGrounded)
@@ -305,7 +305,7 @@ public class PlayerLocomotion : MonoBehaviour
         {
             distanceToGround = hit.distance - (transform.position.y - groundCheck.position.y);
 
-            if (distanceToGround < 0.25f)
+            if (distanceToGround < 0.1f)
             {
                 if (!isGrounded && !playerManager.isInteracting && inAirTimer > 0.6f)
                     animatorManager.PlayTargetAnimation("Landing", true, 0.2f, false, false);

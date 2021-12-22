@@ -44,6 +44,11 @@ public class AnimationEvents : MonoBehaviour
         animator.SetBool("canDoCombo", false);
     }
 
+    public void ResetIsJumping()
+    {
+        animator.SetBool("isJumping", false);
+    }
+
     private void OnAnimatorMove()
     {
         if (playerManager.useRootMotion)

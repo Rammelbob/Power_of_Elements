@@ -36,6 +36,11 @@ public class PlayerAttacker : MonoBehaviour
             else if (lastAttack == weapon.heavy_Attack_1)
             {
                 animatorManager.PlayTargetAnimation(weapon.heavy_Attack_2, true, 0.1f, true, true);
+                lastAttack = weapon.heavy_Attack_2;
+            } 
+            else if (lastAttack == weapon.heavy_Attack_2)
+            {
+                animatorManager.PlayTargetAnimation(weapon.heavy_Attack_3, true, 0.1f, true, true);
             }
         }
     }
