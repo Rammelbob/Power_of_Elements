@@ -6,7 +6,7 @@ public class PlayerAttacker : MonoBehaviour
 {
     AnimatorManager animatorManager;
     InputManager inputManager;
-    public string lastAttack;
+    public Attack currentAttack;
 
     private void Awake()
     {
@@ -14,46 +14,43 @@ public class PlayerAttacker : MonoBehaviour
         inputManager = GetComponent<InputManager>();
     }
 
-    public void HandleWeaponCombo(Weapon weapon)
+    public void HandleWeaponCombo(bool isLightAttack)
     {
         if (inputManager.comboFlag)
         {
             animatorManager.animator.SetBool("canDoCombo", false);
-            if (lastAttack == weapon.light_Attack_1)
+            if (inputManager.comboFlag)
             {
-                animatorManager.PlayTargetAnimation(weapon.light_Attack_2, true, 0.1f, true, true);
-                lastAttack = weapon.light_Attack_2;
-            }
-            else if (lastAttack == weapon.light_Attack_2)
-            {
-                animatorManager.PlayTargetAnimation(weapon.light_Attack_3, true, 0.1f, true, true);
-                lastAttack = weapon.light_Attack_3;
-            }  
-            else if (lastAttack == weapon.light_Attack_3)
-            {
-                animatorManager.PlayTargetAnimation(weapon.light_Attack_4, true, 0.1f, true, true);
-            }
-            else if (lastAttack == weapon.heavy_Attack_1)
-            {
-                animatorManager.PlayTargetAnimation(weapon.heavy_Attack_2, true, 0.1f, true, true);
-                lastAttack = weapon.heavy_Attack_2;
-            } 
-            else if (lastAttack == weapon.heavy_Attack_2)
-            {
-                animatorManager.PlayTargetAnimation(weapon.heavy_Attack_3, true, 0.1f, true, true);
+                if (isLightAttack)
+                {
+                    if (currentAttack.nextLightAttack != null)
+                    {
+                        animatorManager.PlayTargetAnimation(currentAttack.nextLightAttack.attackName, true, 0.1f, true, true);
+                        currentAttack = currentAttack.nextLightAttack;
+                    }
+                }
+                else
+                {
+                    if (currentAttack.nextHeavyAttack != null)
+                    {
+                        animatorManager.PlayTargetAnimation(currentAttack.nextHeavyAttack.attackName, true, 0.1f, true, true);
+                        currentAttack = currentAttack.nextHeavyAttack;
+                    }
+                }
+                
             }
         }
     }
 
     public void HandleLightAttack(Weapon weapon)
     {
-        animatorManager.PlayTargetAnimation(weapon.light_Attack_1, true, 0.1f, true, true);
-        lastAttack = weapon.light_Attack_1;
+        animatorManager.PlayTargetAnimation(weapon.first_Light_Attack.attackName, true, 0.1f, true, true);
+        currentAttack = weapon.first_Light_Attack;
     }
     
     public void HandleHeavyAttack(Weapon weapon)
     {
-        animatorManager.PlayTargetAnimation(weapon.heavy_Attack_1, true, 0.1f, true, true);
-        lastAttack = weapon.heavy_Attack_1;
+        animatorManager.PlayTargetAnimation(weapon.first_Heavy_Attack.attackName, true, 0.1f, true, true);
+        currentAttack = weapon.first_Heavy_Attack;
     }
 }

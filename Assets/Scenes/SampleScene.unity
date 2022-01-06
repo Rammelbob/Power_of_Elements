@@ -838,21 +838,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: 064867118d4ba9c4fb99b8b79bffab62, type: 3}
   m_PrefabInstance: {fileID: 94608553}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &94608556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 94608554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fff9454d7a5dc2429e0d3fb278b6d23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthLevel: 10
-  maxHealth: 0
-  currentHealth: 0
 --- !u!54 &94608559
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2195,6 +2180,7 @@ GameObject:
   m_Component:
   - component: {fileID: 390784973}
   - component: {fileID: 390784975}
+  - component: {fileID: 390784974}
   m_Layer: 5
   m_Name: StaminaBar
   m_TagString: Untagged
@@ -2223,6 +2209,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -25}
   m_SizeDelta: {x: 0, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &390784974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 390784972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22dcd74480561b14c993bbffbfe67624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseSlider: {fileID: 390784975}
+  followSlider: {fileID: 0}
+  sliderRect: {fileID: 390784973}
+  offSetMaxPerLvl: 40
 --- !u!114 &390784975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4457,6 +4459,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1272645306}
   - component: {fileID: 1272645307}
+  - component: {fileID: 1272645308}
   m_Layer: 5
   m_Name: HealthBar
   m_TagString: Untagged
@@ -4533,10 +4536,26 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 52.7
+  m_Value: 45
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1272645308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1272645305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22dcd74480561b14c993bbffbfe67624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseSlider: {fileID: 1272645307}
+  followSlider: {fileID: 192157762}
+  sliderRect: {fileID: 1272645306}
+  offSetMaxPerLvl: 40
 --- !u!1 &1275077660
 GameObject:
   m_ObjectHideFlags: 0
@@ -6119,10 +6138,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1300543067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed8e1a1457b24e24cb3af0015a9608f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 913bef91bc178fc4e9fb0dad80a5efd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hpSlider: {fileID: 1300543069}
+  baseSlider: {fileID: 1300543069}
 --- !u!114 &1300543069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6472,7 +6491,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1546721374}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2eca14909080b144b3917b785426598, type: 3}
   m_Name: 
@@ -6543,7 +6562,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 0
-    m_SensorSize: {x: 1.7788944, y: 1}
+    m_SensorSize: {x: 1.7771261, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -6777,7 +6796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05968646c4bee3b49aee604a95310a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastAttack: 
+  currentAttack: {fileID: 0}
 --- !u!114 &1620342405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6898,10 +6917,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdb0ea96554537a48ba0a0c448d1b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusBarManager: {fileID: 1546721376}
-  healthLevel: 10
-  maxHealth: 0
-  currentHealth: 0
+  baseHP: 100
+  currentHP: 0
+  extraHPLvl: 10
+  extraHpPerLvl: 0
+  AdvancedHPBar: {fileID: 1272645308}
+  baseStamina: 100
+  currentStamina: 0
+  extraStaminaLvl: 10
+  extraStaminaPerLvl: 0
+  AdvancedStaminaBar: {fileID: 390784974}
 --- !u!1 &1623379381
 GameObject:
   m_ObjectHideFlags: 0
@@ -7320,16 +7345,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1826792203}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18f4efde75722f0428fc2290c0cf97b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8fff9454d7a5dc2429e0d3fb278b6d23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
-  enemyStautsBar: {fileID: 1300543068}
-  weapon: {fileID: 0}
-  enemyTyp: 0
-  damage: 0
-  def: 0
-  combatRange: 0
+  baseHP: 100
+  currentHP: 0
+  hpBar: {fileID: 1300543068}
 --- !u!136 &1826792205
 CapsuleCollider:
   m_ObjectHideFlags: 0

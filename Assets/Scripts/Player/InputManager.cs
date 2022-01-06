@@ -146,7 +146,7 @@ public class InputManager : MonoBehaviour
             if (playerManager.canDoCombo)
             {
                 comboFlag = true;
-                playerAttacker.HandleWeaponCombo(playerInventory.rightWeapon);
+                playerAttacker.HandleWeaponCombo(true);
                 comboFlag = false;
             }
             else
@@ -162,7 +162,7 @@ public class InputManager : MonoBehaviour
             if (playerManager.canDoCombo)
             {
                 comboFlag = true;
-                playerAttacker.HandleWeaponCombo(playerInventory.rightWeapon);
+                playerAttacker.HandleWeaponCombo(false);
                 comboFlag = false;
             }
             else

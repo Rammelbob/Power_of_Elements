@@ -2,44 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : BaseStats
 {
-    public StatusBarManager statusBarManager;
     AnimatorManager animatorManager;
 
-    public float healthLevel;
-    public float maxHealth;
-    public float currentHealth;
+    [Header("HealthPoints")]
+    public int extraHPLvl;
+    public float extraHpPerLvl;
+    public AdvancedStatusBar AdvancedHPBar;
+
+    [Header("Stamina")]
+    public float baseStamina;
+    public float currentStamina;
+    public int extraStaminaLvl;
+    public float extraStaminaPerLvl;
+    public AdvancedStatusBar AdvancedStaminaBar;
 
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
+        currentHP = GetMaxHP();
     }
 
-    private void Start()
+    private float GetMaxHP()
     {
-        maxHealth = SetMaxHealthFromLevel();
-        currentHealth = maxHealth;
-        statusBarManager.SetHPBar(0, maxHealth);
+        return baseHP + extraHpPerLvl * extraHPLvl;
     }
 
-    private float SetMaxHealthFromLevel()
+    public override void TakeDamage(float damage)
     {
-        maxHealth = healthLevel * 10;
-        return maxHealth;
-    }
-
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        statusBarManager.UpdateHpBar(currentHealth, false);
+        currentHP -= damage;
+        AdvancedHPBar.UpdateSliderValue(currentHP);
 
         animatorManager.PlayTargetAnimation("Take Damage", true, 0.1f, true, true);
-        if (currentHealth <= 0)
+        if (currentHP <= 0)
         {
-            currentHealth = 0;
+            currentHP = 0;
             animatorManager.PlayTargetAnimation("Death", true, 0.1f, true, true);
         }
+    }
+
+    public override void GainHP(float amount)
+    {
+        base.GainHP(amount);
     }
 
     private void Update()

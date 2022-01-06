@@ -10,13 +10,8 @@ public class Weapon : ScriptableObject
     public GameObject modelPrefab;
 
     [Header("Light Attack")]
-    public string light_Attack_1;
-    public string light_Attack_2;
-    public string light_Attack_3;
-    public string light_Attack_4;
+    public Attack first_Light_Attack;
 
     [Header("Heavy Attack")]
-    public string heavy_Attack_1;
-    public string heavy_Attack_2;
-    public string heavy_Attack_3;
+    public Attack first_Heavy_Attack;
 }
