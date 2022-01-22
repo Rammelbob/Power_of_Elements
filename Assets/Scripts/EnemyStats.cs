@@ -5,22 +5,12 @@ using UnityEngine;
 public class EnemyStats : BaseStats
 {
     public BaseStatusBar hpBar;
+    Animator anim;
 
     private void Awake()
     {
+        anim = GetComponent<Animator>();
         hpBar.UpdateMaxSliderValue(baseHP);
+        currentHP = baseHP;
     }
-
-    public override void TakeDamage(float damage)
-    {
-        base.TakeDamage(damage);
-        hpBar.UpdateSliderValue(currentHP);
-    }
-
-    public override void GainHP(float amount)
-    {
-        base.GainHP(amount);
-        hpBar.UpdateSliderValue(currentHP);
-    }
-
 }

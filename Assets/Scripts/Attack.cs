@@ -9,6 +9,7 @@ public class Attack : ScriptableObject
     public string attackName;
     public float attackDamage;
     public float attackForce;
+    public float staminaCost;
 
     public Attack nextLightAttack;
     public Attack nextHeavyAttack;

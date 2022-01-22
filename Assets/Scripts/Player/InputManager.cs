@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     PlayerAttacker playerAttacker;
     PlayerInventory playerInventory;
     PlayerManager playerManager;
+    PlayerStats playerStats;
 
     public Vector2 movementInput;
     public Vector2 changeElementInput;
@@ -30,11 +31,8 @@ public class InputManager : MonoBehaviour
     public bool speacialAttack;
 
     Vector2[] pressedElement = { Vector2.up, Vector2.right, Vector2.down, Vector3.left };
-    public int currentElementpressed;
     public bool elementalMovement;
-
-    public Elements[] playersElements = { Elements.Air, Elements.Fire, Elements.Electro, Elements.Water, Elements.Rock, Elements.Ice };
-    public Elements currentElement;
+    int currentElementPressed;
 
     private void Awake()
     {
@@ -44,6 +42,7 @@ public class InputManager : MonoBehaviour
         playerAttacker = GetComponent<PlayerAttacker>();
         playerInventory = GetComponent<PlayerInventory>();
         playerManager = GetComponent<PlayerManager>();
+        playerStats = GetComponent<PlayerStats>();
     }
 
     private void OnEnable()
@@ -62,7 +61,6 @@ public class InputManager : MonoBehaviour
             playerControls.CharacterControls.Jump.started += OnJump;
             playerControls.CharacterControls.Dodge.started += OnDodge;
             playerControls.CharacterControls.ChangeElement.performed += OnChangeElement;
-
             
             playerControls.Combat.LightAttack.performed += OnLightAttack;
             playerControls.Combat.HeavyAttack.performed += OnHeavyAttack;
@@ -112,9 +110,11 @@ public class InputManager : MonoBehaviour
         {
             if (pressedElement[i] == context.ReadValue<Vector2>())
             {
-                currentElementpressed = i;
-                currentElement = playersElements[i];
-                Debug.Log(currentElement + " " + i);
+                if (i != currentElementPressed)
+                {
+                    playerInventory.SetCurrentElement(i);
+                    currentElementPressed = i;
+                }
                 break;
             }
         }
@@ -143,7 +143,9 @@ public class InputManager : MonoBehaviour
     {
         if (lightAttack)
         {
-            if (playerManager.canDoCombo)
+            if (playerLocomotion.isSprinting)
+                playerAttacker.HandleRunningAttack(playerStats.element.rightHandWeapon); 
+            else if (playerManager.canDoCombo)
             {
                 comboFlag = true;
                 playerAttacker.HandleWeaponCombo(true);
@@ -153,13 +155,15 @@ public class InputManager : MonoBehaviour
             {
                 if (playerManager.canDoCombo || playerManager.isInteracting)
                     return;
-                playerAttacker.HandleLightAttack(playerInventory.rightWeapon);
+                playerAttacker.HandleLightAttack(playerStats.element.rightHandWeapon);
             }
         }
 
         if (heavyAttack)
         {
-            if (playerManager.canDoCombo)
+            if (playerLocomotion.isSprinting)
+                playerAttacker.HandleRunningAttack(playerStats.element.rightHandWeapon);
+            else if (playerManager.canDoCombo)
             {
                 comboFlag = true;
                 playerAttacker.HandleWeaponCombo(false);
@@ -169,7 +173,7 @@ public class InputManager : MonoBehaviour
             {
                 if (playerManager.canDoCombo || playerManager.isInteracting)
                     return;
-                playerAttacker.HandleHeavyAttack(playerInventory.rightWeapon);
+                playerAttacker.HandleHeavyAttack(playerStats.element.rightHandWeapon);
             } 
         }
     }

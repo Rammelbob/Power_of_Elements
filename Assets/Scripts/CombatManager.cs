@@ -10,16 +10,17 @@ public class CombatManager : MonoBehaviour , ICombat
     AnimatorManager animator;
     Rigidbody rb;
     PlayerLocomotion playerLocomotion;
+    PlayerInventory playerInventory;
     Vector3 respawnPoint;
     int comboNR = 0;
-    Dictionary<Elements, int> maxCombNrs = new Dictionary<Elements, int>()
+    Dictionary<ElementsEnum, int> maxCombNrs = new Dictionary<ElementsEnum, int>()
     {
-        {Elements.Air,4},
-        {Elements.Electro,4},
-        {Elements.Fire,5},
-        {Elements.Ice,4},
-        {Elements.Rock,4},
-        {Elements.Water,4}
+        {ElementsEnum.Air,4},
+        {ElementsEnum.Electro,4},
+        {ElementsEnum.Fire,5},
+        {ElementsEnum.Ice,4},
+        {ElementsEnum.Earth,4},
+        {ElementsEnum.Water,4}
     };
     bool canCombo;
     float baseHP = 100, baseStamina = 100;
@@ -45,6 +46,7 @@ public class CombatManager : MonoBehaviour , ICombat
         rb = GetComponent<Rigidbody>();
         inputManager = GetComponent<InputManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
+        playerInventory = GetComponent<PlayerInventory>();
         currentHP = GetMaxHP();
         currentStamina = GetMaxStamina();
         barManager.UpdateHpBar(currentHP, false);
@@ -63,9 +65,9 @@ public class CombatManager : MonoBehaviour , ICombat
     {
         if (comboNR == 0)
         {
-            HandleAttackCollider(inputManager.currentElement, true, true);
+            HandleAttackCollider(playerInventory.currentElement, true, true);
 
-            animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR}", true, 0.05f, true,true);
+            animator.PlayTargetAnimation($"{playerInventory.currentElement}Attack{comboNR}", true, 0.05f, true,true);
             comboNR = 1;
             return;
         }
@@ -79,11 +81,11 @@ public class CombatManager : MonoBehaviour , ICombat
 
     public void ComboAttack()
     {
-        if (maxCombNrs.TryGetValue(inputManager.currentElement, out int value))
+        if (maxCombNrs.TryGetValue(playerInventory.currentElement, out int value))
             if (comboNR < value)
             {
-                HandleAttackCollider(inputManager.currentElement, true, false);
-                animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR - 1}", true, 0.15f, true, true);
+                HandleAttackCollider(playerInventory.currentElement, true, false);
+                animator.PlayTargetAnimation($"{playerInventory.currentElement}Attack{comboNR - 1}", true, 0.15f, true, true);
             }
     }
 
@@ -94,7 +96,7 @@ public class CombatManager : MonoBehaviour , ICombat
 
     public void ResetCombo()
     {
-        HandleAttackCollider(inputManager.currentElement, false, true);
+        HandleAttackCollider(playerInventory.currentElement, false, true);
         canCombo = false;
         comboNR = 0;
     }
@@ -116,7 +118,7 @@ public class CombatManager : MonoBehaviour , ICombat
         }
     }
 
-    private void HandleAttackCollider(Elements currentElement, bool isActive, bool isGameobjectActive)
+    private void HandleAttackCollider(ElementsEnum currentElement, bool isActive, bool isGameobjectActive)
     {
         foreach (ColliderData data in ColliderForElements)
             if (data.element == currentElement || !isActive)
@@ -268,7 +270,7 @@ public class CombatManager : MonoBehaviour , ICombat
     [Serializable]
     public  struct ColliderData
     {
-        public Elements element;
+        public ElementsEnum element;
         public List<GameObject> collider;
     }
 }

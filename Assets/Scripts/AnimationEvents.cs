@@ -49,6 +49,11 @@ public class AnimationEvents : MonoBehaviour
         animator.SetBool("isJumping", false);
     }
 
+    public void DisableRoation()
+    {
+        animator.SetBool("canRotate", false);
+    }
+
     private void OnAnimatorMove()
     {
         if (playerManager.useRootMotion)
@@ -60,6 +65,7 @@ public class AnimationEvents : MonoBehaviour
                 newPosition.z += animator.deltaPosition.z;
                 newPosition.y += animator.deltaPosition.y;
                 transform.parent.position = newPosition;
+                //transform.parent.position = Vector3.Lerp(transform.parent.position, newPosition, Time.deltaTime / 0.02f);
             }
         }
     }

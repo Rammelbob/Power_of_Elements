@@ -6,8 +6,6 @@ public class DamageCollider : MonoBehaviour
 {
     Collider damageCollider;
 
-    public float currentWeaponDamage;
-
     private void Awake()
     {
         damageCollider = GetComponent<Collider>();
@@ -28,21 +26,12 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))
         {
-            PlayerStats playerStats = other.GetComponent<PlayerStats>();
-            if (playerStats != null)
+            BaseStats stats = GetComponentInParent<BaseStats>();
+            if (stats != null)
             {
-                playerStats.TakeDamage(currentWeaponDamage);
-            }
-        }
-
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            EnemyStats enemyStats = other.GetComponentInParent<EnemyStats>();
-            if (enemyStats != null)
-            {
-                enemyStats.TakeDamage(currentWeaponDamage);
+                stats.DamageCalculation(other.gameObject);
             }
         }
     }

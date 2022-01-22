@@ -9,6 +9,7 @@ public class PlayerLocomotion : MonoBehaviour
     AnimatorManager animatorManager;
     Rigidbody rb;
     CombatManager combatManager;
+    PlayerInventory playerInventory;
 
     Vector3 moveDirection;
     public Transform direction;
@@ -55,7 +56,7 @@ public class PlayerLocomotion : MonoBehaviour
     public LayerMask wallLayer;
 
     [Header("ElemetalMovement")]
-    Elements lastElement;
+    ElementsEnum lastElement;
     bool doAirMovement;
     bool doFireMovement;
     bool doElectroMovement;
@@ -90,6 +91,7 @@ public class PlayerLocomotion : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
         animatorManager = GetComponent<AnimatorManager>();
         combatManager = GetComponent<CombatManager>();
+        playerInventory = GetComponent<PlayerInventory>();
         dashTime = startDashTime;
     }
 
@@ -108,7 +110,7 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void HandleElementalMovement()
     {
-        if (lastElement != inputManager.currentElement)
+        if (lastElement != playerInventory.currentElement)
         {
             doFireMovement = false;
             doAirMovement = false;
@@ -121,17 +123,17 @@ public class PlayerLocomotion : MonoBehaviour
         
         if (inputManager.elementalMovement)
         {
-            switch (inputManager.currentElement)
+            switch (playerInventory.currentElement)
             {
-                case Elements.Air:
+                case ElementsEnum.Air:
                     doAirMovement = combatManager.CanUseStamina();
                     break;
 
-                case Elements.Fire:
+                case ElementsEnum.Fire:
                     doFireMovement = combatManager.CanUseStamina();
                     break;
 
-                case Elements.Electro:
+                case ElementsEnum.Electro:
                     if (!doElectroMovement && Time.time > dashEndCooldowntime)
                     {
                         dashEndCooldowntime = Time.time + electroDashCooldown;
@@ -140,15 +142,15 @@ public class PlayerLocomotion : MonoBehaviour
                     }
                     break;
 
-                case Elements.Rock:
+                case ElementsEnum.Earth:
                     //doEarthMovement = true;
                     break;
 
-                case Elements.Water:
+                case ElementsEnum.Water:
                     doWaterMovement = true;
                     break;
 
-                case Elements.Ice:
+                case ElementsEnum.Ice:
                     break;
 
             }
@@ -189,7 +191,7 @@ public class PlayerLocomotion : MonoBehaviour
                 waterMovementtemp = Instantiate(waterMovement, groundCheck.position, Quaternion.identity);
             }
         }
-        lastElement = inputManager.currentElement;
+        lastElement = playerInventory.currentElement;
     }
 
     private void HandleMovement()
@@ -215,13 +217,13 @@ public class PlayerLocomotion : MonoBehaviour
                 movementSpeed = 0;
         }
         moveDirection *= movementSpeed;
-        Vector3 movementVeolcity = moveDirection;
-        rb.velocity = movementVeolcity;
+        //Vector3 movementVeolcity = moveDirection;
+        //rb.velocity = movementVeolcity;
     }
 
     private void HandleRotation()
     {
-        if (isJumping)
+        if (!playerManager.canRotate)
             return;
 
         Quaternion targetRotation;
@@ -273,7 +275,7 @@ public class PlayerLocomotion : MonoBehaviour
         {
             if (!isGrounded)
             {
-                if (!playerManager.isInteracting && distanceToGround > 1.5f && inAirTimer > 0.6f)
+                if (!playerManager.isInteracting && distanceToGround > 1.5f && inAirTimer > 0.75f)
                 {
                     animatorManager.PlayTargetAnimation("Falling", false, 0.1f, false, false);
                 }
@@ -295,7 +297,13 @@ public class PlayerLocomotion : MonoBehaviour
                 }
                 else
                 {
-                    inAirTimer += Time.deltaTime;
+                    if (!isJumping)
+                        inAirTimer += Time.deltaTime / 2;
+                    else
+                        inAirTimer += Time.deltaTime;
+
+                    SetMoveDir();
+                    rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedAir/2, ForceMode.Acceleration);
                     rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
                 }
             }
@@ -307,8 +315,8 @@ public class PlayerLocomotion : MonoBehaviour
 
             if (distanceToGround < 0.1f)
             {
-                if (!isGrounded && !playerManager.isInteracting && inAirTimer > 0.6f)
-                    animatorManager.PlayTargetAnimation("Landing", true, 0.2f, false, false);
+                if (!isGrounded && !playerManager.isInteracting && inAirTimer > 0.75f)
+                    animatorManager.PlayTargetAnimation("Landing", false, 0.2f, false, false);
 
                 Vector3 rayCastHitPoint = hit.point;
                 fallingTargetPosition.y = rayCastHitPoint.y + (transform.position.y - groundCheck.position.y);
@@ -325,7 +333,11 @@ public class PlayerLocomotion : MonoBehaviour
            
         if (isGrounded && !isJumping && !isClimbing)
         {
-            transform.position = Vector3.Lerp(transform.position, fallingTargetPosition, Time.deltaTime / 0.1f);
+            if (inputManager.moveAmount > 0.5f)
+                transform.position = Vector3.Lerp(transform.position, fallingTargetPosition, Time.deltaTime * 25);
+            else
+                transform.position = fallingTargetPosition;
+
             inAirTimer = 0;
         }
     }
@@ -341,9 +353,19 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (isGrounded && !isClimbing && !playerManager.isInteracting && combatManager.CanUseStamina())
         {
-            animatorManager.animator.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimation("Jump", false, 0.1f, true, true);
-            combatManager.UpdateStamina(-staminaUsedJumping);
+            if (inputManager.moveAmount > 0.5)
+            {
+                animatorManager.animator.SetBool("isJumping", true);
+                animatorManager.PlayTargetAnimation("Jump", false, 0.1f, true, false);
+                rb.AddForce(Vector3.up * 2f, ForceMode.Impulse);
+                combatManager.UpdateStamina(-staminaUsedJumping);
+            }
+            else
+            {
+                animatorManager.animator.SetBool("isJumping", true);
+                animatorManager.PlayTargetAnimation("Jumping_Idle", false, 0.1f, true, true);
+            }
+           
         }
     }
 

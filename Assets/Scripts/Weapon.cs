@@ -14,4 +14,7 @@ public class Weapon : ScriptableObject
 
     [Header("Heavy Attack")]
     public Attack first_Heavy_Attack;
+
+    [Header("Running Attack")]
+    public Attack running_Attack;
 }

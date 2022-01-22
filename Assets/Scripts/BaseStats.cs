@@ -1,36 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class BaseStats : MonoBehaviour
 {
     public float baseHP;
     public float currentHP;
 
-    Animator anim;
+    public float defense;
+    public Element element;
 
-    private void Awake()
+    float currentWeaponDamage;
+
+
+    public void SetCurrentWeaponDamage(float weaponDamage)
     {
-        anim = GetComponent<Animator>();
-        currentHP = baseHP;
+        currentWeaponDamage = weaponDamage;
     }
 
-    public virtual void TakeDamage(float damage)
+    protected virtual float GetMaxHP()
     {
-        currentHP -= damage;
-
-        anim.Play("Take Damage");
-        if (currentHP <= 0)
-        {
-            currentHP = 0;
-            anim.Play("Death");
-        }
+        return baseHP;
     }
 
-    public virtual void GainHP(float amount)
+    public void GainStat(ref float currentAmount, float gainAmount, float maxAmount, Action<float> changeSliderValue)
     {
-        currentHP += amount;
-        if (currentHP >= baseHP)
-            currentHP = baseHP;
+        gainAmount = Mathf.Abs(gainAmount);
+        currentAmount = currentAmount + gainAmount > maxAmount ? maxAmount : currentAmount + gainAmount;
+        changeSliderValue(currentAmount);
+    }
+
+    public void LoseStat(ref float currentAmount, float loseAmount, float minAmount, Action<float> changeSliderValue)
+    {
+        loseAmount = Mathf.Abs(loseAmount);
+        currentAmount = currentAmount - loseAmount < minAmount ? minAmount : currentAmount - loseAmount;
+        changeSliderValue(currentAmount);
+    }
+
+    public void TakeDamage(float amount)
+    {
+        LoseStat(ref currentHP, amount, 0, GetComponentInChildren<BaseStatusBar>().UpdateSliderValue);
+    }
+
+    public void DamageCalculation(GameObject hit)
+    {
+        BaseStats hitBaseStats = hit.GetComponentInParent<BaseStats>();
+        if (hitBaseStats == null)
+            return;
+
+        // damage Calc
+
+        hitBaseStats.TakeDamage(currentWeaponDamage);
     }
 }
+
+

@@ -24,32 +24,14 @@ public class PlayerStats : BaseStats
         currentHP = GetMaxHP();
     }
 
-    private float GetMaxHP()
+    protected override float GetMaxHP()
     {
         return baseHP + extraHpPerLvl * extraHPLvl;
-    }
-
-    public override void TakeDamage(float damage)
-    {
-        currentHP -= damage;
-        AdvancedHPBar.UpdateSliderValue(currentHP);
-
-        animatorManager.PlayTargetAnimation("Take Damage", true, 0.1f, true, true);
-        if (currentHP <= 0)
-        {
-            currentHP = 0;
-            animatorManager.PlayTargetAnimation("Death", true, 0.1f, true, true);
-        }
-    }
-
-    public override void GainHP(float amount)
-    {
-        base.GainHP(amount);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.G))
-            TakeDamage(25);
+            DamageCalculation(gameObject);
     }
 }
