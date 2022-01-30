@@ -3,23 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CombatManager : MonoBehaviour
+public class CombatManager : MonoBehaviour , ICombat
 {
     public StatusBarManager barManager;
     InputManager inputManager;
     AnimatorManager animator;
     Rigidbody rb;
     PlayerLocomotion playerLocomotion;
+    PlayerInventory playerInventory;
     Vector3 respawnPoint;
     int comboNR = 0;
-    Dictionary<InputManager.Elements, int> maxCombNrs = new Dictionary<InputManager.Elements, int>()
+    Dictionary<ElementsEnum, int> maxCombNrs = new Dictionary<ElementsEnum, int>()
     {
-        {InputManager.Elements.Air,4},
-        {InputManager.Elements.Electro,4},
-        {InputManager.Elements.Fire,5},
-        {InputManager.Elements.Ice,4},
-        {InputManager.Elements.Rock,4},
-        {InputManager.Elements.Water,4}
+        {ElementsEnum.Air,4},
+        {ElementsEnum.Electro,4},
+        {ElementsEnum.Fire,5},
+        {ElementsEnum.Ice,4},
+        {ElementsEnum.Earth,4},
+        {ElementsEnum.Water,4}
     };
     bool canCombo;
     float baseHP = 100, baseStamina = 100;
@@ -31,6 +32,13 @@ public class CombatManager : MonoBehaviour
     public float staminaRecovertime, hpRecoverTime;
     public float staminaRecover, hpRecover;
     public GameObject ElectroWeapon;
+    public List<ColliderData> ColliderForElements = new List<ColliderData>();
+    bool iFrame;
+    public bool useStamina;
+
+    [Header("Combat Stats")]
+    public float damage;
+    public float def;
 
     private void Awake()
     {
@@ -38,11 +46,13 @@ public class CombatManager : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         inputManager = GetComponent<InputManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
+        playerInventory = GetComponent<PlayerInventory>();
         currentHP = GetMaxHP();
         currentStamina = GetMaxStamina();
         barManager.UpdateHpBar(currentHP, false);
         barManager.UpdateStaminaBar(currentStamina);
         InvokeRepeating("SetRespawnPoint", 0, 5);
+        ResetCombo();
     }
 
     #region DoAttack
@@ -55,11 +65,9 @@ public class CombatManager : MonoBehaviour
     {
         if (comboNR == 0)
         {
-            rb.velocity = Vector3.zero;
-            if (inputManager.currentElement == InputManager.Elements.Electro)
-                ElectroWeapon.SetActive(true);
+            HandleAttackCollider(playerInventory.currentElement, true, true);
 
-            animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR}", true, 0.05f, true);
+            animator.PlayTargetAnimation($"{playerInventory.currentElement}Attack{comboNR}", true, 0.05f, true,true);
             comboNR = 1;
             return;
         }
@@ -73,9 +81,12 @@ public class CombatManager : MonoBehaviour
 
     public void ComboAttack()
     {
-        if(maxCombNrs.TryGetValue(inputManager.currentElement, out int value))
+        if (maxCombNrs.TryGetValue(playerInventory.currentElement, out int value))
             if (comboNR < value)
-                animator.PlayTargetAnimation($"{inputManager.currentElement}Attack{comboNR - 1}", true, 0.15f, true);
+            {
+                HandleAttackCollider(playerInventory.currentElement, true, false);
+                animator.PlayTargetAnimation($"{playerInventory.currentElement}Attack{comboNR - 1}", true, 0.15f, true, true);
+            }
     }
 
     public void CanCombo()
@@ -85,27 +96,54 @@ public class CombatManager : MonoBehaviour
 
     public void ResetCombo()
     {
-        ElectroWeapon.SetActive(false);
+        HandleAttackCollider(playerInventory.currentElement, false, true);
         canCombo = false;
         comboNR = 0;
     }
 
-    public void DoDamage(List<GameObject> enemies)
+    public void SetIFrame(int value)
     {
-        EnemyCombat enemyCombat;
-        
-        foreach (GameObject enemy in enemies)
+        iFrame = value % 2 == 0;
+    }
+
+    public void DoAttack(List<GameObject> hitList)
+    {
+        foreach (var hit in hitList)
         {
-            enemyCombat = enemy.GetComponent<EnemyCombat>();
-            if (enemyCombat != null)
+            hit.TryGetComponent<ICombat>(out ICombat combat);
+            if (combat != null)
             {
-                enemyCombat.UpdateHP(-10);
+                combat.GetAttacked(-damage, Vector3.zero);
             }
         }
+    }
+
+    private void HandleAttackCollider(ElementsEnum currentElement, bool isActive, bool isGameobjectActive)
+    {
+        foreach (ColliderData data in ColliderForElements)
+            if (data.element == currentElement || !isActive)
+                foreach (GameObject gameObject in data.collider)
+                {
+                    if (isGameobjectActive) 
+                        gameObject.SetActive(isActive);
+                    
+                    gameObject.GetComponent<Collider>().enabled = isActive;
+                }
     }
     #endregion
 
     #region GetAttacked
+    public void GetAttacked(float damage, Vector3 forceDir)
+    {
+        float realDamage;
+        if (iFrame)
+            realDamage = 0;
+        else realDamage = damage + def;
+
+        UpdateHP(realDamage);
+    }
+    #endregion
+
     public void UpdateHP(float hpUpdate)
     {
         bool shouldLerp = false;
@@ -133,6 +171,8 @@ public class CombatManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.U))
             IncreaseStamina();
 
+        //GetAttacked(-Time.deltaTime);
+
         staminaisFull = currentStamina >= GetMaxStamina();
         hpIsFull = currentHP >= GetMaxHP();
 
@@ -146,7 +186,7 @@ public class CombatManager : MonoBehaviour
         if (hpLastUsed + hpRecoverTime < Time.time && !hpIsFull)
             UpdateHP(staminaRecover * Time.deltaTime);
     }
-    #endregion
+    
 
     public void IncreaseHP()
     {
@@ -167,6 +207,9 @@ public class CombatManager : MonoBehaviour
     #region Stamina
     public void UpdateStamina(float staminaUpdate)
     {
+        if (!useStamina)
+            return;
+
         if (staminaUpdate < 0)
             staminaLastUsed = Time.time;
 
@@ -223,4 +266,11 @@ public class CombatManager : MonoBehaviour
         }
     }
     #endregion
+
+    [Serializable]
+    public  struct ColliderData
+    {
+        public ElementsEnum element;
+        public List<GameObject> collider;
+    }
 }

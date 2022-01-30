@@ -20,7 +20,7 @@ public class ElementalMovement : MonoBehaviour
         if (upTime <= 0)
         {
             rb.velocity = Vector3.zero;
-           // rb.isKinematic = true;
+            rb.isKinematic = true;
             Destroy(gameObject, 2f);
         }
         else

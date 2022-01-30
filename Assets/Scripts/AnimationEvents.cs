@@ -6,6 +6,13 @@ public class AnimationEvents : MonoBehaviour
 {
     public CombatManager combat;
     public PlayerManager playerManager;
+    Animator animator;
+
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     public void CanCombo()
     {
@@ -22,11 +29,35 @@ public class AnimationEvents : MonoBehaviour
         combat.ComboAttack();
     }
 
+    public void SetIFrame(int value)
+    {
+        combat.SetIFrame(value);
+    }
+
+    public void EnableCombo()
+    {
+        animator.SetBool("canDoCombo", true);
+    }
+
+    public void DisalbeCombo()
+    {
+        animator.SetBool("canDoCombo", false);
+    }
+
+    public void ResetIsJumping()
+    {
+        animator.SetBool("isJumping", false);
+    }
+
+    public void DisableRoation()
+    {
+        animator.SetBool("canRotate", false);
+    }
+
     private void OnAnimatorMove()
     {
         if (playerManager.useRootMotion)
         {
-            Animator animator = GetComponent<Animator>();
             if (animator && animator.deltaPosition != Vector3.zero)
             {
                 Vector3 newPosition = transform.parent.position;
@@ -34,6 +65,7 @@ public class AnimationEvents : MonoBehaviour
                 newPosition.z += animator.deltaPosition.z;
                 newPosition.y += animator.deltaPosition.y;
                 transform.parent.position = newPosition;
+                //transform.parent.position = Vector3.Lerp(transform.parent.position, newPosition, Time.deltaTime / 0.02f);
             }
         }
     }

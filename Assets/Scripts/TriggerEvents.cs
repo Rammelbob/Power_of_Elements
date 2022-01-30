@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class TriggerEvents : MonoBehaviour
 {
-    public CombatManager combatManager;
+    new Collider collider;
+    bool isPlayer;
+    
+
+    private void Awake()
+    {
+        isPlayer = gameObject.CompareTag("Player");
+        collider = GetComponent<Collider>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))
+        if ((other.CompareTag("Enemy") && isPlayer) || (other.CompareTag("Player") && !isPlayer))
         {
             List<GameObject> enemies = new List<GameObject>();
             enemies.Add(other.gameObject);
-            combatManager.DoDamage(enemies);
+            gameObject.GetComponentInParent<ICombat>().DoAttack(enemies);
+            collider.enabled = false;
         }
     }
 }
