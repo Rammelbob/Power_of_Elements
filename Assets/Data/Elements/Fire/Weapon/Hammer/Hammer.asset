@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hammer
   m_EditorClassIdentifier: 
   weaponName: Hammer
-  modelPrefab: {fileID: 6529628473412047921, guid: 2bdf16247d6123344bd64fa7d3e5494f, type: 3}
+  modelPrefab: {fileID: 1535238852680887054, guid: caa31a88b796f304c8e0f8fa89f1b736, type: 3}
   first_Light_Attack: {fileID: 11400000, guid: 7f101c56ee9082849aa66a9d3ca2fcdf, type: 2}
   first_Heavy_Attack: {fileID: 11400000, guid: 4f615dac492663a4f9e78ce015efede9, type: 2}
   running_Attack: {fileID: 11400000, guid: f93e0a8d28906f142819092e444b2778, type: 2}

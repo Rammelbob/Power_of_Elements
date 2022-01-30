@@ -51,8 +51,11 @@ public class WeaponHolderSlot : MonoBehaviour
             }
 
             model.transform.localPosition = Vector3.zero;
-            model.transform.localRotation = Quaternion.identity;
-            model.transform.localScale = Vector3.one;
+            model.transform.localEulerAngles = new Vector3(-20.767f, -20.083f, -85.064f);
+            //Sword values
+            //model.transform.localEulerAngles = new Vector3(179.936f, -86.90601f, -101.764f);
+            //model.transform.localRotation = Quaternion.identity;
+           // model.transform.localScale = Vector3.one;
         }
 
         currentWeaponModel = model;

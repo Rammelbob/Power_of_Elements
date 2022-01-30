@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   weaponName: Sword
-  modelPrefab: {fileID: 6529628473412047921, guid: a3460222579a9bb49854a32aa1610ad0, type: 3}
+  modelPrefab: {fileID: 113294842937480611, guid: 6aad39c0392f8cf4e8d4cc5c6cb9912f, type: 3}
   first_Light_Attack: {fileID: 11400000, guid: 411a830f698efc741b774ad7f33845af, type: 2}
   first_Heavy_Attack: {fileID: 11400000, guid: 9810061b82d21be4da45db4a88e728d8, type: 2}
   running_Attack: {fileID: 11400000, guid: 5cd12a6154e90ec44ba13dbc00b906ae, type: 2}
