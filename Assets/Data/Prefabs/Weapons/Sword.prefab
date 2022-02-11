@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2988851363039029378}
   m_Layer: 11
   m_Name: SwordGFX
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

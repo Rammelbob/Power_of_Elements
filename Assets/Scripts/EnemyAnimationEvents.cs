@@ -4,21 +4,45 @@ using UnityEngine;
 
 public class EnemyAnimationEvents : MonoBehaviour
 {
-    public EnemyLocomotion enemyLocomotion;
+    Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
+
+
+    public void EnableCombo()
+    {
+        animator.SetBool("canDoCombo", true);
+    }
+
+    public void DisalbeCombo()
+    {
+        animator.SetBool("canDoCombo", false);
+    }
+
+    public void OpenRightDamageCollider()
+    {
+        return;
+    }
+
+    public void CloseRightDamageCollider()
+    {
+        return;
+    }
 
     private void OnAnimatorMove()
     {
-        if (enemyLocomotion.useRootMotion)
+        Animator animator = GetComponent<Animator>();
+        if (animator && animator.deltaPosition != Vector3.zero)
         {
-            Animator animator = GetComponent<Animator>();
-            if (animator && animator.deltaPosition != Vector3.zero)
-            {
-                Vector3 newPosition = transform.parent.position;
-                newPosition.x += animator.deltaPosition.x;
-                newPosition.z += animator.deltaPosition.z;
-                newPosition.y += animator.deltaPosition.y;
-                transform.parent.position = newPosition;
-            }
+            Vector3 newPosition = transform.parent.position;
+            newPosition.x += animator.deltaPosition.x;
+            newPosition.z += animator.deltaPosition.z;
+            newPosition.y += animator.deltaPosition.y;
+            transform.parent.position = newPosition;
         }
+
     }
 }

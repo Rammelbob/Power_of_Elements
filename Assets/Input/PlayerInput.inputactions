@@ -386,6 +386,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Block",
+                    "type": "Button",
+                    "id": "a82ecdf2-ef8f-4006-9374-6e9402d4ba34",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -452,6 +460,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SpecialAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2a0e70a4-e189-4d10-bc08-02b630431e56",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Block",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

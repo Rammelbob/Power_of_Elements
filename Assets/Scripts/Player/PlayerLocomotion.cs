@@ -365,7 +365,6 @@ public class PlayerLocomotion : MonoBehaviour
                 animatorManager.animator.SetBool("isJumping", true);
                 animatorManager.PlayTargetAnimation("Jumping_Idle", false, 0.1f, true, true);
             }
-           
         }
     }
 
@@ -373,8 +372,16 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (isGrounded && !isClimbing && !playerManager.isInteracting && combatManager.CanUseStamina())
         {
-            animatorManager.PlayTargetAnimation("Dodge", true, 0.1f, true, true);
-            combatManager.UpdateStamina(-staminaUsedJumping);
+            if (inputManager.moveAmount > 0.5)
+            {
+                animatorManager.PlayTargetAnimation("Dodge", true, 0.1f, true, true);
+                combatManager.UpdateStamina(-staminaUsedJumping);
+            }
+            else
+            {
+                animatorManager.PlayTargetAnimation("Dodge_Back", true, 0.1f, true, true);
+                combatManager.UpdateStamina(-staminaUsedJumping);
+            }
         }
     }
 

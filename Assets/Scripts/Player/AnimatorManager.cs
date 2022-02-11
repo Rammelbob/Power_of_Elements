@@ -17,7 +17,7 @@ public class AnimatorManager : MonoBehaviour
         climbingX = Animator.StringToHash("InputX");
         climbingY = Animator.StringToHash("InputY");
         movementSpeed = Animator.StringToHash("movementSpeed");
-        enemyMovementSpeed = Animator.StringToHash("MovementSpeed");
+        enemyMovementSpeed = Animator.StringToHash("movementSpeed");
         rb = GetComponent<Rigidbody>();
     }
 
@@ -39,6 +39,6 @@ public class AnimatorManager : MonoBehaviour
 
     public void SetEnemyAnimatorValues(float movementSpeed)
     {
-        animator.SetFloat(enemyMovementSpeed, movementSpeed, 0.1f, Time.deltaTime);
+        animator.SetFloat(enemyMovementSpeed, movementSpeed, 0, Time.deltaTime);
     }
 }

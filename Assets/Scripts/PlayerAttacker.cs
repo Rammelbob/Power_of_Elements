@@ -7,6 +7,7 @@ public class PlayerAttacker : MonoBehaviour
     AnimatorManager animatorManager;
     InputManager inputManager;
     PlayerStats playerStats;
+    PlayerManager playerManager;
     public Attack currentAttack;
 
     private void Awake()
@@ -14,6 +15,7 @@ public class PlayerAttacker : MonoBehaviour
         animatorManager = GetComponent<AnimatorManager>();
         inputManager = GetComponent<InputManager>();
         playerStats = GetComponent<PlayerStats>();
+        playerManager = GetComponent<PlayerManager>();
     }
 
     public void HandleWeaponCombo(bool isLightAttack)
@@ -73,5 +75,11 @@ public class PlayerAttacker : MonoBehaviour
             animatorManager.PlayTargetAnimation(weapon.running_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.running_Attack;
         }
+    }
+
+    public void StartBlock()
+    {
+        if (!playerManager.isBlocking)
+            animatorManager.PlayTargetAnimation("Shield_Block_Idle", true, 0.2f, false, true);
     }
 }

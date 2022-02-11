@@ -399,6 +399,14 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Block"",
+                    ""type"": ""Button"",
+                    ""id"": ""a82ecdf2-ef8f-4006-9374-6e9402d4ba34"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -467,6 +475,17 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""SpecialAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2a0e70a4-e189-4d10-bc08-02b630431e56"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Block"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -489,6 +508,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_Combat_LightAttack = m_Combat.FindAction("LightAttack", throwIfNotFound: true);
         m_Combat_HeavyAttack = m_Combat.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Combat_SpecialAttack = m_Combat.FindAction("SpecialAttack", throwIfNotFound: true);
+        m_Combat_Block = m_Combat.FindAction("Block", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -647,6 +667,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_Combat_LightAttack;
     private readonly InputAction m_Combat_HeavyAttack;
     private readonly InputAction m_Combat_SpecialAttack;
+    private readonly InputAction m_Combat_Block;
     public struct CombatActions
     {
         private @PlayerInput m_Wrapper;
@@ -654,6 +675,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @LightAttack => m_Wrapper.m_Combat_LightAttack;
         public InputAction @HeavyAttack => m_Wrapper.m_Combat_HeavyAttack;
         public InputAction @SpecialAttack => m_Wrapper.m_Combat_SpecialAttack;
+        public InputAction @Block => m_Wrapper.m_Combat_Block;
         public InputActionMap Get() { return m_Wrapper.m_Combat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -672,6 +694,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @SpecialAttack.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnSpecialAttack;
                 @SpecialAttack.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnSpecialAttack;
                 @SpecialAttack.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnSpecialAttack;
+                @Block.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnBlock;
+                @Block.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnBlock;
+                @Block.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnBlock;
             }
             m_Wrapper.m_CombatActionsCallbackInterface = instance;
             if (instance != null)
@@ -685,6 +710,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @SpecialAttack.started += instance.OnSpecialAttack;
                 @SpecialAttack.performed += instance.OnSpecialAttack;
                 @SpecialAttack.canceled += instance.OnSpecialAttack;
+                @Block.started += instance.OnBlock;
+                @Block.performed += instance.OnBlock;
+                @Block.canceled += instance.OnBlock;
             }
         }
     }
@@ -707,5 +735,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnLightAttack(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnSpecialAttack(InputAction.CallbackContext context);
+        void OnBlock(InputAction.CallbackContext context);
     }
 }

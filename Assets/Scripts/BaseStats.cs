@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class BaseStats : MonoBehaviour
+public abstract class BaseStats : MonoBehaviour
 {
     public float baseHP;
     public float currentHP;
@@ -11,7 +11,9 @@ public class BaseStats : MonoBehaviour
     public float defense;
     public Element element;
 
-    float currentWeaponDamage;
+    float currentWeaponDamage = 10;
+
+    public List<DamageCollider> blockedColliders = new List<DamageCollider>();
 
 
     public void SetCurrentWeaponDamage(float weaponDamage)
@@ -38,12 +40,9 @@ public class BaseStats : MonoBehaviour
         changeSliderValue(currentAmount);
     }
 
-    public void TakeDamage(float amount)
-    {
-        LoseStat(ref currentHP, amount, 0, GetComponentInChildren<BaseStatusBar>().UpdateSliderValue);
-    }
+    public abstract void TakeDamage(float amount, DamageCollider damageCollider);
 
-    public void DamageCalculation(GameObject hit)
+    public void DamageCalculation(GameObject hit, DamageCollider damageCollider)
     {
         BaseStats hitBaseStats = hit.GetComponentInParent<BaseStats>();
         if (hitBaseStats == null)
@@ -51,7 +50,7 @@ public class BaseStats : MonoBehaviour
 
         // damage Calc
 
-        hitBaseStats.TakeDamage(currentWeaponDamage);
+        hitBaseStats.TakeDamage(currentWeaponDamage, damageCollider);
     }
 }
 
