@@ -8,6 +8,7 @@ public class Weapon : ScriptableObject
     [Header("Weapon Information")]
     public string weaponName;
     public GameObject modelPrefab;
+    public float shiledHP;
 
     [Header("Light Attack")]
     public Attack first_Light_Attack;

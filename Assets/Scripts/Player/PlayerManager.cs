@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour
     public bool useRootMotion;
     public bool canDoCombo;
     public bool canRotate;
+    public bool isBlocking;
 
     private void Awake()
     {
@@ -31,6 +32,7 @@ public class PlayerManager : MonoBehaviour
     {
         playerLocomotion.HandleAllMovement();
         animator.SetBool("isGrounded", playerLocomotion.isGrounded);
+        animator.SetBool("isBlocking", inputManager.blockInput);
     }
 
     private void LateUpdate()
@@ -42,5 +44,6 @@ public class PlayerManager : MonoBehaviour
         isInteracting = animator.GetBool("isInteracting");
         playerLocomotion.isJumping = animator.GetBool("isJumping");
         useRootMotion = animator.GetBool("useRootMotion");
+        isBlocking = animator.GetBool("isBlocking");
     }
 }

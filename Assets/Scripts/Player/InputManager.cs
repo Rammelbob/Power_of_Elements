@@ -25,6 +25,7 @@ public class InputManager : MonoBehaviour
     public bool startJump;
     public bool startDodge;
     public bool comboFlag;
+    public bool blockInput;
 
     public bool lightAttack;
     public bool heavyAttack;
@@ -65,6 +66,9 @@ public class InputManager : MonoBehaviour
             playerControls.Combat.LightAttack.performed += OnLightAttack;
             playerControls.Combat.HeavyAttack.performed += OnHeavyAttack;
             playerControls.Combat.SpecialAttack.performed += OnSpecialAttack;
+
+            playerControls.Combat.Block.performed += OnBlock;
+            playerControls.Combat.Block.canceled += OnBlock;
         }
         playerControls.Enable();
     }
@@ -125,6 +129,11 @@ public class InputManager : MonoBehaviour
         elementalMovement = context.ReadValueAsButton();
     }
 
+    void OnBlock(InputAction.CallbackContext context)
+    {
+        blockInput = context.ReadValueAsButton();
+    }
+
     private void OnDisable()
     {
         playerControls.Disable();
@@ -175,6 +184,11 @@ public class InputManager : MonoBehaviour
                     return;
                 playerAttacker.HandleHeavyAttack(playerStats.element.rightHandWeapon);
             } 
+        }
+
+        if (blockInput)
+        {
+            playerAttacker.StartBlock();
         }
     }
 

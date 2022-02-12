@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerStats : BaseStats
 {
     AnimatorManager animatorManager;
+    PlayerAttacker playerAttacker;
 
     [Header("HealthPoints")]
     public int extraHPLvl;
@@ -21,6 +22,7 @@ public class PlayerStats : BaseStats
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
+        playerAttacker = GetComponent<PlayerAttacker>();
         currentHP = GetMaxHP();
     }
 
@@ -29,9 +31,17 @@ public class PlayerStats : BaseStats
         return baseHP + extraHpPerLvl * extraHPLvl;
     }
 
-    private void Update()
+    public override void TakeDamage(float amount,DamageCollider damageCollider)
     {
-        if (Input.GetKeyDown(KeyCode.G))
-            DamageCalculation(gameObject);
+        foreach (DamageCollider item in blockedColliders)
+        {
+            if (item == damageCollider)
+            {
+                amount = 0;
+                blockedColliders.Remove(item);
+                break;
+            }
+        }
+        LoseStat(ref currentHP, amount, 0, AdvancedHPBar.UpdateSliderValue);
     }
 }

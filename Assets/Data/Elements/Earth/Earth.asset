@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   element: 4
   rightHandWeapon: {fileID: 11400000, guid: 9d64ff06351fa1f4db68ef740dc67961, type: 2}
-  leftHandWeapon: {fileID: 0}
+  leftHandWeapon: {fileID: 11400000, guid: 5869c6b6748c35a4aac3a51a8e02c9b5, type: 2}
   material: {fileID: 2100000, guid: a54b7ad866d3a9b47bbf3b53baa0acc4, type: 2}

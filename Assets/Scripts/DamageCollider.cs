@@ -31,7 +31,7 @@ public class DamageCollider : MonoBehaviour
             BaseStats stats = GetComponentInParent<BaseStats>();
             if (stats != null)
             {
-                stats.DamageCalculation(other.gameObject);
+                stats.DamageCalculation(other.gameObject, this);
             }
         }
     }
