@@ -19,42 +19,39 @@ public class DialogSequencer : MonoBehaviour
     private DialogNode currentNode;
 
     int linePos = 0;
-    private void Start()
+
+    private void Awake()
     {
         currentNode = dialog.StartNode;
     }
 
-    //Enable OnGUI after implementing actuall GUI
-    //public void OnGUI()
-    public void Update()
+
+    private void OnEnable()
     {
+        dialog.dialogTriggeredEvent.AddListener(DisplayDialog);
+    }
 
-
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            DisplayDialog();
-        }
+    private void OnDisable()
+    {
+        dialog.dialogTriggeredEvent.RemoveListener(DisplayDialog);
     }
 
     private void DisplayDialog()
     {
-        if (currentNode == null) { return; }
 
         nameText.text = currentNode.speakerName;
 
         if (linePos >= currentNode.textLines.Count)
         {
             linePos = 0;
-            LoadNewDialogNode();
+            currentNode = currentNode.nextNode;
             return;
         }
         dialogText.text = currentNode.textLines[linePos++];
     }
 
-    private void LoadNewDialogNode()
+    private void ClearDialog()
     {
-        currentNode = currentNode.nextNode;
-        DisplayDialog();
+        Debug.Log("Remove DialogBox");
     }
 }

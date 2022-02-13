@@ -65,6 +65,14 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": ""NormalizeVector2"",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Talk"",
+                    ""type"": ""Button"",
+                    ""id"": ""ecde2c70-9a47-4679-8102-47ce7fa88787"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": ""NormalizeVector2"",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -331,6 +339,17 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""ChangeElement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ace0cf12-cdf4-4a81-aefe-f05e743363ef"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Talk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -500,6 +519,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_CharacterControls_ElemtalMovement = m_CharacterControls.FindAction("ElemtalMovement", throwIfNotFound: true);
         m_CharacterControls_Dodge = m_CharacterControls.FindAction("Dodge", throwIfNotFound: true);
         m_CharacterControls_ChangeElement = m_CharacterControls.FindAction("ChangeElement", throwIfNotFound: true);
+        m_CharacterControls_Talk = m_CharacterControls.FindAction("Talk", throwIfNotFound: true);
         // CameraControls
         m_CameraControls = asset.FindActionMap("CameraControls", throwIfNotFound: true);
         m_CameraControls_MoveCamera = m_CameraControls.FindAction("MoveCamera", throwIfNotFound: true);
@@ -564,6 +584,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterControls_ElemtalMovement;
     private readonly InputAction m_CharacterControls_Dodge;
     private readonly InputAction m_CharacterControls_ChangeElement;
+    private readonly InputAction m_CharacterControls_Talk;
     public struct CharacterControlsActions
     {
         private @PlayerInput m_Wrapper;
@@ -574,6 +595,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @ElemtalMovement => m_Wrapper.m_CharacterControls_ElemtalMovement;
         public InputAction @Dodge => m_Wrapper.m_CharacterControls_Dodge;
         public InputAction @ChangeElement => m_Wrapper.m_CharacterControls_ChangeElement;
+        public InputAction @Talk => m_Wrapper.m_CharacterControls_Talk;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -601,6 +623,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @ChangeElement.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnChangeElement;
                 @ChangeElement.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnChangeElement;
                 @ChangeElement.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnChangeElement;
+                @Talk.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnTalk;
+                @Talk.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnTalk;
+                @Talk.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnTalk;
             }
             m_Wrapper.m_CharacterControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -623,6 +648,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @ChangeElement.started += instance.OnChangeElement;
                 @ChangeElement.performed += instance.OnChangeElement;
                 @ChangeElement.canceled += instance.OnChangeElement;
+                @Talk.started += instance.OnTalk;
+                @Talk.performed += instance.OnTalk;
+                @Talk.canceled += instance.OnTalk;
             }
         }
     }
@@ -725,6 +753,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnElemtalMovement(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnChangeElement(InputAction.CallbackContext context);
+        void OnTalk(InputAction.CallbackContext context);
     }
     public interface ICameraControlsActions
     {
