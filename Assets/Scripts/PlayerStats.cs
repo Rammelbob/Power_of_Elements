@@ -6,6 +6,7 @@ public class PlayerStats : BaseStats
 {
     AnimatorManager animatorManager;
     PlayerAttacker playerAttacker;
+    WeaponSlotManager weaponSlotManager;
 
     [Header("HealthPoints")]
     public int extraHPLvl;
@@ -23,6 +24,7 @@ public class PlayerStats : BaseStats
     {
         animatorManager = GetComponent<AnimatorManager>();
         playerAttacker = GetComponent<PlayerAttacker>();
+        weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
         currentHP = GetMaxHP();
     }
 
@@ -37,7 +39,16 @@ public class PlayerStats : BaseStats
         {
             if (item == damageCollider)
             {
-                amount = 0;
+                element.leftHandWeapon.shiledHP -= amount;
+                if (element.leftHandWeapon.shiledHP >= 0)
+                {
+                    weaponSlotManager.leftHandSlot.UnloadWeapon();
+                }
+                else
+                {
+                    amount = 0;
+                }
+                
                 blockedColliders.Remove(item);
                 break;
             }

@@ -20,11 +20,6 @@ public class PlayerInventory : MonoBehaviour
         SetCurrentElement(0);
     }
 
-    private void Start()
-    {
-        LoadCurrentElementWeapon();
-    }
-
     public void SetCurrentElement(int input)
     {
         currentElement = playerElements[input];
@@ -34,11 +29,17 @@ public class PlayerInventory : MonoBehaviour
         Debug.Log($"{currentElement}  {input}");
     }
 
-    private void LoadCurrentElementWeapon()
+    public void LoadCurrentElementWeapon()
     {
         if (playerStats.element.rightHandWeapon)
-            weaponSlotManager.LoadWeaponOnSlot(playerStats.element.rightHandWeapon, false);
+            weaponSlotManager.LoadWeaponOnSlot(false, playerStats.element.rightHandWeapon);
         if (playerStats.element.leftHandWeapon)
-            weaponSlotManager.LoadWeaponOnSlot(playerStats.element.leftHandWeapon, true);
+            weaponSlotManager.LoadWeaponOnSlot(true, playerStats.element.leftHandWeapon);
+    }
+
+    public void UnLoadWeapons()
+    {
+        weaponSlotManager.LoadWeaponOnSlot(true);
+        weaponSlotManager.LoadWeaponOnSlot(false);
     }
 }

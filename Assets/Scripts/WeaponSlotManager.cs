@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class WeaponSlotManager : MonoBehaviour
 {
-    WeaponHolderSlot leftHandSlot;
-    WeaponHolderSlot rightHandSlot;
+    public WeaponHolderSlot leftHandSlot;
+    public WeaponHolderSlot rightHandSlot;
 
     ShieldCollider leftHandCollider;
     DamageCollider rightHandCollider;
@@ -26,7 +26,7 @@ public class WeaponSlotManager : MonoBehaviour
         }
     }
 
-    public void LoadWeaponOnSlot(Weapon weapon, bool isLeft)
+    public void LoadWeaponOnSlot(bool isLeft, Weapon weapon = null)
     {
         if (isLeft)
         {

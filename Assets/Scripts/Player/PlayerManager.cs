@@ -6,6 +6,7 @@ public class PlayerManager : MonoBehaviour
 {
     InputManager inputManager;
     PlayerLocomotion playerLocomotion;
+    PlayerInventory playerInventory;
     public Animator animator;
 
     [Header("Player Flags")]
@@ -14,11 +15,13 @@ public class PlayerManager : MonoBehaviour
     public bool canDoCombo;
     public bool canRotate;
     public bool isBlocking;
+    public bool unLoadWeapons;
 
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
+        playerInventory = GetComponent<PlayerInventory>();
     }
 
     private void Update()
@@ -26,6 +29,11 @@ public class PlayerManager : MonoBehaviour
         inputManager.HandleAllInputs();
 
         canDoCombo = animator.GetBool("canDoCombo");
+        if (unLoadWeapons)
+        {
+            playerInventory.UnLoadWeapons();
+            animator.SetBool("unLoadWeapon", false);
+        }
     }
 
     private void FixedUpdate()
@@ -45,5 +53,6 @@ public class PlayerManager : MonoBehaviour
         playerLocomotion.isJumping = animator.GetBool("isJumping");
         useRootMotion = animator.GetBool("useRootMotion");
         isBlocking = animator.GetBool("isBlocking");
+        unLoadWeapons = animator.GetBool("unLoadWeapon");
     }
 }

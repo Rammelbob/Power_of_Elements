@@ -8,6 +8,7 @@ public class PlayerAttacker : MonoBehaviour
     InputManager inputManager;
     PlayerStats playerStats;
     PlayerManager playerManager;
+    PlayerInventory playerInventory;
     public Attack currentAttack;
 
     private void Awake()
@@ -16,6 +17,7 @@ public class PlayerAttacker : MonoBehaviour
         inputManager = GetComponent<InputManager>();
         playerStats = GetComponent<PlayerStats>();
         playerManager = GetComponent<PlayerManager>();
+        playerInventory = GetComponent<PlayerInventory>();
     }
 
     public void HandleWeaponCombo(bool isLightAttack)
@@ -52,6 +54,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (weapon.first_Light_Attack.attackName != null)
         {
+            playerInventory.LoadCurrentElementWeapon();
             animatorManager.PlayTargetAnimation(weapon.first_Light_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.first_Light_Attack;
             playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
@@ -62,6 +65,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if(weapon.first_Heavy_Attack.attackName != null)
         {
+            playerInventory.LoadCurrentElementWeapon();
             animatorManager.PlayTargetAnimation(weapon.first_Heavy_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.first_Heavy_Attack;
             playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
@@ -72,6 +76,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (weapon.running_Attack != null)
         {
+            playerInventory.LoadCurrentElementWeapon();
             animatorManager.PlayTargetAnimation(weapon.running_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.running_Attack;
         }
@@ -80,6 +85,10 @@ public class PlayerAttacker : MonoBehaviour
     public void StartBlock()
     {
         if (!playerManager.isBlocking)
+        {
+            playerInventory.LoadCurrentElementWeapon();
             animatorManager.PlayTargetAnimation("Shield_Block_Idle", true, 0.2f, false, true);
+        }
+            
     }
 }
