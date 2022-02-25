@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shader Graphs_Rock_Shader
+  m_Shader: {fileID: -6465566751694194690, guid: aa1947b78ed44744f86bf0465edf3602, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - Grass:
+        m_Texture: {fileID: 2800000, guid: 3b89a53c69b7a424b82ca2db30eab83f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - GrassNormals:
+        m_Texture: {fileID: 2800000, guid: 50dff29157548f2488d6a90bd89f7b3b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - RockAlbedo:
+        m_Texture: {fileID: 2800000, guid: f0a08becde13e3c47884eecbc77d6659, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - RockNormals:
+        m_Texture: {fileID: 2800000, guid: b42fec9d8178d614aa37c50fd6ab23d0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_141d8575c5cd498d942882d56240b403_Texture_1:
+        m_Texture: {fileID: 2800000, guid: b42fec9d8178d614aa37c50fd6ab23d0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_4c52c801c97f469e837fa47fa890b919_Texture_1:
+        m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_4c54839043ce40049e6a7260a905c317_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f0a08becde13e3c47884eecbc77d6659, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_5fc38569d2ee4ce6885d7507a8b09759_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 50dff29157548f2488d6a90bd89f7b3b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_674e995a8d414948b37e1ff295b718eb_Texture_1:
+        m_Texture: {fileID: 2800000, guid: b42fec9d8178d614aa37c50fd6ab23d0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_7041fd4a975846268ace909ca823d243_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 47fe8c61382945e4186c27246fd740b7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_add5b617ee0f4935a71b4876a80fa6ab_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f0a08becde13e3c47884eecbc77d6659, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - GrassHeight: 32.7
+    - GrassScale: 16.3
+    - GrassScaling: 0
+    - GrassThreshhold: 0.71
+    - _Float: 0.217
+    m_Colors: []
+  m_BuildTextureStacks: []

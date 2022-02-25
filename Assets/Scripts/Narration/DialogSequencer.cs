@@ -38,7 +38,11 @@ public class DialogSequencer : MonoBehaviour
 
     private void DisplayDialog()
     {
-
+        if (currentNode == null)
+        {
+            ClearDialog();
+            return;
+        }
         nameText.text = currentNode.speakerName;
 
         if (linePos >= currentNode.textLines.Count)
@@ -53,5 +57,6 @@ public class DialogSequencer : MonoBehaviour
     private void ClearDialog()
     {
         Debug.Log("Remove DialogBox");
+        currentNode = dialog.StartNode;
     }
 }

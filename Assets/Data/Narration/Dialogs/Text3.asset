@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b54def38b3f92842a1e10f863f4dd58, type: 3}
   m_Name: Text3
   m_EditorClassIdentifier: 
-  text: Message3
-  speakerName: Alex
-  nextNode: {fileID: 11400000, guid: bff4da57dea2b87459893a7e3bbbd7c9, type: 2}
+  textLines:
+  - Letzte Zeile
+  speakerName: Hans
+  nextNode: {fileID: 0}
