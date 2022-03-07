@@ -15,6 +15,7 @@ public class EnemyIdleState : EnemyBaseState
     public override void EnterState(EnemyStateManager enemyStateManager)
     {
         enemyStateManager.animatorManager.SetEnemyAnimatorValues(0);
+        enemyStateManager.rb.isKinematic = true;
     }
 
     public override void UpdateState(EnemyStateManager enemyStateManager)

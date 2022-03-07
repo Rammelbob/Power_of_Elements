@@ -6,12 +6,14 @@ public class EnemyMovementState : EnemyBaseState
 {
     public float angerResetTime;
     public float angerResetDistance;
-    public float rotationSpeed;
     float angerResetEnd;
 
     public override void EnterState(EnemyStateManager enemyStateManager)
     {
         SetAgentDestination(enemyStateManager);
+        enemyStateManager.rb.isKinematic = false;
+        enemyStateManager.agent.updateRotation = true;
+        enemyStateManager.agent.updatePosition = true;
     }
 
     public override void UpdateState(EnemyStateManager enemyStateManager)
@@ -40,7 +42,6 @@ public class EnemyMovementState : EnemyBaseState
             }
         }
         
-        HandleEnemyRotation(enemyStateManager,enemyStateManager.agent.nextPosition);
         HandleEnemyMovment(enemyStateManager);
         
 
@@ -64,28 +65,8 @@ public class EnemyMovementState : EnemyBaseState
 
     }
 
-    public void HandleEnemyRotation(EnemyStateManager enemyStateManager,Vector3 rotateTowards)
-    {
-        Quaternion targetRotation;
-        Quaternion enemyRotation;
-        Debug.DrawLine(enemyStateManager.agent.nextPosition, enemyStateManager.agent.nextPosition + Vector3.up, Color.black, 0.2f);
-        Vector3 directionToNextPosition = (rotateTowards - transform.position).normalized;
-        directionToNextPosition.y = 0;
-        if (Vector3.Distance(enemyStateManager.body.position, enemyStateManager.agent.nextPosition) < 1f || !enemyStateManager.agent.hasPath)
-            return;
-
-        if (directionToNextPosition == Vector3.zero)
-            directionToNextPosition = enemyStateManager.body.forward;
-
-        Debug.DrawLine(transform.position, transform.position + directionToNextPosition * 2, Color.red, 0.2f);
-        targetRotation = Quaternion.LookRotation(directionToNextPosition);
-        enemyRotation = Quaternion.Slerp(enemyStateManager.body.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-        enemyStateManager.body.rotation = enemyRotation;
-    }
-
     public void HandleEnemyMovment(EnemyStateManager enemyStateManager)
     {
-        enemyStateManager.animatorManager.SetEnemyAnimatorValues(5f);
+        enemyStateManager.animatorManager.SetEnemyAnimatorValues(enemyStateManager.agent.speed);
     }
 }

@@ -963,7 +963,7 @@ AnimatorState:
   - {fileID: 8485526982433038269}
   - {fileID: 5702790987460594387}
   - {fileID: 5766449027604701440}
-  - {fileID: 1676290751220518891}
+  - {fileID: 698759459525542870}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -2113,7 +2113,7 @@ AnimatorController:
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
-    m_DefaultBool: 1
+    m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
   - m_Name: isInteracting
     m_Type: 4
@@ -2379,6 +2379,20 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &698759459525542870
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f189828f89d3a4599921e0c5622879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  setString: useRootMotion
+  setValue: 0
 --- !u!1102 &818307104003413728
 AnimatorState:
   serializedVersion: 6
@@ -3614,16 +3628,16 @@ BlendTree:
     m_DirectBlendParameter: Horizontal
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: ff9144bc35ed385418c9e9223b5fe6c3, type: 2}
-    m_Threshold: 1.5
+    m_Motion: {fileID: -4791504522942941401, guid: 3b6a0d1bb79080440a5aed776855f0fe, type: 3}
+    m_Threshold: 2
     m_Position: {x: 0, y: 0.5}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Horizontal
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: ddf91a5e592884443816dd681cd2e35e, type: 2}
-    m_Threshold: 5
+    m_Motion: {fileID: -4791504522942941401, guid: 148230fc232832b49a811d2dd3c19e9a, type: 3}
+    m_Threshold: 6
     m_Position: {x: 0, y: 2}
     m_TimeScale: 1.1
     m_CycleOffset: 0
@@ -3632,7 +3646,7 @@ BlendTree:
   m_BlendParameter: movementSpeed
   m_BlendParameterY: Vertical
   m_MinThreshold: 0
-  m_MaxThreshold: 5
+  m_MaxThreshold: 6
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
   m_BlendType: 0

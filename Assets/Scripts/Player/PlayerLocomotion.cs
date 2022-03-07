@@ -357,7 +357,7 @@ public class PlayerLocomotion : MonoBehaviour
             {
                 animatorManager.animator.SetBool("isJumping", true);
                 animatorManager.PlayTargetAnimation("Jump", false, 0.1f, true, false);
-                rb.AddForce(Vector3.up * 2f, ForceMode.Impulse);
+                rb.AddForce(Vector3.up * 3f, ForceMode.Impulse);
                 combatManager.UpdateStamina(-staminaUsedJumping);
             }
             else
