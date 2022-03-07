@@ -59,7 +59,7 @@ public class EnemyCombat : MonoBehaviour , ICombat
         {
             case EnemyTyps.Axe:
                 weapon.enabled = true;
-                animatorManager.PlayTargetAnimation("Hammer_Light_01", true, 0.2f, true, true);
+                animatorManager.PlayTargetAnimation("Sword_Light_01", true, 0.2f, true, true);
                 break;
             case EnemyTyps.Sword:
                 break;

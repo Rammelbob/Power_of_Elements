@@ -6099,11 +6099,12 @@ MonoBehaviour:
   idleState: {fileID: 0}
   movementState: {fileID: 0}
   combatState: {fileID: 0}
-  agent: {fileID: 919132149115691515}
+  agent: {fileID: 1758169733}
   animatorManager: {fileID: 1758169730}
   animator: {fileID: 5866666021953413432}
   startPosition: {x: 0, y: 0, z: 0}
   body: {fileID: 543450653639244610}
+  rb: {fileID: 1758169729}
   isInteracting: 0
   useRootMotion: 0
   canDoCombo: 0
@@ -7314,7 +7315,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   angerResetTime: 3
   angerResetDistance: 3
-  rotationSpeed: 15
 --- !u!1 &1066735944
 GameObject:
   m_ObjectHideFlags: 0
@@ -10015,7 +10015,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 0
-    m_SensorSize: {x: 1.7788461, y: 1}
+    m_SensorSize: {x: 1.777311, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -10159,10 +10159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 923bced0c03725b4f9de5a415451123b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 1.5
-  enemyAttacks:
-  - {fileID: 11400000, guid: 411a830f698efc741b774ad7f33845af, type: 2}
-  - {fileID: 11400000, guid: 9810061b82d21be4da45db4a88e728d8, type: 2}
+  attackRange: 2
+  enemyAttack: {fileID: 11400000, guid: 411a830f698efc741b774ad7f33845af, type: 2}
+  rotationSpeed: 15
 --- !u!1 &1620342400
 GameObject:
   m_ObjectHideFlags: 0
@@ -10770,6 +10769,8 @@ GameObject:
   - component: {fileID: 1758169731}
   - component: {fileID: 1758169729}
   - component: {fileID: 1758169730}
+  - component: {fileID: 1758169732}
+  - component: {fileID: 1758169733}
   m_Layer: 0
   m_Name: Enemy1
   m_TagString: Untagged
@@ -10839,6 +10840,42 @@ MonoBehaviour:
   defense: 0
   element: {fileID: 0}
   blockedColliders: []
+--- !u!136 &1758169732
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758169727}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!195 &1758169733
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758169727}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 5
+  m_Acceleration: 1000
+  avoidancePriority: 50
+  m_AngularSpeed: 1000
+  m_StoppingDistance: 1
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.7
+  m_BaseOffset: 0.8
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1820106971
 GameObject:
   m_ObjectHideFlags: 0
@@ -11267,7 +11304,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30430
+  m_Name: pb_Mesh30434
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -17415,8 +17452,6 @@ GameObject:
   - component: {fileID: 543450653639244610}
   - component: {fileID: 5866666021953413432}
   - component: {fileID: 919132149115691513}
-  - component: {fileID: 919132149115691515}
-  - component: {fileID: 919132149115691516}
   m_Layer: 10
   m_Name: GFX
   m_TagString: Enemy
@@ -17436,42 +17471,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d708eb32996659d46b9244a09ea0161f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!195 &919132149115691515
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149115691512}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 5
-  m_Acceleration: 1000
-  avoidancePriority: 50
-  m_AngularSpeed: 1000
-  m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!136 &919132149115691516
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149115691512}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.3
-  m_Height: 1.8
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!4 &1031632034179121439
 Transform:
   m_ObjectHideFlags: 0

@@ -43,6 +43,5 @@ public class EnemyAnimationEvents : MonoBehaviour
             newPosition.y += animator.deltaPosition.y;
             transform.parent.position = newPosition;
         }
-
     }
 }

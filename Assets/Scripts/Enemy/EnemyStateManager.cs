@@ -15,6 +15,7 @@ public class EnemyStateManager : MonoBehaviour
     public Animator animator;
     public Vector3 startPosition;
     public Transform body;
+    public Rigidbody rb;
 
     [Header("Enemy Flags")]
     public bool isInteracting;
@@ -28,8 +29,6 @@ public class EnemyStateManager : MonoBehaviour
         idleState = GetComponentInChildren<EnemyIdleState>();
         movementState = GetComponentInChildren<EnemyMovementState>();
         combatState = GetComponentInChildren<EnemyCombatState>();
-        agent.updatePosition = false;
-        agent.updateRotation = false;
         startPosition = transform.position;
     }
 
@@ -54,5 +53,6 @@ public class EnemyStateManager : MonoBehaviour
         canRotate = animator.GetBool("canRotate");
         isInteracting = animator.GetBool("isInteracting");
         useRootMotion = animator.GetBool("useRootMotion");
+        canDoCombo = animator.GetBool("canDoCombo");
     }
 }

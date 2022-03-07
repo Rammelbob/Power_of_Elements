@@ -8,7 +8,7 @@ public class PlayerInventory : MonoBehaviour
     WeaponSlotManager weaponSlotManager;
     PlayerStats playerStats;
 
-    ElementsEnum[] playerElements = new ElementsEnum[4] {ElementsEnum.Earth,ElementsEnum.Fire,ElementsEnum.Air,ElementsEnum.Water};
+    ElementsEnum[] playerElements = new ElementsEnum[2] {ElementsEnum.Earth,ElementsEnum.Fire};
     public ElementsEnum currentElement;
 
     public Element[] playerActiveElements;
@@ -22,6 +22,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void SetCurrentElement(int input)
     {
+
         currentElement = playerElements[input];
         playerStats.element = playerActiveElements[input];
         skin.material = playerStats.element.material;
@@ -39,7 +40,9 @@ public class PlayerInventory : MonoBehaviour
 
     public void UnLoadWeapons()
     {
-        weaponSlotManager.LoadWeaponOnSlot(true);
-        weaponSlotManager.LoadWeaponOnSlot(false);
+        if (playerStats.element.rightHandWeapon)
+            weaponSlotManager.LoadWeaponOnSlot(false);
+        if (playerStats.element.leftHandWeapon)
+            weaponSlotManager.LoadWeaponOnSlot(true);
     }
 }
