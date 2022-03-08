@@ -32,15 +32,18 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AlphaClipThreshold: 0.8
     - _AlphaCutoff: 0.35
     - _DitherBottomLevel: 0
     - _DitherFade: 6.1
     - _DitherMultiplier1: 0.132
+    - _DitheringON: 0
     - _Smoothness: 0.1
-    - _WindIntensity: 5
-    - _WindScale: 0.2588236
-    - _WindSpeed: 0.5
+    - _WindIntensity: 3.2
+    - _WindScale: 1
+    - _WindSpeed: 0.085
     - __dirty: 1
     m_Colors:
-    - _BaseColorTint: {r: 0.17325732, g: 0.43396226, b: 0.026610909, a: 1}
+    - _BaseColorTint: {r: 0.17325723, g: 0.43396217, b: 0.026610909, a: 1}
     - _ColorTint: {r: 1, g: 1, b: 1, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
