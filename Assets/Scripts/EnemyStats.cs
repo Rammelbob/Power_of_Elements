@@ -17,6 +17,8 @@ public class EnemyStats : BaseStats
 
     public override void TakeDamage(float amount,DamageCollider damageCollider)
     {
+        //damage calc Switch case für den elemental multiplier und def
+
         LoseStat(ref currentHP, amount, 0, hpBar.UpdateSliderValue);
         anim.PlayTargetAnimation("Take Damage", true, 0.1f, true, true);
         if (currentHP == 0)

@@ -15,7 +15,7 @@ public class PlayerManager : MonoBehaviour
     public bool canDoCombo;
     public bool canRotate;
     public bool isBlocking;
-    public bool unLoadWeapons;
+    public bool unloadWeapons;
 
     private void Awake()
     {
@@ -29,9 +29,9 @@ public class PlayerManager : MonoBehaviour
         inputManager.HandleAllInputs();
 
         canDoCombo = animator.GetBool("canDoCombo");
-        if (unLoadWeapons)
+        if (unloadWeapons)
         {
-            playerInventory.UnLoadWeapons();
+            playerInventory.ShowCurrentWeapon(false);
             animator.SetBool("unLoadWeapon", false);
         }
     }
@@ -53,6 +53,6 @@ public class PlayerManager : MonoBehaviour
         playerLocomotion.isJumping = animator.GetBool("isJumping");
         useRootMotion = animator.GetBool("useRootMotion");
         isBlocking = animator.GetBool("isBlocking");
-        unLoadWeapons = animator.GetBool("unLoadWeapon");
+        unloadWeapons = animator.GetBool("unLoadWeapon");
     }
 }

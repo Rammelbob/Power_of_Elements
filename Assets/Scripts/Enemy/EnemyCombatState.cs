@@ -10,19 +10,20 @@ public class EnemyCombatState : EnemyBaseState
     public float rotationSpeed;
     Attack currentAttack;
 
-    public override void EnterState(EnemyStateManager enemyStateManager)
+    public override void EnterState()
     {
+        enemyStateManager.rb.isKinematic = true;
         enemyStateManager.animatorManager.SetEnemyAnimatorValues(0);
         enemyStateManager.agent.updateRotation = false;
-        enemyStateManager.agent.updatePosition = false;
+        enemyStateManager.agent.isStopped = true;
     }
 
-    public override void UpdateState(EnemyStateManager enemyStateManager)
+    public override void UpdateState()
     {
-        HandleEnemyRotation(enemyStateManager, enemyStateManager.idleState.targetPosition.position);
+        HandleEnemyRotation(enemyStateManager.idleState.targetPosition.position);
         if (!enemyStateManager.isInteracting)
         {
-            enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager, enemyStateManager.idleState.maxFieldofViewDistance);
+            enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
             if (enemyStateManager.idleState.distanceToTarget < attackRange)
             {
                 enemyStateManager.animatorManager.PlayTargetAnimation(enemyAttack.attackName, true, 0.1f, true, false);
@@ -35,7 +36,7 @@ public class EnemyCombatState : EnemyBaseState
         }
         else if (enemyStateManager.canDoCombo)
         {
-            enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager, enemyStateManager.idleState.maxFieldofViewDistance);
+            enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
             if (enemyStateManager.idleState.distanceToTarget < attackRange)
             {
                 enemyStateManager.animatorManager.PlayTargetAnimation(currentAttack.nextLightAttack.attackName, true, 0.1f, true, false);
@@ -51,8 +52,11 @@ public class EnemyCombatState : EnemyBaseState
             return;
     }
 
-    public void HandleEnemyRotation(EnemyStateManager enemyStateManager, Vector3 rotateTowards)
+    public void HandleEnemyRotation(Vector3 rotateTowards)
     {
+        //if (!enemyStateManager.canRotate)
+        //    return;
+
         Quaternion targetRotation;
         Quaternion enemyRotation;
         Debug.DrawLine(enemyStateManager.agent.nextPosition, enemyStateManager.agent.nextPosition + Vector3.up, Color.black, 0.2f);

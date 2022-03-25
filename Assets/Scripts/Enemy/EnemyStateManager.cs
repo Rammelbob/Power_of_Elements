@@ -39,13 +39,13 @@ public class EnemyStateManager : MonoBehaviour
 
     void Update()
     {
-        currentState.UpdateState(this);
+        currentState.UpdateState();
     }
 
     public void SwitchState(EnemyBaseState state)
     {
         currentState = state;
-        currentState.EnterState(this);
+        currentState.EnterState();
     }
 
     private void LateUpdate()

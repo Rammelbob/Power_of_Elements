@@ -6,6 +6,7 @@ public class AnimationEvents : MonoBehaviour
 {
     public CombatManager combat;
     public PlayerManager playerManager;
+    public PlayerAttacker playerAttacker;
     Animator animator;
 
 
@@ -37,6 +38,11 @@ public class AnimationEvents : MonoBehaviour
     public void EnableCombo()
     {
         animator.SetBool("canDoCombo", true);
+    }
+
+    public void DoWeaponCombo()
+    {
+        playerAttacker.HandleWeaponCombo();
     }
 
     public void DisalbeCombo()

@@ -12,22 +12,22 @@ public class EnemyIdleState : EnemyBaseState
     public bool isAngered;
     public bool playerInStraightLineTo;
 
-    public override void EnterState(EnemyStateManager enemyStateManager)
+    public override void EnterState()
     {
         enemyStateManager.animatorManager.SetEnemyAnimatorValues(0);
         enemyStateManager.rb.isKinematic = true;
     }
 
-    public override void UpdateState(EnemyStateManager enemyStateManager)
+    public override void UpdateState()
     {
-        if (CheckPlayerInFieldofView(enemyStateManager, maxFieldofViewDistance))
+        if (CheckPlayerInFieldofView(maxFieldofViewDistance))
         {
             enemyStateManager.SwitchState(enemyStateManager.movementState);
         }
         
     }
 
-    public bool CheckPlayerInFieldofView(EnemyStateManager enemyStateManager,float checkRadius)
+    public bool CheckPlayerInFieldofView(float checkRadius)
     {
         Collider[] colliderAround = Physics.OverlapSphere(transform.position, checkRadius, targetMask);
         playerInStraightLineTo = false;
