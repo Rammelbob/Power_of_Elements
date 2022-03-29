@@ -10,6 +10,8 @@ public class PlayerAttacker : MonoBehaviour
     PlayerManager playerManager;
     PlayerInventory playerInventory;
     public Attack currentAttack;
+    public bool doWeaponCombo;
+    public bool comboLight;
 
     private void Awake()
     {
@@ -20,32 +22,29 @@ public class PlayerAttacker : MonoBehaviour
         playerInventory = GetComponent<PlayerInventory>();
     }
 
-    public void HandleWeaponCombo(bool isLightAttack)
+    public void HandleWeaponCombo()
     {
-        if (inputManager.comboFlag)
+        animatorManager.animator.SetBool("canDoCombo", false);
+        if (doWeaponCombo)
         {
-            animatorManager.animator.SetBool("canDoCombo", false);
-            if (inputManager.comboFlag)
+            doWeaponCombo = false;
+            if (comboLight)
             {
-                if (isLightAttack)
+                if (currentAttack.nextLightAttack != null)
                 {
-                    if (currentAttack.nextLightAttack != null)
-                    {
-                        animatorManager.PlayTargetAnimation(currentAttack.nextLightAttack.attackName, true, 0.1f, true, true);
-                        currentAttack = currentAttack.nextLightAttack;
-                        playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
-                    }
+                    animatorManager.PlayTargetAnimation(currentAttack.nextLightAttack.attackName, true, 0.01f, true, true);
+                    currentAttack = currentAttack.nextLightAttack;
+                    playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
                 }
-                else
+            }
+            else                                                                                   
+            {
+                if (currentAttack.nextHeavyAttack != null)
                 {
-                    if (currentAttack.nextHeavyAttack != null)
-                    {
-                        animatorManager.PlayTargetAnimation(currentAttack.nextHeavyAttack.attackName, true, 0.1f, true, true);
-                        currentAttack = currentAttack.nextHeavyAttack;
-                        playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
-                    }
+                    animatorManager.PlayTargetAnimation(currentAttack.nextHeavyAttack.attackName, true, 0.01f, true, true);
+                    currentAttack = currentAttack.nextHeavyAttack;
+                    playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
                 }
-                
             }
         }
     }
@@ -54,7 +53,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (weapon.first_Light_Attack.attackName != null)
         {
-            playerInventory.LoadCurrentElementWeapon();
+            playerInventory.ShowCurrentWeapon(true);
             animatorManager.PlayTargetAnimation(weapon.first_Light_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.first_Light_Attack;
             playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
@@ -65,7 +64,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if(weapon.first_Heavy_Attack.attackName != null)
         {
-            playerInventory.LoadCurrentElementWeapon();
+            playerInventory.ShowCurrentWeapon(true);
             animatorManager.PlayTargetAnimation(weapon.first_Heavy_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.first_Heavy_Attack;
             playerStats.SetCurrentWeaponDamage(currentAttack.attackDamage);
@@ -76,7 +75,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (weapon.running_Attack != null)
         {
-            playerInventory.LoadCurrentElementWeapon();
+            playerInventory.ShowCurrentWeapon(true);
             animatorManager.PlayTargetAnimation(weapon.running_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.running_Attack;
         }
@@ -86,9 +85,8 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (!playerManager.isBlocking)
         {
-            playerInventory.LoadCurrentElementWeapon();
+            playerInventory.ShowCurrentWeapon(true);
             animatorManager.PlayTargetAnimation("Shield_Block_Idle", true, 0.2f, false, true);
-        }
-            
+        }   
     }
 }

@@ -9,12 +9,9 @@ public abstract class BaseStats : MonoBehaviour
     public float currentHP;
 
     public float defense;
-    public Element element;
+    public Weapon weapon;
 
     float currentWeaponDamage = 10;
-
-    public List<DamageCollider> blockedColliders = new List<DamageCollider>();
-
 
     public void SetCurrentWeaponDamage(float weaponDamage)
     {
@@ -42,15 +39,9 @@ public abstract class BaseStats : MonoBehaviour
 
     public abstract void TakeDamage(float amount, DamageCollider damageCollider);
 
-    public void DamageCalculation(GameObject hit, DamageCollider damageCollider)
+    public float CurrentWeaponDamage()
     {
-        BaseStats hitBaseStats = hit.GetComponentInParent<BaseStats>();
-        if (hitBaseStats == null)
-            return;
-
-        // damage Calc
-
-        hitBaseStats.TakeDamage(currentWeaponDamage, damageCollider);
+        return currentWeaponDamage;
     }
 }
 

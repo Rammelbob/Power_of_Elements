@@ -110,6 +110,9 @@ public class InputManager : MonoBehaviour
 
     void OnChangeElement(InputAction.CallbackContext context)
     {
+        if (playerManager.isInteracting)
+            return;
+
         for (int i = 0; i < pressedElement.Length; i++)
         {
             if (pressedElement[i] == context.ReadValue<Vector2>())
@@ -153,37 +156,37 @@ public class InputManager : MonoBehaviour
         if (lightAttack)
         {
             if (playerLocomotion.isSprinting)
-                playerAttacker.HandleRunningAttack(playerStats.element.rightHandWeapon); 
+                playerAttacker.HandleRunningAttack(playerStats.weapon); 
             else if (playerManager.canDoCombo)
             {
-                comboFlag = true;
-                playerAttacker.HandleWeaponCombo(true);
-                comboFlag = false;
+                playerAttacker.doWeaponCombo = true;
+                playerAttacker.comboLight = true;
             }
             else
             {
-                if (playerManager.canDoCombo || playerManager.isInteracting)
+                if (playerManager.isInteracting)
                     return;
-                playerAttacker.HandleLightAttack(playerStats.element.rightHandWeapon);
+                if (playerManager.canDoCombo)
+                    return;
+                playerAttacker.HandleLightAttack(playerStats.weapon);
             }
         }
 
         if (heavyAttack)
         {
             if (playerLocomotion.isSprinting)
-                playerAttacker.HandleRunningAttack(playerStats.element.rightHandWeapon);
+                playerAttacker.HandleRunningAttack(playerStats.weapon);
             else if (playerManager.canDoCombo)
             {
-                comboFlag = true;
-                playerAttacker.HandleWeaponCombo(false);
-                comboFlag = false;
+                playerAttacker.doWeaponCombo = true;
+                playerAttacker.comboLight = false;
             }
             else
             {
                 if (playerManager.canDoCombo || playerManager.isInteracting)
                     return;
-                playerAttacker.HandleHeavyAttack(playerStats.element.rightHandWeapon);
-            } 
+                playerAttacker.HandleHeavyAttack(playerStats.weapon);
+            }
         }
 
         if (blockInput)

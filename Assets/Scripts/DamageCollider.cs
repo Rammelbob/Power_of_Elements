@@ -2,36 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageCollider : MonoBehaviour
+public class DamageCollider : CombatCollider
 {
-    Collider damageCollider;
+    BaseStats myStats;
 
-    private void Awake()
+    public override void Awake()
     {
-        damageCollider = GetComponent<Collider>();
-        damageCollider.gameObject.SetActive(true);
-        damageCollider.isTrigger = true;
-        damageCollider.enabled = false;
-    }
-
-    public void EnableDamageCollider()
-    {
-        damageCollider.enabled = true;
-    } 
-    
-    public void DisableDamageCollider()
-    {
-        damageCollider.enabled = false;
+        base.Awake();
+        myStats = GetComponentInParent<BaseStats>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))
         {
-            BaseStats stats = GetComponentInParent<BaseStats>();
+            //BaseStats stats = GetComponentInParent<BaseStats>();
+            BaseStats stats = other.GetComponent<BaseStats>();
             if (stats != null)
             {
-                stats.DamageCalculation(other.gameObject, this);
+                //stats.DamageCalculation(other.gameObject, this);
+                stats.TakeDamage(myStats.CurrentWeaponDamage(), this);
             }
         }
     }

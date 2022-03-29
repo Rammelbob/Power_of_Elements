@@ -8,29 +8,30 @@ public class EnemyMovementState : EnemyBaseState
     public float angerResetDistance;
     float angerResetEnd;
 
-    public override void EnterState(EnemyStateManager enemyStateManager)
+    public override void EnterState()
     {
-        SetAgentDestination(enemyStateManager);
+        SetAgentDestination();
+        HandleEnemyMovment();
         enemyStateManager.rb.isKinematic = false;
         enemyStateManager.agent.updateRotation = true;
-        enemyStateManager.agent.updatePosition = true;
+        enemyStateManager.agent.isStopped = false;
     }
 
-    public override void UpdateState(EnemyStateManager enemyStateManager)
+    public override void UpdateState()
     {
         if (enemyStateManager.isInteracting)
             return;
 
-        if (enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager,enemyStateManager.idleState.maxFieldofViewDistance))
+        if (enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance))
         {
-            SetAgentDestination(enemyStateManager);
+            SetAgentDestination();
         }
         else
         {
-            enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager, angerResetDistance);
+            enemyStateManager.idleState.CheckPlayerInFieldofView(angerResetDistance);
             if (enemyStateManager.idleState.playerInStraightLineTo)
             {
-                SetAgentDestination(enemyStateManager);
+                SetAgentDestination();
                 angerResetEnd = Time.time + angerResetTime;
             }
                 
@@ -38,11 +39,11 @@ public class EnemyMovementState : EnemyBaseState
             if (angerResetEnd <= Time.time)
             {
                 enemyStateManager.idleState.isAngered = false;
-                SetAgentDestination(enemyStateManager);
+                SetAgentDestination();
             }
         }
         
-        HandleEnemyMovment(enemyStateManager);
+        HandleEnemyMovment();
         
 
         if (enemyStateManager.idleState.distanceToTarget < enemyStateManager.combatState.attackRange)
@@ -56,7 +57,7 @@ public class EnemyMovementState : EnemyBaseState
         }
     }
 
-    private void SetAgentDestination(EnemyStateManager enemyStateManager)
+    private void SetAgentDestination()
     {
         if (enemyStateManager.idleState.isAngered)
             enemyStateManager.agent.SetDestination(enemyStateManager.idleState.targetPosition.position);
@@ -65,7 +66,7 @@ public class EnemyMovementState : EnemyBaseState
 
     }
 
-    public void HandleEnemyMovment(EnemyStateManager enemyStateManager)
+    public void HandleEnemyMovment()
     {
         enemyStateManager.animatorManager.SetEnemyAnimatorValues(enemyStateManager.agent.speed);
     }

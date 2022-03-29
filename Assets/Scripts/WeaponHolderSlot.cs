@@ -10,14 +10,6 @@ public class WeaponHolderSlot : MonoBehaviour
 
     public GameObject currentWeaponModel;
 
-    public void UnloadWeapon()
-    {
-        if (currentWeaponModel != null)
-        {
-            currentWeaponModel.SetActive(false);
-        }
-    }
-
     public void UnloadWeaponAndDestroy()
     {
         if (currentWeaponModel != null)
@@ -27,17 +19,15 @@ public class WeaponHolderSlot : MonoBehaviour
     }
 
 
-    public void LoadWeaponModel(Weapon weapon)
+    public void LoadNewWeaponModel(GameObject weapon)
     {
         UnloadWeaponAndDestroy();
 
         if (weapon == null)
-        {
-            UnloadWeapon();
             return;
-        }
+        
 
-        GameObject model = Instantiate(weapon.modelPrefab);
+        GameObject model = Instantiate(weapon);
 
         if (model != null)
         {
@@ -56,5 +46,12 @@ public class WeaponHolderSlot : MonoBehaviour
         }
 
         currentWeaponModel = model;
+        ShowCurrentWeapon(false);
+    }
+
+    public void ShowCurrentWeapon(bool showWeapon)
+    {
+        if (currentWeaponModel)
+            currentWeaponModel.SetActive(showWeapon);
     }
 }

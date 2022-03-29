@@ -17,9 +17,19 @@ public class EnemyAnimationEvents : MonoBehaviour
         animator.SetBool("canDoCombo", true);
     }
 
-    public void DisalbeCombo()
+    public void DisableCombo()
     {
         animator.SetBool("canDoCombo", false);
+    }
+
+    public void EnableRotation()
+    {
+        animator.SetBool("canRotat", true);
+    }
+
+    public void DisableRotation()
+    {
+        animator.SetBool("canRotat", false);
     }
 
     public void OpenRightDamageCollider()

@@ -21,6 +21,7 @@ public class PlayerLocomotion : MonoBehaviour
     public float inAirTimer;
     public float fallingVelocity;
     public float elementalAirFallingVelocity;
+    public float jumpingFallingVelocity;
     public float groundCheckDistance;
     public float distanceToGround;
     public LayerMask groundLayer;
@@ -275,7 +276,7 @@ public class PlayerLocomotion : MonoBehaviour
         {
             if (!isGrounded)
             {
-                if (!playerManager.isInteracting && distanceToGround > 1.5f && inAirTimer > 0.75f)
+                if (!playerManager.isInteracting && distanceToGround > 1.5f)// && inAirTimer > 0.1f)
                 {
                     animatorManager.PlayTargetAnimation("Falling", false, 0.1f, false, false);
                 }
@@ -297,14 +298,17 @@ public class PlayerLocomotion : MonoBehaviour
                 }
                 else
                 {
-                    if (!isJumping)
-                        inAirTimer += Time.deltaTime / 2;
+                    if (isJumping)
+                    {
+                        rb.AddForce(-Vector3.up * jumpingFallingVelocity * Time.deltaTime);
+                    }
                     else
+                    {
                         inAirTimer += Time.deltaTime;
-
-                    SetMoveDir();
-                    rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedAir/2, ForceMode.Acceleration);
-                    rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
+                        SetMoveDir();
+                        rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedAir / 2, ForceMode.Acceleration);
+                        rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
+                    }
                 }
             }
         }
@@ -316,7 +320,7 @@ public class PlayerLocomotion : MonoBehaviour
             if (distanceToGround < 0.1f)
             {
                 if (!isGrounded && !playerManager.isInteracting && inAirTimer > 0.75f)
-                    animatorManager.PlayTargetAnimation("Landing", false, 0.2f, false, false);
+                    animatorManager.PlayTargetAnimation("Landing", false, 0.2f, false, true);
 
                 Vector3 rayCastHitPoint = hit.point;
                 fallingTargetPosition.y = rayCastHitPoint.y + (transform.position.y - groundCheck.position.y);
@@ -330,7 +334,7 @@ public class PlayerLocomotion : MonoBehaviour
             isGrounded = false; 
             distanceToGround = groundCheckDistance;
         }
-           
+
         if (isGrounded && !isJumping && !isClimbing)
         {
             if (inputManager.moveAmount > 0.5f)
@@ -356,8 +360,8 @@ public class PlayerLocomotion : MonoBehaviour
             if (inputManager.moveAmount > 0.5)
             {
                 animatorManager.animator.SetBool("isJumping", true);
-                animatorManager.PlayTargetAnimation("Jump", false, 0.1f, true, false);
-                rb.AddForce(Vector3.up * 3f, ForceMode.Impulse);
+                animatorManager.PlayTargetAnimation("Jump", false, 0.2f, true, false);
+                rb.AddForce(Vector3.up * 4f, ForceMode.Impulse);
                 combatManager.UpdateStamina(-staminaUsedJumping);
             }
             else

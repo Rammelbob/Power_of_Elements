@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class WeaponSlotManager : MonoBehaviour
 {
     public WeaponHolderSlot leftHandSlot;
     public WeaponHolderSlot rightHandSlot;
 
-    ShieldCollider leftHandCollider;
-    DamageCollider rightHandCollider;
+    CombatCollider leftHandCollider;
+    CombatCollider rightHandCollider;
+
+    VisualEffect combatVFX;
+
 
     private void Awake()
     {
@@ -26,18 +30,27 @@ public class WeaponSlotManager : MonoBehaviour
         }
     }
 
-    public void LoadWeaponOnSlot(bool isLeft, Weapon weapon = null)
+    public void LoadNewWeaponOnSlot(bool isLeft, Weapon weapon)
     {
         if (isLeft)
         {
-            leftHandSlot.LoadWeaponModel(weapon);
+            leftHandSlot.LoadNewWeaponModel(weapon.leftHandWeapon);
             LoadLeftWeaponDamageCollider();
         }
         else
         {
-            rightHandSlot.LoadWeaponModel(weapon);
+            rightHandSlot.LoadNewWeaponModel(weapon.rightHandWeapon);
             LoadRightWeaponDamageCollider();
+            LoadWeaponVFX();
         }
+    }
+
+    public void ShowCurrentWeapon(bool isLeft, bool showWeapon)
+    {
+        if (isLeft)
+            leftHandSlot.ShowCurrentWeapon(showWeapon);
+        else
+            rightHandSlot.ShowCurrentWeapon(showWeapon);
     }
 
 
@@ -52,24 +65,47 @@ public class WeaponSlotManager : MonoBehaviour
         rightHandCollider = rightHandSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
     }
 
+    private void LoadWeaponVFX()
+    {
+        combatVFX = rightHandSlot.currentWeaponModel.GetComponentInChildren<VisualEffect>();
+    }
+
     public void OpenLeftDamageCollider()
     {
-        leftHandCollider.EnableShieldCollider();
+        if (leftHandCollider)
+            leftHandCollider.EnableCombatCollider();
     }
 
     public void OpenRightDamageCollider()
     {
-        rightHandCollider.EnableDamageCollider();
+        if (rightHandCollider)
+            rightHandCollider.EnableCombatCollider();
+
+        PlayVFX();
     }
 
     public void CloseLeftDamageCollider()
     {
-        leftHandCollider.DisableShieldCollider();
+        if (leftHandCollider)
+            leftHandCollider.DisableCombatCollider();
     }
 
     public void CloseRightDamageCollider()
     {
-        rightHandCollider.DisableDamageCollider();
+        if (rightHandCollider)
+            rightHandCollider.DisableCombatCollider();
+
+        StopVFX();
+    }
+
+    private void PlayVFX()
+    {
+        combatVFX.Play();
+    }
+
+    private void StopVFX()
+    {
+        combatVFX.Stop();
     }
     #endregion
 }

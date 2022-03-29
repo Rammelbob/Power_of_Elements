@@ -33,7 +33,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - FogStrength: 0.07
+    - FogStrength: 0.004
     - SingleColor: 0
     - WindSpeed: 1
     - WindStrength: 0.43
@@ -41,7 +41,7 @@ Material:
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _SOFT_SHADOWS: 1
     m_Colors:
-    - BottomColor: {r: 0.23137257, g: 0.24313727, b: 0.058823533, a: 1}
-    - TopColor: {r: 0, g: 0.2830189, b: 0.07894197, a: 1}
+    - BottomColor: {r: 0.20381297, g: 0.2924528, b: 0.08414915, a: 1}
+    - TopColor: {r: 0.12369655, g: 0.20754719, b: 0.016642937, a: 1}
     - WindDirection: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

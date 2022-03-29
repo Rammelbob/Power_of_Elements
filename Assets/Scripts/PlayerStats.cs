@@ -35,24 +35,26 @@ public class PlayerStats : BaseStats
 
     public override void TakeDamage(float amount,DamageCollider damageCollider)
     {
-        foreach (DamageCollider item in blockedColliders)
-        {
-            if (item == damageCollider)
-            {
-                element.leftHandWeapon.shiledHP -= amount;
-                if (element.leftHandWeapon.shiledHP >= 0)
-                {
-                    weaponSlotManager.leftHandSlot.UnloadWeapon();
-                }
-                else
-                {
-                    amount = 0;
-                }
+        //damage calc Switch case für den elemental multiplier und def
+       
+        //foreach (DamageCollider item in blockedColliders)
+        //{
+        //    if (item == damageCollider)
+        //    {
+        //        //weapon.leftHandWeapon.shiledHP -= amount;
+        //        //if (weapon.leftHandWeapon.shiledHP >= 0)
+        //        //{
+        //        //    weaponSlotManager.leftHandSlot.UnloadWeaponAndDestroy();
+        //        //}
+        //        //else
+        //        //{
+        //        //    amount = 0;
+        //        //}
                 
-                blockedColliders.Remove(item);
-                break;
-            }
-        }
+        //        //blockedColliders.Remove(item);
+        //        //break;
+        //    }
+        //}
         LoseStat(ref currentHP, amount, 0, AdvancedHPBar.UpdateSliderValue);
     }
 }

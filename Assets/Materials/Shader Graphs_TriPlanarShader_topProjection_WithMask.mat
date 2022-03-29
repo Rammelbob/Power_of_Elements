@@ -54,6 +54,7 @@ Material:
     m_Ints: []
     m_Floats:
     - NormalStrenghtTop: 1.74
+    - Smoothes: 0
     - TopBrightness: 0.86
     - TopTilling: 1.27
     m_Colors:

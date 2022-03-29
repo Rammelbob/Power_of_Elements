@@ -5,10 +5,17 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Weapon")]
 public class Weapon : ScriptableObject
 {
-    [Header("Weapon Information")]
-    public string weaponName;
-    public GameObject modelPrefab;
-    public float shiledHP;
+    [Header("Element")]
+    public ElementsEnum element;
+
+    public ElementsEnum weakAgainst;
+    public ElementsEnum StrongAgainst;
+
+    public Material material;
+
+    [Header("WeaponItems")]
+    public GameObject rightHandWeapon;
+    public GameObject leftHandWeapon;
 
     [Header("Light Attack")]
     public Attack first_Light_Attack;
@@ -18,4 +25,6 @@ public class Weapon : ScriptableObject
 
     [Header("Running Attack")]
     public Attack running_Attack;
+
+    //[Header("Special Action")]
 }

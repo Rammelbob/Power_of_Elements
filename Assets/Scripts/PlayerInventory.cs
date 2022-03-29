@@ -11,7 +11,7 @@ public class PlayerInventory : MonoBehaviour
     ElementsEnum[] playerElements = new ElementsEnum[2] {ElementsEnum.Earth,ElementsEnum.Fire};
     public ElementsEnum currentElement;
 
-    public Element[] playerActiveElements;
+    public Weapon[] playerActiveElements;
 
     private void Awake()
     {
@@ -22,27 +22,26 @@ public class PlayerInventory : MonoBehaviour
 
     public void SetCurrentElement(int input)
     {
-
         currentElement = playerElements[input];
-        playerStats.element = playerActiveElements[input];
-        skin.material = playerStats.element.material;
-        LoadCurrentElementWeapon();
+        playerStats.weapon = playerActiveElements[input];
+        skin.material = playerStats.weapon.material;
+        LoadNewElementWeapon();
         Debug.Log($"{currentElement}  {input}");
     }
 
-    public void LoadCurrentElementWeapon()
+    public void LoadNewElementWeapon()
     {
-        if (playerStats.element.rightHandWeapon)
-            weaponSlotManager.LoadWeaponOnSlot(false, playerStats.element.rightHandWeapon);
-        if (playerStats.element.leftHandWeapon)
-            weaponSlotManager.LoadWeaponOnSlot(true, playerStats.element.leftHandWeapon);
+        if (playerStats.weapon.rightHandWeapon)
+            weaponSlotManager.LoadNewWeaponOnSlot(false, playerStats.weapon);
+        if (playerStats.weapon.leftHandWeapon)
+            weaponSlotManager.LoadNewWeaponOnSlot(true, playerStats.weapon);
     }
 
-    public void UnLoadWeapons()
+    public void ShowCurrentWeapon(bool showWeapon)
     {
-        if (playerStats.element.rightHandWeapon)
-            weaponSlotManager.LoadWeaponOnSlot(false);
-        if (playerStats.element.leftHandWeapon)
-            weaponSlotManager.LoadWeaponOnSlot(true);
+        if (playerStats.weapon.rightHandWeapon)
+            weaponSlotManager.ShowCurrentWeapon(false, showWeapon);
+        if (playerStats.weapon.leftHandWeapon)
+            weaponSlotManager.ShowCurrentWeapon(true, showWeapon);
     }
 }
