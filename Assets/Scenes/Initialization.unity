@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: a3d78dcd52dcfd9419bfc9c77f910507, type: 2}
 --- !u!1 &722272970
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +156,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 26d52fcc2f0f87744b74fa59cf0055d3, type: 2}
+  sharedProfile: {fileID: 11400000, guid: f3ee8b2bab76f7143af28ea35871de37, type: 2}
 --- !u!4 &722272972
 Transform:
   m_ObjectHideFlags: 0

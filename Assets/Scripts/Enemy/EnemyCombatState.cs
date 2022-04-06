@@ -4,52 +4,34 @@ using UnityEngine;
 
 public class EnemyCombatState : EnemyBaseState
 {
-    public float attackRange;
+    public float combatRange;
     // public Attack[] enemyAttacks; enemyAttacks[Random.Range(0, enemyAttacks.Length)]
-    public Attack enemyAttack;
+    public float chaseOrDodgeValue;
     public float rotationSpeed;
-    Attack currentAttack;
+    
 
     public override void EnterState()
     {
-        enemyStateManager.rb.isKinematic = true;
-        enemyStateManager.animatorManager.SetEnemyAnimatorValues(0);
-        enemyStateManager.agent.updateRotation = false;
-        enemyStateManager.agent.isStopped = true;
+        enemyStateManager.movementState.DisableMovement();
     }
 
     public override void UpdateState()
     {
         HandleEnemyRotation(enemyStateManager.idleState.targetPosition.position);
-        if (!enemyStateManager.isInteracting)
-        {
-            enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
-            if (enemyStateManager.idleState.distanceToTarget < attackRange)
-            {
-                enemyStateManager.animatorManager.PlayTargetAnimation(enemyAttack.attackName, true, 0.1f, true, false);
-                currentAttack = enemyAttack;
-            }
-            else
-            {
-                enemyStateManager.SwitchState(enemyStateManager.movementState);
-            }
-        }
-        else if (enemyStateManager.canDoCombo)
-        {
-            enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
-            if (enemyStateManager.idleState.distanceToTarget < attackRange)
-            {
-                enemyStateManager.animatorManager.PlayTargetAnimation(currentAttack.nextLightAttack.attackName, true, 0.1f, true, false);
-                enemyStateManager.animator.SetBool("canDoCombo", false);
-                currentAttack = currentAttack.nextLightAttack;
-            }
-            else
-            {
-                enemyStateManager.SwitchState(enemyStateManager.movementState);
-            }
-        }
-        else
+
+        if (enemyStateManager.isInteracting)
             return;
+
+        enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
+        if (enemyStateManager.idleState.distanceToTarget  < combatRange - chaseOrDodgeValue)
+        {
+            enemyStateManager.animatorManager.PlayTargetAnimation("Enemy_Dodge_Back", true, 0.1f, true, false);
+        }
+        else if(enemyStateManager.idleState.distanceToTarget  > combatRange + chaseOrDodgeValue)
+        {
+            enemyStateManager.SwitchState(enemyStateManager.attackState);
+        }
+       
     }
 
     public void HandleEnemyRotation(Vector3 rotateTowards)

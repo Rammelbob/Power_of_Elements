@@ -305,8 +305,6 @@ public class PlayerLocomotion : MonoBehaviour
                     else
                     {
                         inAirTimer += Time.deltaTime;
-                        SetMoveDir();
-                        rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedAir / 2, ForceMode.Acceleration);
                         rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
                     }
                 }

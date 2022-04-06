@@ -10,6 +10,7 @@ public class EnemyStateManager : MonoBehaviour
     public EnemyIdleState idleState;
     public EnemyMovementState movementState;
     public EnemyCombatState combatState;
+    public EnemyAttackState attackState;
     public NavMeshAgent agent;
     public AnimatorManager animatorManager;
     public Animator animator;
@@ -29,6 +30,7 @@ public class EnemyStateManager : MonoBehaviour
         idleState = GetComponentInChildren<EnemyIdleState>();
         movementState = GetComponentInChildren<EnemyMovementState>();
         combatState = GetComponentInChildren<EnemyCombatState>();
+        attackState = GetComponentInChildren<EnemyAttackState>();
         startPosition = transform.position;
     }
 

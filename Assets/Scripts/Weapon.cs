@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [CreateAssetMenu(menuName = "Weapon")]
 public class Weapon : ScriptableObject
 {
@@ -12,6 +13,7 @@ public class Weapon : ScriptableObject
     public ElementsEnum StrongAgainst;
 
     public Material material;
+    public GameObject attackVisualEffect;
 
     [Header("WeaponItems")]
     public GameObject rightHandWeapon;

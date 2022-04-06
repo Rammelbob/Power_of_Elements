@@ -16,6 +16,7 @@ MonoBehaviour:
   weakAgainst: 3
   StrongAgainst: 5
   material: {fileID: 2100000, guid: 5a26de236ce89e94b963be8fa2b7ade6, type: 2}
+  attackVisualEffect: {fileID: 2875342278558927981, guid: 4f77602eff39f144cab24fd67e68618a, type: 3}
   rightHandWeapon: {fileID: 1200431844929494640, guid: f8b496b133927674e8998f29198f7e4a, type: 3}
   leftHandWeapon: {fileID: 0}
   first_Light_Attack: {fileID: 11400000, guid: 7f101c56ee9082849aa66a9d3ca2fcdf, type: 2}

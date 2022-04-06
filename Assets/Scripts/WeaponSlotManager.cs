@@ -11,7 +11,8 @@ public class WeaponSlotManager : MonoBehaviour
     CombatCollider leftHandCollider;
     CombatCollider rightHandCollider;
 
-    VisualEffect combatVFX;
+    GameObject combatVFXBuffer;
+    GameObject combatVFX;
 
 
     private void Awake()
@@ -41,7 +42,7 @@ public class WeaponSlotManager : MonoBehaviour
         {
             rightHandSlot.LoadNewWeaponModel(weapon.rightHandWeapon);
             LoadRightWeaponDamageCollider();
-            LoadWeaponVFX();
+            LoadWeaponVFX(weapon.attackVisualEffect);
         }
     }
 
@@ -65,9 +66,9 @@ public class WeaponSlotManager : MonoBehaviour
         rightHandCollider = rightHandSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
     }
 
-    private void LoadWeaponVFX()
+    private void LoadWeaponVFX(GameObject visualEffect)
     {
-        combatVFX = rightHandSlot.currentWeaponModel.GetComponentInChildren<VisualEffect>();
+        combatVFXBuffer = visualEffect;
     }
 
     public void OpenLeftDamageCollider()
@@ -100,12 +101,19 @@ public class WeaponSlotManager : MonoBehaviour
 
     private void PlayVFX()
     {
-        combatVFX.Play();
+        if (combatVFXBuffer)
+        {
+            Transform weaponPivot = rightHandSlot.currentWeaponModel.transform.Find("Weapon Pivot");
+            if (weaponPivot)
+            {
+                combatVFX = Instantiate(combatVFXBuffer, weaponPivot.position, weaponPivot.rotation);
+            }
+        }
     }
 
     private void StopVFX()
     {
-        combatVFX.Stop();
+        Destroy(combatVFX);
     }
     #endregion
 }

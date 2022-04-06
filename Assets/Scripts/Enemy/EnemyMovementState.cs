@@ -10,11 +10,7 @@ public class EnemyMovementState : EnemyBaseState
 
     public override void EnterState()
     {
-        SetAgentDestination();
-        HandleEnemyMovment();
-        enemyStateManager.rb.isKinematic = false;
-        enemyStateManager.agent.updateRotation = true;
-        enemyStateManager.agent.isStopped = false;
+        EnableMovement();
     }
 
     public override void UpdateState()
@@ -22,6 +18,22 @@ public class EnemyMovementState : EnemyBaseState
         if (enemyStateManager.isInteracting)
             return;
 
+        HandleMovmentChecks();
+
+        if (enemyStateManager.idleState.distanceToTarget < enemyStateManager.combatState.combatRange)
+        {
+            enemyStateManager.SwitchState(enemyStateManager.combatState);
+        }
+
+        if (Vector3.Distance(transform.position, enemyStateManager.startPosition) < 0.5 && !enemyStateManager.idleState.isAngered)
+        {
+            enemyStateManager.SwitchState(enemyStateManager.idleState);
+        }
+    }
+
+    public bool HandleMovmentChecks()
+    {
+        HandleEnemyMovment(enemyStateManager.agent.velocity.magnitude);
         if (enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance))
         {
             SetAgentDestination();
@@ -34,27 +46,16 @@ public class EnemyMovementState : EnemyBaseState
                 SetAgentDestination();
                 angerResetEnd = Time.time + angerResetTime;
             }
-                
+
 
             if (angerResetEnd <= Time.time)
             {
                 enemyStateManager.idleState.isAngered = false;
                 SetAgentDestination();
+                return false;
             }
         }
-        
-        HandleEnemyMovment();
-        
-
-        if (enemyStateManager.idleState.distanceToTarget < enemyStateManager.combatState.attackRange)
-        {
-            enemyStateManager.SwitchState(enemyStateManager.combatState);
-        }
-
-        if (Vector3.Distance(transform.position, enemyStateManager.startPosition) < 0.5 && !enemyStateManager.idleState.isAngered)
-        {
-            enemyStateManager.SwitchState(enemyStateManager.idleState);
-        }
+        return true;
     }
 
     private void SetAgentDestination()
@@ -66,8 +67,25 @@ public class EnemyMovementState : EnemyBaseState
 
     }
 
-    public void HandleEnemyMovment()
+    public void HandleEnemyMovment(float value)
     {
-        enemyStateManager.animatorManager.SetEnemyAnimatorValues(enemyStateManager.agent.speed);
+        enemyStateManager.animatorManager.SetEnemyAnimatorValues(value);
+    }
+
+    public void EnableMovement()
+    {
+        SetAgentDestination();
+        HandleEnemyMovment(enemyStateManager.agent.velocity.magnitude);
+        enemyStateManager.rb.isKinematic = false;
+        enemyStateManager.agent.updateRotation = true;
+        enemyStateManager.agent.isStopped = false;
+    }
+
+    public void DisableMovement()
+    {
+        HandleEnemyMovment(0);
+        enemyStateManager.rb.isKinematic = true;
+        enemyStateManager.agent.updateRotation = false;
+        enemyStateManager.agent.isStopped = true;
     }
 }
