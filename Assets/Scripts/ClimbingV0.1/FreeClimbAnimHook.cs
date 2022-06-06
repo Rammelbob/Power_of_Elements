@@ -5,7 +5,7 @@ using UnityEngine;
 public class FreeClimbAnimHook : MonoBehaviour
 {
 
-    public AnimatorManager animatorManager;
+    public PlayerAnimatorManager animatorManager;
     IKSnapshot ikBase;
     IKSnapshot current = new IKSnapshot();
     IKSnapshot next = new IKSnapshot();

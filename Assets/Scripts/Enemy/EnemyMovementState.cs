@@ -69,7 +69,7 @@ public class EnemyMovementState : EnemyBaseState
 
     public void HandleEnemyMovment(float value)
     {
-        enemyStateManager.animatorManager.SetEnemyAnimatorValues(value);
+        enemyStateManager.animatorManager.animator.SetFloat("movementSpeed", value, 0.1f, Time.deltaTime);
     }
 
     public void EnableMovement()

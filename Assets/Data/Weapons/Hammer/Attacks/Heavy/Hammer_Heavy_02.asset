@@ -17,4 +17,4 @@ MonoBehaviour:
   attackForce: 0
   staminaCost: 0
   nextLightAttack: {fileID: 0}
-  nextHeavyAttack: {fileID: 0}
+  nextHeavyAttack: {fileID: 11400000, guid: 81757159ecad11f4caee0a0c3947cdd6, type: 2}

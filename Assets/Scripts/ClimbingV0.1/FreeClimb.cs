@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FreeClimb : MonoBehaviour
 {
-    AnimatorManager animatorManager;
+    PlayerAnimatorManager animatorManager;
 
     bool inPosition;
     bool isLerping;
@@ -44,7 +44,7 @@ public class FreeClimb : MonoBehaviour
         helper = new GameObject().transform;
         helper.name = "climb helper";
         a_hook.Init(this, helper);
-        animatorManager = GetComponent<AnimatorManager>();
+        animatorManager = GetComponent<PlayerAnimatorManager>();
         //CheckForClimb();
     }
 

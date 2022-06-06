@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyCombatState : EnemyBaseState
 {
     public float combatRange;
-    // public Attack[] enemyAttacks; enemyAttacks[Random.Range(0, enemyAttacks.Length)]
     public float chaseOrDodgeValue;
     public float rotationSpeed;
     
@@ -25,7 +24,7 @@ public class EnemyCombatState : EnemyBaseState
         enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
         if (enemyStateManager.idleState.distanceToTarget  < combatRange - chaseOrDodgeValue)
         {
-            enemyStateManager.animatorManager.PlayTargetAnimation("Enemy_Dodge_Back", true, 0.1f, true, false);
+            enemyStateManager.animatorManager.PlayTargetAnimation("Enemy_Dodge_Back", true, 0.1f, true);
         }
         else if(enemyStateManager.idleState.distanceToTarget  > combatRange + chaseOrDodgeValue)
         {

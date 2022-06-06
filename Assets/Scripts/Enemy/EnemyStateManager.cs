@@ -12,7 +12,7 @@ public class EnemyStateManager : MonoBehaviour
     public EnemyCombatState combatState;
     public EnemyAttackState attackState;
     public NavMeshAgent agent;
-    public AnimatorManager animatorManager;
+    public BaseAnimationManager animatorManager;
     public Animator animator;
     public Vector3 startPosition;
     public Transform body;

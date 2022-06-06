@@ -4,6 +4,6 @@ using UnityEngine;
 
 public enum ElementsEnum { Air, Fire, Electro, Water, Earth, Ice };
 
-public enum EnemyTyps { Axe, Sword, Bow };
+public enum ItemTypeEnum {Weapon, Consumable, Currency, Head, Chest, Leg, Neckless, Earring, Ring, Default }
 
-public enum EnemyStyle { Aggressive, Defensive };
+public enum StatEnum { HealthPoints, Stamina, Attack, Defense, MovementSpeed, AttackSpeed};

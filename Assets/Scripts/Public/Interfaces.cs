@@ -16,10 +16,3 @@ public interface ICombat
 
     void GetAttacked(float damage, Vector3 forceDir);
 }
-
-[Serializable]
-public class ElementalResistance
-{
-    public ElementsEnum element;
-    public float resistance;
-}

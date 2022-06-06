@@ -5,43 +5,42 @@ using UnityEngine;
 public class PlayerLocomotion : MonoBehaviour
 {
     PlayerManager playerManager;
-    InputManager inputManager;
-    AnimatorManager animatorManager;
-    Rigidbody rb;
-    CombatManager combatManager;
-    PlayerInventory playerInventory;
+    public Rigidbody rb;
 
     Vector3 moveDirection;
     public Transform direction;
     public Transform body;
     public Transform groundCheck;
-    public GameObject waterMovement;
 
     [Header("Falling")]
-    public float inAirTimer;
-    public float fallingVelocity;
-    public float elementalAirFallingVelocity;
-    public float jumpingFallingVelocity;
+    public float gravityMultiplier;
     public float groundCheckDistance;
     public float distanceToGround;
     public LayerMask groundLayer;
+    RaycastHit hit;
+    Vector3 rayCastOrigin;
+    Vector3 fallingTargetPosition;
+    Vector3 rayCastHitPoint;
+
+    [Header("Rotate")]
+    Quaternion targetRotation;
+    Quaternion playerRotation;
+    Vector3 targetDirection;
 
     [Header("Movement Flags")]
     public bool isSprinting;
     public bool isGrounded;
-    public bool isJumping;
     public bool isClimbing;
 
     [Header("Movement Speeds")]
-    public float walkingSpeed = 1.5f;
-    public float runningSpeed = 5;
-    public float sprintingSpeed = 7;
-    public float movementSpeed;
-    public float rotationSpeed = 15;
+    public float movementMultiplier;
+    public float rotationSpeed;
     public float staminaUsedSprinting;
 
     [Header("Jump")]
     public float staminaUsedJumping;
+    public float jumpUpForce;
+    public float jumpForwardForce;
 
     [Header("Climbing")]
     public float firstWallCheckDistance;
@@ -54,51 +53,20 @@ public class PlayerLocomotion : MonoBehaviour
     RaycastHit moveDirHit;
     Vector3 climbingRotation;
     Vector3 climbDirection;
+    Vector3 origin;
+    Vector3 rayDir;
+    Vector3 cornerOrigin;
     public LayerMask wallLayer;
-
-    [Header("ElemetalMovement")]
-    ElementsEnum lastElement;
-    bool doAirMovement;
-    bool doFireMovement;
-    bool doElectroMovement;
-    //bool doEarthMovement;
-    bool doWaterMovement;
-    [Header("Electro")]
-    public float electroDashSpeed;
-    public float startDashTime;
-    public float electroDashCooldown;
-    float dashEndCooldowntime = 0;
-    float dashTime;
-
-    [Header("Water")]
-    GameObject waterMovementtemp;
-
-    [Header("Air")]
-    public float staminaUsedAirMovement;
-    public float elementalMovementSpeedAir;
-
-    [Header("Fire")]
-    public float staminaUsedFireMovement;
-    public float elementalMovementSpeedFire;
-    //[Header("Earth")]
-    //[Header("Ice")]
-
 
 
     private void Awake()
     {
-        inputManager = GetComponent<InputManager>();
         rb = GetComponent<Rigidbody>();
         playerManager = GetComponent<PlayerManager>();
-        animatorManager = GetComponent<AnimatorManager>();
-        combatManager = GetComponent<CombatManager>();
-        playerInventory = GetComponent<PlayerInventory>();
-        dashTime = startDashTime;
     }
 
     public void HandleAllMovement()
     {
-        HandleElementalMovement();
         HandleFallingAndLanding();
         HandleRotation();
        
@@ -106,120 +74,6 @@ public class PlayerLocomotion : MonoBehaviour
             return;
 
         HandleWallClimbing();
-        HandleMovement();
-    }
-
-    private void HandleElementalMovement()
-    {
-        if (lastElement != playerInventory.currentElement)
-        {
-            doFireMovement = false;
-            doAirMovement = false;
-            doElectroMovement = false;
-            doWaterMovement = false;
-            //doEarthMovement = false;
-            combatManager.ResetCombo();
-        }
-
-        
-        if (inputManager.elementalMovement)
-        {
-            switch (playerInventory.currentElement)
-            {
-                case ElementsEnum.Air:
-                    doAirMovement = combatManager.CanUseStamina();
-                    break;
-
-                case ElementsEnum.Fire:
-                    doFireMovement = combatManager.CanUseStamina();
-                    break;
-
-                case ElementsEnum.Electro:
-                    if (!doElectroMovement && Time.time > dashEndCooldowntime)
-                    {
-                        dashEndCooldowntime = Time.time + electroDashCooldown;
-                        playerManager.isInteracting = true;
-                        doElectroMovement = true;
-                    }
-                    break;
-
-                case ElementsEnum.Earth:
-                    //doEarthMovement = true;
-                    break;
-
-                case ElementsEnum.Water:
-                    doWaterMovement = true;
-                    break;
-
-                case ElementsEnum.Ice:
-                    break;
-
-            }
-        }
-        else
-        {
-            doFireMovement = false;
-            doAirMovement = false;
-            //doElectroMovement = false;
-            doWaterMovement = false;
-            //doEarthMovement = false;
-        }
-
-        if (doElectroMovement)
-        {
-            SetMoveDir();
-            if (moveDirection == Vector3.zero)
-                moveDirection = body.forward;
-
-
-            if (dashTime <= 0)
-            {
-                rb.velocity = Vector3.zero;
-                dashTime = startDashTime;
-                doElectroMovement = false;
-                playerManager.isInteracting = false;
-            }
-            else
-            {
-                dashTime -= Time.deltaTime;
-                rb.velocity = moveDirection * (isGrounded ? electroDashSpeed : electroDashSpeed / 5);
-            }
-        }
-        else if (doWaterMovement)
-        {
-            if (waterMovementtemp == null)
-            {
-                waterMovementtemp = Instantiate(waterMovement, groundCheck.position, Quaternion.identity);
-            }
-        }
-        lastElement = playerInventory.currentElement;
-    }
-
-    private void HandleMovement()
-    {
-        if (isJumping || isClimbing || !isGrounded)
-            return;
-
-        SetMoveDir();
-        moveDirection.y = 0;
-
-        if (isSprinting)
-        {
-            movementSpeed = sprintingSpeed;
-            combatManager.UpdateStamina(-staminaUsedSprinting * Time.deltaTime);
-        }
-        else
-        {
-            if (inputManager.moveAmount >= 0.5f)
-                movementSpeed = runningSpeed;
-            else if (inputManager.moveAmount < 0.5f && inputManager.moveAmount > 0)
-                movementSpeed = walkingSpeed;
-            else
-                movementSpeed = 0;
-        }
-        moveDirection *= movementSpeed;
-        //Vector3 movementVeolcity = moveDirection;
-        //rb.velocity = movementVeolcity;
     }
 
     private void HandleRotation()
@@ -227,9 +81,9 @@ public class PlayerLocomotion : MonoBehaviour
         if (!playerManager.canRotate)
             return;
 
-        Quaternion targetRotation;
-        Quaternion playerRotation = new Quaternion();
-        Vector3 targetDirection = Vector3.zero;
+
+        playerRotation = new Quaternion();
+        targetDirection = Vector3.zero;
 
         if (isClimbing)
         {
@@ -244,145 +98,117 @@ public class PlayerLocomotion : MonoBehaviour
             return;
         }
 
-        targetDirection = direction.forward * inputManager.verticalInput;
-        targetDirection += direction.right * inputManager.horizontalInput;
-
-        targetDirection.Normalize();
+        SetMoveDir();
+        targetDirection = moveDirection;
         targetDirection.y = 0;
 
         if (targetDirection == Vector3.zero)
             targetDirection = body.forward;
 
         targetRotation = Quaternion.LookRotation(targetDirection);
-        if (isGrounded && !playerManager.isInteracting)
-        {
-            playerRotation = Quaternion.Slerp(body.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
-        else
-        {
-            playerRotation = Quaternion.Slerp(body.rotation, targetRotation, rotationSpeed/5 * Time.deltaTime);
-        }
-        
+        playerRotation = Quaternion.Slerp(body.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
         body.rotation = playerRotation;
     }
 
     private void HandleFallingAndLanding()
     {
-        RaycastHit hit;
-        Vector3 rayCastOrigin = transform.position;
-        Vector3 fallingTargetPosition = groundCheck.position;
-        
-        if (!isClimbing)
-        {
-            if (!isGrounded)
-            {
-                if (!playerManager.isInteracting && distanceToGround > 1.5f)// && inAirTimer > 0.1f)
-                {
-                    animatorManager.PlayTargetAnimation("Falling", false, 0.1f, false, false);
-                }
+        rayCastOrigin = transform.position;
+        fallingTargetPosition = groundCheck.position;
 
-                if (doFireMovement)
-                {
-                    inAirTimer = 0;
-                    SetMoveDir();
-                    rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedFire, ForceMode.Acceleration);
-                    combatManager.UpdateStamina(-staminaUsedFireMovement * Time.deltaTime);
-                }
-                else if (doAirMovement)
-                {
-                    inAirTimer = 0;
-                    SetMoveDir();
-                    rb.AddForce(-Vector3.up * elementalAirFallingVelocity * Time.deltaTime);
-                    rb.AddForce(moveDirection * Time.deltaTime * elementalMovementSpeedAir, ForceMode.Acceleration);
-                    combatManager.UpdateStamina(-staminaUsedAirMovement * Time.deltaTime);
-                }
-                else
-                {
-                    if (isJumping)
-                    {
-                        rb.AddForce(-Vector3.up * jumpingFallingVelocity * Time.deltaTime);
-                    }
-                    else
-                    {
-                        inAirTimer += Time.deltaTime;
-                        rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
-                    }
-                }
-            }
-        }
 
         if (Physics.Raycast(rayCastOrigin, -Vector3.up, out hit, groundCheckDistance, groundLayer))
         {
             distanceToGround = hit.distance - (transform.position.y - groundCheck.position.y);
 
-            if (distanceToGround < 0.1f)
+            if (distanceToGround < 0.35f)
             {
-                if (!isGrounded && !playerManager.isInteracting && inAirTimer > 0.75f)
-                    animatorManager.PlayTargetAnimation("Landing", false, 0.2f, false, true);
-
-                Vector3 rayCastHitPoint = hit.point;
+                rayCastHitPoint = hit.point;
                 fallingTargetPosition.y = rayCastHitPoint.y + (transform.position.y - groundCheck.position.y);
+                if (!isGrounded)
+                {
+                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Locomotion", false, 0.05f, true, false);
+                }
                 isGrounded = true;
+                rb.useGravity = false;
             }
             else
+            {
                 isGrounded = false;
+                rb.useGravity = true;
+            }
+                
         }
         else
         {
-            isGrounded = false; 
+            isGrounded = false;
+            rb.useGravity = true;
             distanceToGround = groundCheckDistance;
         }
 
-        if (isGrounded && !isJumping && !isClimbing)
+        if (!isClimbing)
         {
-            if (inputManager.moveAmount > 0.5f)
-                transform.position = Vector3.Lerp(transform.position, fallingTargetPosition, Time.deltaTime * 25);
-            else
-                transform.position = fallingTargetPosition;
+            if (!isGrounded)
+            {
+                if (!playerManager.isInteracting && rb.velocity.y < -3f)
+                {
+                    SetMoveDir();
+                    rb.AddForce(moveDirection * jumpForwardForce, ForceMode.Impulse);
+                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Falling", true, 0.1f, false, false);
+                }
 
-            inAirTimer = 0;
+                if (rb.useGravity)
+                    rb.AddForce(Physics.gravity * rb.mass * gravityMultiplier);
+            }
+            else
+            {
+                if (playerManager.inputManager.moveAmount > 0.5f)
+                    transform.position = Vector3.Lerp(transform.position, fallingTargetPosition, Time.deltaTime * 25);
+                else
+                    transform.position = fallingTargetPosition;
+            }
+        }
+        else
+        {
+            rb.useGravity = false;
         }
     }
 
     public void SetMoveDir()
     {
-        moveDirection = direction.forward * inputManager.verticalInput;
-        moveDirection += direction.right * inputManager.horizontalInput;
+        moveDirection = direction.forward * playerManager.inputManager.verticalInput;
+        moveDirection += direction.right * playerManager.inputManager.horizontalInput;
         moveDirection.Normalize();
     }
 
     public void HandleJumping()
     {
-        if (isGrounded && !isClimbing && !playerManager.isInteracting && combatManager.CanUseStamina())
+        if (isGrounded && !isClimbing && !playerManager.isInteracting)
         {
-            if (inputManager.moveAmount > 0.5)
+            if (playerManager.inputManager.moveAmount > 0.5)
             {
-                animatorManager.animator.SetBool("isJumping", true);
-                animatorManager.PlayTargetAnimation("Jump", false, 0.2f, true, false);
-                rb.AddForce(Vector3.up * 4f, ForceMode.Impulse);
-                combatManager.UpdateStamina(-staminaUsedJumping);
+                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Jump", false, 0.2f, false, false);
+                SetMoveDir();
+                rb.AddForce(moveDirection * jumpForwardForce, ForceMode.Impulse);
+                rb.AddForce(body.up * jumpUpForce, ForceMode.Impulse);
             }
             else
-            {
-                animatorManager.animator.SetBool("isJumping", true);
-                animatorManager.PlayTargetAnimation("Jumping_Idle", false, 0.1f, true, true);
-            }
+                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Jumping_Idle", false, 0.1f, true, true);
+            
         }
     }
 
     public void HandleDodgeing()
     {
-        if (isGrounded && !isClimbing && !playerManager.isInteracting && combatManager.CanUseStamina())
+        if (isGrounded && !isClimbing && !playerManager.isInteracting)
         {
-            if (inputManager.moveAmount > 0.5)
+            if (playerManager.inputManager.moveAmount > 0.5)
             {
-                animatorManager.PlayTargetAnimation("Dodge", true, 0.1f, true, true);
-                combatManager.UpdateStamina(-staminaUsedJumping);
+                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Dodge", true, 0.1f, true, true);
             }
             else
             {
-                animatorManager.PlayTargetAnimation("Dodge_Back", true, 0.1f, true, true);
-                combatManager.UpdateStamina(-staminaUsedJumping);
+                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Dodge_Back", true, 0.1f, true, true);
             }
         }
     }
@@ -395,17 +221,15 @@ public class PlayerLocomotion : MonoBehaviour
             {
                 climbingRotation = -wallFrontHit.normal;
 
-                Debug.DrawLine(transform.position, transform.position + body.forward * firstWallCheckDistance, Color.red, 0.2f);
-
-                animatorManager.PlayTargetAnimation("Climbing", false, 0.1f, true, true);
+                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Climbing", false, 0.1f, true, true);
                 isClimbing = true;
                 SetPositionFromWall(wallFrontHit.point, wallFrontHit.normal);
             }
         }
         else
         {
-            climbDirection = body.up * inputManager.verticalInput;
-            climbDirection += body.right * inputManager.horizontalInput;
+            climbDirection = body.up * playerManager.inputManager.verticalInput;
+            climbDirection += body.right * playerManager.inputManager.horizontalInput;
             climbDirection.Normalize();
 
             ClimbDirection(climbDirection);
@@ -417,8 +241,9 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void ClimbDirection(Vector3 moveDir)
     {
-        Vector3 origin = transform.position;
-        Vector3 rayDir = moveDir;
+        origin = transform.position;
+        rayDir = moveDir;
+        
 
         Debug.DrawLine(origin, origin + rayDir * firstWallCheckDistance, Color.blue, 0.2f);
         if (Physics.Raycast(origin, rayDir, out moveDirHit, firstWallCheckDistance, wallLayer))
@@ -436,26 +261,27 @@ public class PlayerLocomotion : MonoBehaviour
         {
             if (Physics.Raycast(transform.position, body.forward, out moveDirHit, firstWallCheckDistance, wallLayer))
             {
-                SetPositionFromWall(moveDirHit.point, moveDirHit.normal);
+                //SetPositionFromWall(moveDirHit.point, moveDirHit.normal,Color.blue);
                 climbingRotation = -moveDirHit.normal;
             }
             return;
         }
 
-
+        cornerOrigin = origin;
+        cornerOrigin += rayDir * (firstWallCheckDistance);
         origin += rayDir * climbCheckDistance;
         rayDir = -moveDir;
 
         Debug.DrawLine(origin, origin + rayDir * (firstWallCheckDistance + 0.1f), Color.black, 0.2f);
         if (Physics.Raycast(origin, rayDir, out moveDirHit, (firstWallCheckDistance + 0.1f), wallLayer))
         {
-            if (inputManager.verticalInput > 0 && Vector3.Angle(Vector3.up, moveDirHit.normal) < 45)
+            if (playerManager.inputManager.verticalInput > 0 && Vector3.Angle(Vector3.up, moveDirHit.normal) < 45)
             {
-                animatorManager.PlayTargetAnimation("ClimbingOverEdge", true, 0.1f, true, true);
+                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("ClimbingOverEdge", true, 0.1f, true, true);
             }
             else if (CheckForCorner())
             {
-                FindCorner(origin, rayDir);
+                FindCorner(cornerOrigin, rayDir);
                 climbingRotation = -moveDirHit.normal;
             }
             return;
@@ -470,17 +296,13 @@ public class PlayerLocomotion : MonoBehaviour
         rb.velocity = Vector3.zero;
     }
 
-    private void FindCorner(Vector3 origin ,Vector3 rayDir)
+    private void FindCorner(Vector3 cornerOrigin ,Vector3 rayDir)
     {
-        origin += -body.forward * (wallDistance - 0.35f);
         RaycastHit cornerHit;
-        if (Physics.Raycast(origin, rayDir, out cornerHit, firstWallCheckDistance, wallLayer))
+        if (Physics.Raycast(cornerOrigin, rayDir, out cornerHit, firstWallCheckDistance, wallLayer))
         {
             SetPositionFromWall(cornerHit.point, cornerHit.normal);
-            return;
-        }
-
-        SetPositionFromWall(moveDirHit.point, moveDirHit.normal);
+        }  
     }
 
     private bool CheckForCorner()

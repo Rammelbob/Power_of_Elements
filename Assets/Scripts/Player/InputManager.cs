@@ -7,26 +7,26 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     PlayerInput playerControls;
-    PlayerLocomotion playerLocomotion;
-    AnimatorManager animatorManager;
-    CombatManager combatManager;
-    PlayerAttacker playerAttacker;
-    PlayerInventory playerInventory;
     PlayerManager playerManager;
-    PlayerStats playerStats;
+    public Transform direction;
+    public Transform target;
 
     public Vector2 movementInput;
     public Vector2 changeElementInput;
+    Vector2 lookMovement;
     public float moveAmount;
     public float verticalInput;
     public float horizontalInput;
 
-    public bool sprinting;
-    public bool startJump;
-    public bool startDodge;
-    public bool comboFlag;
-    public bool blockInput;
+    float mouseX, mouseY;
+    [SerializeField] Vector2 lookSpeed = new Vector2(200, 170f);
 
+    bool sprinting;
+    bool startJump;
+    bool startDodge;
+    bool toggleInventory;
+
+    public bool blockInput;
     public bool lightAttack;
     public bool heavyAttack;
     public bool speacialAttack;
@@ -37,13 +37,8 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        animatorManager = GetComponent<AnimatorManager>();
-        playerLocomotion = GetComponent<PlayerLocomotion>();
-        combatManager = GetComponent<CombatManager>();
-        playerAttacker = GetComponent<PlayerAttacker>();
-        playerInventory = GetComponent<PlayerInventory>();
+        //Cursor.lockState = CursorLockMode.Locked;
         playerManager = GetComponent<PlayerManager>();
-        playerStats = GetComponent<PlayerStats>();
     }
 
     private void OnEnable()
@@ -69,6 +64,12 @@ public class InputManager : MonoBehaviour
 
             playerControls.Combat.Block.performed += OnBlock;
             playerControls.Combat.Block.canceled += OnBlock;
+
+            playerControls.UI.ToggleInventory.performed += OnInvetoryToggle;
+            playerControls.UI.ToggleInventory.canceled += OnInvetoryToggle;
+
+            playerControls.CameraControls.MoveCamera.canceled += OnMousMove;
+            playerControls.CameraControls.MoveCamera.performed += OnMousMove;
         }
         playerControls.Enable();
     }
@@ -110,21 +111,7 @@ public class InputManager : MonoBehaviour
 
     void OnChangeElement(InputAction.CallbackContext context)
     {
-        if (playerManager.isInteracting)
-            return;
-
-        for (int i = 0; i < pressedElement.Length; i++)
-        {
-            if (pressedElement[i] == context.ReadValue<Vector2>())
-            {
-                if (i != currentElementPressed)
-                {
-                    playerInventory.SetCurrentElement(i);
-                    currentElementPressed = i;
-                }
-                break;
-            }
-        }
+        changeElementInput = context.ReadValue<Vector2>();
     }
 
     void OnElementalMovement(InputAction.CallbackContext context)
@@ -135,6 +122,16 @@ public class InputManager : MonoBehaviour
     void OnBlock(InputAction.CallbackContext context)
     {
         blockInput = context.ReadValueAsButton();
+    }
+
+    void OnMousMove(InputAction.CallbackContext context)
+    {
+        lookMovement = context.ReadValue<Vector2>();
+    }
+    
+    void OnInvetoryToggle(InputAction.CallbackContext context)
+    {
+        toggleInventory = context.ReadValueAsButton();
     }
 
     private void OnDisable()
@@ -149,18 +146,21 @@ public class InputManager : MonoBehaviour
         HandleJumpInput();
         HandleDodgeInput();
         HandleCombatInput();
+        HandleElementalChangeInput();
+        HandleToggleInventory();
+        HandleCameraInput();
     }
 
     private void HandleCombatInput()
     {
         if (lightAttack)
         {
-            if (playerLocomotion.isSprinting)
-                playerAttacker.HandleRunningAttack(playerStats.weapon); 
+            if (playerManager.playerLocomotion.isSprinting)
+                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.weapon); 
             else if (playerManager.canDoCombo)
             {
-                playerAttacker.doWeaponCombo = true;
-                playerAttacker.comboLight = true;
+                playerManager.playerAttacker.doWeaponCombo = true;
+                playerManager.playerAttacker.comboLight = true;
             }
             else
             {
@@ -168,30 +168,30 @@ public class InputManager : MonoBehaviour
                     return;
                 if (playerManager.canDoCombo)
                     return;
-                playerAttacker.HandleLightAttack(playerStats.weapon);
+                playerManager.playerAttacker.HandleLightAttack(playerManager.playerInventory.weapon);
             }
         }
 
         if (heavyAttack)
         {
-            if (playerLocomotion.isSprinting)
-                playerAttacker.HandleRunningAttack(playerStats.weapon);
+            if (playerManager.playerLocomotion.isSprinting)
+                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.weapon);
             else if (playerManager.canDoCombo)
             {
-                playerAttacker.doWeaponCombo = true;
-                playerAttacker.comboLight = false;
+                playerManager.playerAttacker.doWeaponCombo = true;
+                playerManager.playerAttacker.comboLight = false;
             }
             else
             {
                 if (playerManager.canDoCombo || playerManager.isInteracting)
                     return;
-                playerAttacker.HandleHeavyAttack(playerStats.weapon);
+                playerManager.playerAttacker.HandleHeavyAttack(playerManager.playerInventory.weapon);
             }
         }
 
         if (blockInput)
         {
-            playerAttacker.StartBlock();
+            playerManager.playerAttacker.StartBlock();
         }
     }
 
@@ -200,18 +200,20 @@ public class InputManager : MonoBehaviour
         verticalInput = movementInput.y;
         horizontalInput = movementInput.x;
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-        animatorManager.UpdateAnimatorValues(playerLocomotion.movementSpeed, movementInput);
+        playerManager.playerAnimatorManager.animator.SetFloat("inputX", movementInput.x, 0.1f, Time.deltaTime);
+        playerManager.playerAnimatorManager.animator.SetFloat("inputY", movementInput.y, 0.1f, Time.deltaTime);
+        playerManager.playerAnimatorManager.animator.SetFloat("movementSpeed",moveAmount *(playerManager.playerLocomotion.isSprinting ? 2f : 1f), 0.1f, Time.deltaTime);
     }
 
     private void HandleSprintingInput()
     {
-        if (sprinting && moveAmount > 0.5f && combatManager.CanUseStamina())
+        if (sprinting && moveAmount > 0.5f)
         {
-            playerLocomotion.isSprinting = true;
+            playerManager.playerLocomotion.isSprinting = true;
         }
         else
         {
-            playerLocomotion.isSprinting = false;
+            playerManager.playerLocomotion.isSprinting = false;
         }
     }
 
@@ -220,7 +222,7 @@ public class InputManager : MonoBehaviour
         if (startJump)
         {
             startJump = false;
-            playerLocomotion.HandleJumping();
+            playerManager.playerLocomotion.HandleJumping();
         }
     }
 
@@ -229,7 +231,46 @@ public class InputManager : MonoBehaviour
         if (startDodge)
         {
             startDodge = false;
-            playerLocomotion.HandleDodgeing();
+            playerManager.playerLocomotion.HandleDodgeing();
+        }
+    }
+
+    private void HandleElementalChangeInput()
+    {
+        if (playerManager.isInteracting)
+            return;
+
+        for (int i = 0; i < pressedElement.Length; i++)
+        {
+            if (pressedElement[i] == changeElementInput)
+            {
+                if (i != currentElementPressed)
+                {
+                    playerManager.playerInventory.SetCurrentElement(i);
+                    currentElementPressed = i;
+                }
+                break;
+            }
+        }
+    }
+
+    private void HandleCameraInput()
+    {
+        mouseX += lookMovement.x * Time.deltaTime * lookSpeed.x;
+        mouseY -= lookMovement.y * Time.deltaTime * lookSpeed.y;
+
+        mouseY = Mathf.Clamp(mouseY, -55, 75);
+
+        target.rotation = Quaternion.Euler(mouseY, mouseX, 0);
+        direction.rotation = Quaternion.Euler(0, mouseX, 0);
+    }
+    
+    private void HandleToggleInventory()
+    {
+        if (toggleInventory)
+        {
+            toggleInventory = false;
+            playerManager.ui_Inventory_Handler.ToggleInventory();
         }
     }
 }

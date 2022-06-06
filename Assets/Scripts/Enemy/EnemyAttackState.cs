@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EnemyAttackState : EnemyBaseState
 {
-    public Attack enemyAttack;
+    public PlayerAttack enemyAttack;
     public float attackRange;
-    Attack currentAttack;
+    PlayerAttack currentAttack;
 
     public override void EnterState()
     {
@@ -45,7 +45,7 @@ public class EnemyAttackState : EnemyBaseState
         {
             enemyStateManager.movementState.DisableMovement();
             enemyStateManager.combatState.HandleEnemyRotation(enemyStateManager.idleState.targetPosition.position);
-            enemyStateManager.animatorManager.PlayTargetAnimation(enemyAttack.attackName, true, 0.1f, true, false);
+            enemyStateManager.animatorManager.PlayTargetAnimation(enemyAttack.attackName, true, 0.1f, true);
             currentAttack = enemyAttack;
         }
         else
