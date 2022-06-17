@@ -35,6 +35,9 @@ public class PlayerStats : BaseStats
 
         GetStatByEnum(StatEnum.Stamina).statvalues.OnStatChange -= OnStaminaChange;
         GetStatByEnum(StatEnum.Stamina).statvalues.OnLevelChange -= OnStaminaLevelChange;
+
+        GetStatByEnum(StatEnum.MovementSpeed).statvalues.OnStatChange -= OnMovementSpeedChange;
+        GetStatByEnum(StatEnum.AttackSpeed).statvalues.OnStatChange -= OnAttackSpeedChange;
     }
 
     private void OnHealthPointChange(float currentAmount)

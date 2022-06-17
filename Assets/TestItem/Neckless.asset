@@ -10,15 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ea5ef8315eed384bb2f847d301333d9, type: 3}
-  m_Name: Ring of Defens
+  m_Name: Neckless
   m_EditorClassIdentifier: 
-  itemName: Ring of Defens
-  description: The wearers defens will become a Wall
-  itemIcone: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  currencyValue: 199
-  itemType: 5
+  itemName: nekcless
+  description: 
+  itemIcone: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  currencyValue: 333
+  itemType: 3
   statBuffs:
-  - statType: 3
-    amount: 5
-  - statType: 2
-    amount: -3
+  - statType: 4
+    amount: 4

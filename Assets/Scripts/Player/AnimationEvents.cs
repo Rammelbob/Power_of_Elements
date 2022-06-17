@@ -19,19 +19,19 @@ public class AnimationEvents : MonoBehaviour
         playerManager.playerAnimatorManager.animator.SetBool("canDoCombo", true);
     }
 
-    public void DoWeaponCombo()
-    {
-        playerManager.playerAttacker.HandleWeaponCombo();
-    }
-
     public void DisalbeCombo()
     {
         playerManager.playerAnimatorManager.animator.SetBool("canDoCombo", false);
     }
 
-    public void ResetIsJumping()
+    public void DoWeaponCombo()
     {
-        playerManager.playerAnimatorManager.animator.SetBool("isJumping", false);
+        playerManager.playerAttacker.HandleWeaponCombo();
+    }
+
+    public void EnableRotation()
+    {
+        playerManager.playerAnimatorManager.animator.SetBool("canRotate", true);
     }
 
     public void DisableRoation()

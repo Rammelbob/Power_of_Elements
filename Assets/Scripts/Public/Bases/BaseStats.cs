@@ -50,24 +50,24 @@ public class StatValues
         return baseValue + statLevel * amountPerLevel;
     }
 
-    public void ChangeCurrentStat(float changeAmount, float maxAmount,float minAmount)//, Action<float> changeUIValues)
+    public void ChangeCurrentStat(float changeAmount, float maxAmount,float minAmount)
     {
         currentValue += changeAmount;
-        currentValue = currentValue > maxAmount ? statLevleMinMax :
+        currentValue = currentValue > maxAmount ? maxAmount :
             currentValue < minAmount ? minAmount : currentValue;
 
         OnStatChange?.Invoke(currentValue);
-        //changeUIValues(currentValue);
     }
 
     public int ChangeStatLevel(int changeAmount)
     {
+        float currentValueinPercent = currentValue / GetMaxValue();
         statLevel += changeAmount;
         statLevel = statLevel > statLevleMinMax ? statLevleMinMax :
             statLevel < -statLevleMinMax ? -statLevleMinMax : statLevel;
 
-        ChangeCurrentStat(changeAmount * amountPerLevel, baseValue + statLevleMinMax * amountPerLevel, 0);
         OnLevelChange?.Invoke(statLevel, GetMaxValue());
+        ChangeCurrentStat(currentValueinPercent * GetMaxValue() - currentValue, baseValue + statLevleMinMax * amountPerLevel, 0);
 
         return statLevel;
     }

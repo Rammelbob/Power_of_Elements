@@ -10,28 +10,35 @@ using System.Linq;
 public class UI_Inventory_Handler : UI_ItemSlot
 {
 
-    [Header("Prefabs / TransformParents")]
+    [Header("Inventory")]
+    public Transform slotParent;
     public GameObject inventoryItemPrefab;
+    public ScrollRect itemScrollRect;
+
+    [Header("Stats")]
     public Transform statParent;
     public GameObject statPrefab;
-    public Transform dragableParent;
-    public Transform slotParent;
+    public ScrollRect statScrollRect;
 
     [Header("Open/Close Inventory")]
     public List<GameObject> showInventory;
-    bool inventoryOpen = false;
+    public bool inventoryOpen = false;
 
     [Header("Texts")]
     public TextMeshProUGUI currencyText;
     public TextMeshProUGUI descriptionText;
     public TextMeshProUGUI descriptionNameText;
 
-    List<UI_ItemSlot> itemSlots = new List<UI_ItemSlot>();
+    public Transform dragableParent;
+    public List<UI_EquipmentSlot> equipmentSlots = new List<UI_EquipmentSlot>();
+    public UI_ItemSlot consumableSlot;
+    public List<UI_WeaponSlot> weaponSlots = new List<UI_WeaponSlot>();
     
     List<UI_Stat> ui_Stats = new List<UI_Stat>();
     UI_Item ui_Item;
     UI_Stat ui_Stat;
     GameObject tempGameObject;
+    UI_ItemSlot ui_ItemSlotTemp;
     PlayerManager playerManager;
     int currency = 0;
 
@@ -48,15 +55,8 @@ public class UI_Inventory_Handler : UI_ItemSlot
         }
     }
 
-    public void ToggleInventory()
-    {
-        if (inventoryOpen)
-            ToggleInventory(false);
-        else
-            ToggleInventory(true);
-    }
-
-    private void ToggleInventory(bool open)
+    
+    public  void ToggleInventory(bool open)
     {
         inventoryOpen = open;
         foreach (GameObject gameObject in showInventory)
@@ -64,33 +64,34 @@ public class UI_Inventory_Handler : UI_ItemSlot
             gameObject.SetActive(open);
         }
 
-
-        UI_ItemSlot itemSlotTemp;
-        foreach (Transform itemSlot in slotParent)
+        foreach (var equipmentSlot in equipmentSlots)
         {
-            itemSlotTemp = itemSlot.GetComponent<UI_ItemSlot>();
-            if (itemSlotTemp)
+            if (open)
             {
-                itemSlots.Add(itemSlotTemp);
-                if (itemSlotTemp.GetSlotType() != ItemTypeEnum.Consumable)
-                {
-                    UI_EquipmentSlot ui_EquipmentSlot = (UI_EquipmentSlot)itemSlotTemp;
-                    if (open)
-                    {
-                        ui_EquipmentSlot.AddStatLevelChanges += AddStatLevelChange;
-                        ui_EquipmentSlot.SubtractStatLevelChanges += SubtractStatLevelChange;
-                    }
-                    else
-                    {
-                        ui_EquipmentSlot.AddStatLevelChanges -= AddStatLevelChange;
-                        ui_EquipmentSlot.SubtractStatLevelChanges -= SubtractStatLevelChange;
-                    }
-                   
-                }
+                equipmentSlot.AddStatLevelChanges += AddStatLevelChange;
+                equipmentSlot.SubtractStatLevelChanges += SubtractStatLevelChange;
             }
+            else
+            {
+                equipmentSlot.AddStatLevelChanges -= AddStatLevelChange;
+                equipmentSlot.SubtractStatLevelChanges -= SubtractStatLevelChange;
+            }
+        }
+
+        foreach (var weaponSlot in weaponSlots)
+        {
+            if (open)
+                weaponSlot.UnequipWeapon += UnEquipWeapon;
+            else
+                weaponSlot.UnequipWeapon -= UnEquipWeapon;
+            
         }
     }
 
+    private void UnEquipWeapon(PlayerWeaponItem weapon)
+    {
+        playerManager.playerInventory.LoadWeapon(playerManager.playerInventory.deafaultWeapon);
+    }
 
     #region Change UI
     private void CreateUIStat(StatEnum statType, int level)
@@ -101,6 +102,8 @@ public class UI_Inventory_Handler : UI_ItemSlot
         {
             ui_Stat.SetStat(statType, level);
             ui_Stats.Add(ui_Stat);
+
+            ui_Stat.OnUIStatSelect += SetStatScrollViewToSelectedChild;
         }
     }
 
@@ -108,6 +111,32 @@ public class UI_Inventory_Handler : UI_ItemSlot
     {
         ui_Stats.Where(i => i.statType == itemType).First().SetLvl(level);
     }
+
+    public void SetStatScrollViewToSelectedChild(RectTransform selectedChild)
+    {
+        RectTransform contentPanel = statParent.GetComponent<RectTransform>();
+
+        Vector2 viewportLocalPosition = statScrollRect.viewport.localPosition;
+        Vector2 childLocalPosition = selectedChild.localPosition;
+        Vector2 result = new Vector2(
+            0 - (viewportLocalPosition.x + childLocalPosition.x),
+            0 - (viewportLocalPosition.y + childLocalPosition.y));
+
+        contentPanel.localPosition = result;
+    }
+
+    public void SetItemScrollViewToSelectedChild(RectTransform selectedChild)
+    {
+        RectTransform contentPanel = itemParent.GetComponent<RectTransform>();
+
+        Vector2 viewportLocalPosition = itemScrollRect.viewport.localPosition;
+        Vector2 childLocalPosition = selectedChild.localPosition;
+        Vector2 result = new Vector2(contentPanel.localPosition.x,
+            0 - (viewportLocalPosition.y + childLocalPosition.y));
+
+        contentPanel.localPosition = result;
+    }
+
     #endregion
 
     #region AddItem
@@ -121,7 +150,7 @@ public class UI_Inventory_Handler : UI_ItemSlot
                     ui_Item = item.gameObject.GetComponent<UI_Item>();
                     if (ui_Item.itemInfo == itemToAdd)
                     {
-                        ui_Item.IncreaseCounter(1);
+                        ui_Item.ChangeCounter(1);
                         return;
                     }
                 }
@@ -149,6 +178,7 @@ public class UI_Inventory_Handler : UI_ItemSlot
             ui_Item.OnItemBeginDrag += OnItemBeginDrag;
             ui_Item.OnItemLeftClick += OnLeftClick;
             ui_Item.OnItemRightClick += OnRightClick;
+            ui_Item.OnUIItemSelect += SetItemScrollViewToSelectedChild;
         }
     }
 
@@ -162,17 +192,35 @@ public class UI_Inventory_Handler : UI_ItemSlot
 
     #region ItemEvents
 
-    private void OnItemBeginDrag(UI_Item obj)
+    private void OnItemBeginDrag(UI_Item item)
     {
-        obj.gameObject.transform.SetParent(dragableParent);
+        item.gameObject.transform.SetParent(dragableParent);
     }
 
-    private void OnRightClick(UI_Item obj)
+    private void OnRightClick(UI_Item item)
     {
-        if (obj.isEquiped)
-            obj.parentSlot.UnEquip(obj, SetItemAsChild);
+        if (item.isEquiped)
+            item.parentSlot.UnEquip(item, this);
         else
-            itemSlots.Where(i => i.GetSlotType() == obj.itemInfo.GetItemType()).First().SetItemAsChild(obj);
+            switch(item.itemInfo.GetItemType())
+            {
+                case ItemTypeEnum.Consumable:
+                    consumableSlot.SetItemAsChild(item);
+                    break;
+                case ItemTypeEnum.Weapon:
+                    ui_ItemSlotTemp = weaponSlots.Where(i => i.itemParent.childCount == 0).FirstOrDefault();
+                    if (ui_ItemSlotTemp)
+                        ui_ItemSlotTemp.SetItemAsChild(item);
+                    else
+                        weaponSlots[0].SetItemAsChild(item);
+                    break;
+                default:
+                    ui_ItemSlotTemp = equipmentSlots.Where(i => i.GetSlotType() == item.itemInfo.GetItemType()).FirstOrDefault();
+                    if (ui_ItemSlotTemp)
+                        ui_ItemSlotTemp.SetItemAsChild(item);
+                    break;
+            }
+            
     }
 
     private void OnLeftClick(UI_Item obj)
@@ -183,6 +231,7 @@ public class UI_Inventory_Handler : UI_ItemSlot
 
     #endregion
 
+    #region ChangeStatLevel
     public void AddStatLevelChange(EquipmentItem equipmentItem)
     {
         foreach (var statBuff in equipmentItem.statBuffs)
@@ -202,16 +251,19 @@ public class UI_Inventory_Handler : UI_ItemSlot
                 .statvalues.ChangeStatLevel(-statBuff.amount));
         }
     }
+    #endregion
 
-    public override ItemTypeEnum GetSlotType()
+    public PlayerWeaponItem GetPlayerWeaponItemIndex(int index)
     {
-        return ItemTypeEnum.Default;
+        if (weaponSlots[index].itemParent.childCount != 0)
+        {
+            return weaponSlots[index].currentWeapon;
+        }
+        return null;
     }
 
     public override void SetItemAsChild(UI_Item newItem)
     {
-        newItem.transform.SetParent(itemParent);
-        newItem.parentSlot = this;
-        newItem.isEquiped = false;
+        Equip(newItem, this, false);
     }
 }
