@@ -7,11 +7,12 @@ using System;
 
 public class UI_ItemSlot : MonoBehaviour, IDropHandler
 {
+    public ItemTypeEnum slotType;
     public Transform itemParent;
 
-    public virtual ItemTypeEnum GetSlotType()
+    public  ItemTypeEnum GetSlotType()
     {
-        return ItemTypeEnum.Consumable;
+        return slotType;
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -20,9 +21,7 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
         if (ui_Item)
         {
             if (ui_Item.isEquiped)
-            {
-               ui_Item.parentSlot.UnEquip(ui_Item, SetItemAsChild);
-            }
+               ui_Item.parentSlot.UnEquip(ui_Item, this);
             else
                 SetItemAsChild(ui_Item);
         }   
@@ -35,18 +34,24 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
             if (itemParent.childCount != 0)
             {
                 UI_Item currentItem = itemParent.GetChild(0).GetComponent<UI_Item>();
-                newItem.parentSlot.SetItemAsChild(currentItem);
+                UnEquip(currentItem, newItem.parentSlot);
             }
-            newItem.transform.SetParent(itemParent);
-            newItem.parentSlot = this;
-            newItem.isEquiped = true;
+            Equip(newItem, this, true);
         }
         else
             newItem.parentSlot.SetItemAsChild(newItem);
     }
 
-    public virtual void UnEquip(UI_Item itemToUnequip, Action<UI_Item> setItemAsChild)
+    public virtual void UnEquip(UI_Item itemToUnequip, UI_ItemSlot newParnetSlot)
     {
-        setItemAsChild(itemToUnequip);
+        newParnetSlot.SetItemAsChild(itemToUnequip);
+        EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    public virtual void Equip(UI_Item itemToEquip,UI_ItemSlot parentSlot,bool isEquiped)
+    {
+        itemToEquip.transform.SetParent(itemParent);
+        itemToEquip.parentSlot = parentSlot;
+        itemToEquip.isEquiped = isEquiped;
     }
 }

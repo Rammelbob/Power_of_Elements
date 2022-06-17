@@ -187,10 +187,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7107267395995755100}
-  - component: {fileID: 2865802354706585283}
-  - component: {fileID: 190504692465304064}
+  - component: {fileID: 2036665437500485443}
+  - component: {fileID: 7655628073031572808}
   m_Layer: 5
-  m_Name: UI_ItemSlot
+  m_Name: UI_WeaponSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,7 +216,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2865802354706585283
+--- !u!114 &2036665437500485443
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -225,12 +225,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7107267395995755101}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 130befd1ace1d064a9e989de713a60df, type: 3}
+  m_Script: {fileID: 11500000, guid: a8b315ee564657d49a21721da5d7a770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   slotType: 0
   itemParent: {fileID: 7777035538988986744}
---- !u!114 &190504692465304064
+  currentWeapon: {fileID: 0}
+--- !u!114 &7655628073031572808
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

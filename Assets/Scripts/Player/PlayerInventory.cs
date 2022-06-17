@@ -9,8 +9,8 @@ public class PlayerInventory : MonoBehaviour
     WeaponSlotManager weaponSlotManager;
     PlayerManager playerManager;
 
-    public PlayerWeaponItem[] playerActiveWeapons;
-    public PlayerWeaponItem weapon;
+    public PlayerWeaponItem currentWeapon;
+    public PlayerWeaponItem deafaultWeapon;
 
     public List<BaseItem> itemsToAdd;
 
@@ -19,36 +19,51 @@ public class PlayerInventory : MonoBehaviour
     {
         playerManager = GetComponent<PlayerManager>();
         weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
-        SetCurrentElement(0);
+        SetCurrentWeapon(0);
         foreach (var item in itemsToAdd)
         {
             playerManager.ui_Inventory_Handler.AddItem(item);
         }
     }
 
-    public void SetCurrentElement(int input)
+    public void SetCurrentWeapon(int input)
     {
-        if (input < playerActiveWeapons.Length)
+        if (input < playerManager.ui_Inventory_Handler.weaponSlots.Count)
         {
-            weapon = playerActiveWeapons[input];
-            skin.material = weapon.material;
-            LoadNewElementWeapon();
+            PlayerWeaponItem slotWeapon = playerManager.ui_Inventory_Handler.GetPlayerWeaponItemIndex(input);
+            if (slotWeapon == null)
+                LoadWeapon(deafaultWeapon);
+            else if(slotWeapon != currentWeapon)
+                LoadWeapon(slotWeapon);
         }
+    }
+
+    public void LoadWeapon(PlayerWeaponItem weapon)
+    {
+        currentWeapon = weapon;
+        skin.material = weapon.material;
+        LoadNewElementWeapon();
     }
 
     public void LoadNewElementWeapon()
     {
-        if (weapon.rightHandWeapon)
-            weaponSlotManager.LoadNewWeaponOnSlot(false, weapon);
-        if (weapon.leftHandWeapon)
-            weaponSlotManager.LoadNewWeaponOnSlot(true, weapon);
+        if (currentWeapon)
+        {
+            if (currentWeapon.rightHandWeapon)
+                weaponSlotManager.LoadNewWeaponOnSlot(false, currentWeapon);
+            if (currentWeapon.leftHandWeapon)
+                weaponSlotManager.LoadNewWeaponOnSlot(true, currentWeapon);
+        }
     }
 
     public void ShowCurrentWeapon(bool showWeapon)
     {
-        if (weapon.rightHandWeapon)
-            weaponSlotManager.ShowCurrentWeapon(false, showWeapon);
-        if (weapon.leftHandWeapon)
-            weaponSlotManager.ShowCurrentWeapon(true, showWeapon);
+        if (currentWeapon)
+        {
+            if (currentWeapon.rightHandWeapon)
+                weaponSlotManager.ShowCurrentWeapon(false, showWeapon);
+            if (currentWeapon.leftHandWeapon)
+                weaponSlotManager.ShowCurrentWeapon(true, showWeapon);
+        }
     }
 }

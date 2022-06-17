@@ -14,5 +14,5 @@ public interface ICombat
 {
     void DoAttack(List<GameObject> hitList);
 
-    void GetAttacked(float damage, Vector3 forceDir);
+    void GetAttacked(float damage, ElementsEnum damageType, bool isStagger);
 }

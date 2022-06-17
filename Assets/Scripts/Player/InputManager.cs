@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
-    PlayerInput playerControls;
+    PlayerInput playerInput;
     PlayerManager playerManager;
     public Transform direction;
     public Transform target;
@@ -25,53 +26,63 @@ public class InputManager : MonoBehaviour
     bool startJump;
     bool startDodge;
     bool toggleInventory;
+    bool changeElement;
 
     public bool blockInput;
     public bool lightAttack;
     public bool heavyAttack;
     public bool speacialAttack;
 
+    bool mouseUsed;
+    bool gamePadUsed;
+    bool changeInputType;
+    GameObject currentMousePosition;
+
     Vector2[] pressedElement = { Vector2.up, Vector2.right, Vector2.down, Vector3.left };
     public bool elementalMovement;
-    int currentElementPressed;
 
     private void Awake()
     {
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         playerManager = GetComponent<PlayerManager>();
     }
 
     private void OnEnable()
     {
-        if (playerControls == null)
+        if (playerInput == null)
         {
-            playerControls = new PlayerInput();
+            playerInput = new PlayerInput();
 
-            playerControls.CharacterControls.Move.started += OnMovementInput;
-            playerControls.CharacterControls.Move.canceled += OnMovementInput;
-            playerControls.CharacterControls.Move.performed += OnMovementInput;
-            playerControls.CharacterControls.Run.started += OnRun;
-            playerControls.CharacterControls.Run.canceled += OnRun;
-            playerControls.CharacterControls.ElemtalMovement.started += OnElementalMovement;
-            playerControls.CharacterControls.ElemtalMovement.canceled += OnElementalMovement;
-            playerControls.CharacterControls.Jump.started += OnJump;
-            playerControls.CharacterControls.Dodge.started += OnDodge;
-            playerControls.CharacterControls.ChangeElement.performed += OnChangeElement;
+            playerInput.CharacterControls.Move.started += OnMovementInput;
+            playerInput.CharacterControls.Move.canceled += OnMovementInput;
+            playerInput.CharacterControls.Move.performed += OnMovementInput;
+            playerInput.CharacterControls.Run.performed += OnRun;
+            playerInput.CharacterControls.Run.canceled += OnRun;
+            playerInput.CharacterControls.ElemtalMovement.started += OnElementalMovement;
+            playerInput.CharacterControls.ElemtalMovement.canceled += OnElementalMovement;
+            playerInput.CharacterControls.Jump.started += OnJump;
+            playerInput.CharacterControls.Dodge.started += OnDodge;
+            playerInput.CharacterControls.ChangeElement.performed += OnChangeElement;
             
-            playerControls.Combat.LightAttack.performed += OnLightAttack;
-            playerControls.Combat.HeavyAttack.performed += OnHeavyAttack;
-            playerControls.Combat.SpecialAttack.performed += OnSpecialAttack;
+            playerInput.CharacterControls.LightAttack.performed += OnLightAttack;
+            playerInput.CharacterControls.HeavyAttack.performed += OnHeavyAttack;
+            playerInput.CharacterControls.SpecialAttack.performed += OnSpecialAttack;
 
-            playerControls.Combat.Block.performed += OnBlock;
-            playerControls.Combat.Block.canceled += OnBlock;
+            playerInput.CharacterControls.Block.performed += OnBlock;
+            playerInput.CharacterControls.Block.canceled += OnBlock;
 
-            playerControls.UI.ToggleInventory.performed += OnInvetoryToggle;
-            playerControls.UI.ToggleInventory.canceled += OnInvetoryToggle;
+            playerInput.CharacterControls.MoveCamera.canceled += OnMousMove;
+            playerInput.CharacterControls.MoveCamera.performed += OnMousMove;
 
-            playerControls.CameraControls.MoveCamera.canceled += OnMousMove;
-            playerControls.CameraControls.MoveCamera.performed += OnMousMove;
+            playerInput.UI_Toggle.ToggleInventory.performed += OnToggleInventory;
+            playerInput.UI_Toggle.ToggleInventory.canceled += OnToggleInventory;
+
+            playerInput.UI.Point.performed += OnMouseInput;
+            playerInput.UI.Navigate.performed += OnGamePadInput;
+
         }
-        playerControls.Enable();
+        playerInput.Enable();
+        playerInput.UI.Disable();
     }
 
     void OnRun(InputAction.CallbackContext context)
@@ -112,6 +123,7 @@ public class InputManager : MonoBehaviour
     void OnChangeElement(InputAction.CallbackContext context)
     {
         changeElementInput = context.ReadValue<Vector2>();
+        changeElement = true;
     }
 
     void OnElementalMovement(InputAction.CallbackContext context)
@@ -129,14 +141,35 @@ public class InputManager : MonoBehaviour
         lookMovement = context.ReadValue<Vector2>();
     }
     
-    void OnInvetoryToggle(InputAction.CallbackContext context)
+    void OnToggleInventory(InputAction.CallbackContext context)
     {
         toggleInventory = context.ReadValueAsButton();
+    } 
+    
+    void OnMouseInput(InputAction.CallbackContext context)
+    {
+        mouseUsed = true;
+        if (gamePadUsed)
+        {
+            changeInputType = true;
+            gamePadUsed = false;
+        }
+    } 
+    
+    void OnGamePadInput(InputAction.CallbackContext context)
+    {
+        gamePadUsed = true;
+        if (mouseUsed)
+        {
+            changeInputType = true;
+            mouseUsed = false;
+        }
     }
+
 
     private void OnDisable()
     {
-        playerControls.Disable();
+        playerInput.Disable();
     }
 
     public void HandleAllInputs()
@@ -149,14 +182,18 @@ public class InputManager : MonoBehaviour
         HandleElementalChangeInput();
         HandleToggleInventory();
         HandleCameraInput();
+        HandleUIInputs();
     }
 
     private void HandleCombatInput()
     {
+        if (!playerManager.playerLocomotion.isGrounded)
+            return;
+
         if (lightAttack)
         {
             if (playerManager.playerLocomotion.isSprinting)
-                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.weapon); 
+                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.currentWeapon); 
             else if (playerManager.canDoCombo)
             {
                 playerManager.playerAttacker.doWeaponCombo = true;
@@ -168,14 +205,14 @@ public class InputManager : MonoBehaviour
                     return;
                 if (playerManager.canDoCombo)
                     return;
-                playerManager.playerAttacker.HandleLightAttack(playerManager.playerInventory.weapon);
+                playerManager.playerAttacker.HandleLightAttack(playerManager.playerInventory.currentWeapon);
             }
         }
 
         if (heavyAttack)
         {
             if (playerManager.playerLocomotion.isSprinting)
-                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.weapon);
+                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.currentWeapon);
             else if (playerManager.canDoCombo)
             {
                 playerManager.playerAttacker.doWeaponCombo = true;
@@ -185,7 +222,7 @@ public class InputManager : MonoBehaviour
             {
                 if (playerManager.canDoCombo || playerManager.isInteracting)
                     return;
-                playerManager.playerAttacker.HandleHeavyAttack(playerManager.playerInventory.weapon);
+                playerManager.playerAttacker.HandleHeavyAttack(playerManager.playerInventory.currentWeapon);
             }
         }
 
@@ -200,8 +237,8 @@ public class InputManager : MonoBehaviour
         verticalInput = movementInput.y;
         horizontalInput = movementInput.x;
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-        playerManager.playerAnimatorManager.animator.SetFloat("inputX", movementInput.x, 0.1f, Time.deltaTime);
-        playerManager.playerAnimatorManager.animator.SetFloat("inputY", movementInput.y, 0.1f, Time.deltaTime);
+        playerManager.playerAnimatorManager.animator.SetFloat("inputX", movementInput.x, 0.05f, Time.deltaTime);
+        playerManager.playerAnimatorManager.animator.SetFloat("inputY", movementInput.y, 0.05f, Time.deltaTime);
         playerManager.playerAnimatorManager.animator.SetFloat("movementSpeed",moveAmount *(playerManager.playerLocomotion.isSprinting ? 2f : 1f), 0.1f, Time.deltaTime);
     }
 
@@ -240,18 +277,19 @@ public class InputManager : MonoBehaviour
         if (playerManager.isInteracting)
             return;
 
-        for (int i = 0; i < pressedElement.Length; i++)
+        if (changeElement)
         {
-            if (pressedElement[i] == changeElementInput)
+            changeElement = false;
+            for (int i = 0; i < pressedElement.Length; i++)
             {
-                if (i != currentElementPressed)
+                if (pressedElement[i] == changeElementInput)
                 {
-                    playerManager.playerInventory.SetCurrentElement(i);
-                    currentElementPressed = i;
+                    playerManager.playerInventory.SetCurrentWeapon(i);
+                    break;
                 }
-                break;
             }
         }
+        
     }
 
     private void HandleCameraInput()
@@ -270,7 +308,50 @@ public class InputManager : MonoBehaviour
         if (toggleInventory)
         {
             toggleInventory = false;
-            playerManager.ui_Inventory_Handler.ToggleInventory();
+            if (playerManager.ui_Inventory_Handler.inventoryOpen)
+            {
+                playerManager.ui_Inventory_Handler.ToggleInventory(false);
+                Cursor.lockState = CursorLockMode.Locked;
+                playerInput.CharacterControls.Enable();
+                playerInput.UI.Disable();
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                playerManager.ui_Inventory_Handler.ToggleInventory(true);
+                playerInput.CharacterControls.Disable();
+                playerInput.UI.Enable();
+            }
+        }
+    }
+
+    private void HandleUIInputs()
+    {
+        if (mouseUsed)
+        {
+            if (changeInputType)
+            {
+                changeInputType = false;
+                Cursor.visible = true;
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
+        else if (gamePadUsed)
+        {
+            if (changeInputType)
+            {
+                changeInputType = false;
+                Cursor.visible = false;
+                EventSystem.current.SetSelectedGameObject(playerManager.ui_Inventory_Handler.itemParent.GetChild(0).gameObject);
+                currentMousePosition = EventSystem.current.currentSelectedGameObject;
+                Mouse.current.WarpCursorPosition(currentMousePosition.transform.position);
+            }
+
+            if (currentMousePosition != EventSystem.current.currentSelectedGameObject)
+            {
+                currentMousePosition = EventSystem.current.currentSelectedGameObject;
+                Mouse.current.WarpCursorPosition(currentMousePosition.transform.position);
+            }
         }
     }
 }

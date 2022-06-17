@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2678aaa845b89746acebccf850f97da, type: 3}
   m_Name: Sword and Shield
   m_EditorClassIdentifier: 
+  itemName: 
+  description: 
+  itemIcone: {fileID: 21300000, guid: 94d0bc01f29ad2b4687ca36bf185992f, type: 3}
   element: 4
   weakAgainst: 5
   StrongAgainst: 0

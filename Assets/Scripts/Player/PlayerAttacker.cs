@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttacker : MonoBehaviour
+public class PlayerAttacker : MonoBehaviour,ICombat
 {
     PlayerManager playerManager;
     public PlayerAttack currentAttack;
@@ -43,7 +43,7 @@ public class PlayerAttacker : MonoBehaviour
 
     public void HandleLightAttack(PlayerWeaponItem weapon)
     {
-        if (weapon.first_Light_Attack.attackName != null)
+        if (weapon.first_Light_Attack != null)
         {
             playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(weapon.first_Light_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.first_Light_Attack;
@@ -53,7 +53,7 @@ public class PlayerAttacker : MonoBehaviour
     
     public void HandleHeavyAttack(PlayerWeaponItem weapon)
     {
-        if(weapon.first_Heavy_Attack.attackName != null)
+        if (weapon.first_Heavy_Attack != null)
         {
             playerManager.playerInventory.ShowCurrentWeapon(true);
             playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(weapon.first_Heavy_Attack.attackName, true, 0.1f, true, true);
@@ -78,5 +78,15 @@ public class PlayerAttacker : MonoBehaviour
             playerManager.playerInventory.ShowCurrentWeapon(true);
             playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Shield_Block_Idle", true, 0.2f, false, true);
         }   
+    }
+
+    public void DoAttack(List<GameObject> hitList)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void GetAttacked(float damage, ElementsEnum damageType, bool isStagger)
+    {
+        throw new System.NotImplementedException();
     }
 }

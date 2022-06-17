@@ -6,7 +6,7 @@ using TMPro;
 using System;
 using UnityEngine.EventSystems;
 
-public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler,IDropHandler
+public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler, IPointerClickHandler ,ISelectHandler
 {
     public Image itemImage;
     public TextMeshProUGUI itemCount;
@@ -18,8 +18,10 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
     RectTransform rectTransform;
     Canvas canvas;
     CanvasGroup canvasGroup;
+    
 
     public event Action<UI_Item> OnItemLeftClick, OnItemRightClick, OnItemBeginDrag;
+    public event Action<RectTransform> OnUIItemSelect;
 
 
     private void Awake()
@@ -27,7 +29,6 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
         canvasGroup = GetComponent<CanvasGroup>();
-        canvasGroup.alpha = 0.7f;
     }
 
     private void SetItemCounter(int counterValue)
@@ -37,7 +38,7 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
         ShowCounter();
     }
 
-    public void IncreaseCounter(int amount)
+    public void ChangeCounter(int amount)
     {
         count += amount;
         itemCount.text = count.ToString();
@@ -59,38 +60,14 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
         itemInfo = itemToSet;
     }
 
-    public void OnPointerEnter()
-    {
-        canvasGroup.alpha = 1f;
-    }
-
-    public void OnPointerExit()
-    {
-        canvasGroup.alpha = 0.6f;
-    }
-    public void OnPointerClick(BaseEventData data)
-    {
-        PointerEventData pointerData = (PointerEventData)data;
-        if (pointerData.button == PointerEventData.InputButton.Right)
-        {
-            OnItemRightClick?.Invoke(this);
-        }
-        else
-        {
-            OnItemLeftClick?.Invoke(this);
-        }
-    }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
-        canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
         OnItemBeginDrag?.Invoke(this);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
     }
 
@@ -102,5 +79,23 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
     public void OnDrop(PointerEventData eventData)
     {
         parentSlot.OnDrop(eventData);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            OnItemRightClick?.Invoke(this);
+        }
+        else
+        {
+            OnItemLeftClick?.Invoke(this);
+        }
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        if (!isEquiped)
+            OnUIItemSelect?.Invoke(GetComponent<RectTransform>());
     }
 }

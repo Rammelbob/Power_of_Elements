@@ -16,9 +16,7 @@ MonoBehaviour:
   description: A Ring able to Controll even the flames of hell
   itemIcone: {fileID: 21300000, guid: f9db516301248cd46a352e8a13acb355, type: 3}
   currencyValue: 999
-  itemType: 8
+  itemType: 5
   statBuffs:
   - statType: 0
     amount: 5
-  - statType: 4
-    amount: -3
