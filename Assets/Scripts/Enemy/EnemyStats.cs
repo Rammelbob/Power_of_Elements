@@ -15,7 +15,7 @@ public class EnemyStats : BaseStats
         SetCurrentValueToMaxValue();
     }
 
-    public override void TakeDamage(float amount,DamageCollider damageCollider)
+    public override BaseStats TakeDamage(float amount, DamageCollider damageCollider)
     {
         //damage calc Switch case für den elemental multiplier und def
 
@@ -23,6 +23,10 @@ public class EnemyStats : BaseStats
         //anim.PlayPlayerTargetAnimation("Take Damage", true, 0.1f, true, true);
         //if (healthPoints.currentValue == 0)
         //    anim.PlayPlayerTargetAnimation("Death", true, 0.1f, true, true);
-
+        if (GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(-amount) <= 0)
+        {
+            return this;
+        }
+        return null;
     }
 }

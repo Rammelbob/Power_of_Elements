@@ -69,10 +69,10 @@ public class PlayerStats : BaseStats
         playerManager.playerAnimatorManager.animator.SetFloat("movementSpeedMultiplier", currentAmount);
     }
 
-    public override void TakeDamage(float amount,DamageCollider damageCollider)
+    public override BaseStats TakeDamage(float amount,DamageCollider damageCollider)
     {
         //damage calc Switch case für den elemental multiplier und def
-       
+
         //foreach (DamageCollider item in blockedColliders)
         //{
         //    if (item == damageCollider)
@@ -86,11 +86,12 @@ public class PlayerStats : BaseStats
         //        //{
         //        //    amount = 0;
         //        //}
-                
+
         //        //blockedColliders.Remove(item);
         //        //break;
         //    }
         //}
         //healthPoints.LoseStat(amount, 0, advancedHPBar.UpdateSliderValue);
+        return this;
     }
 }

@@ -9,8 +9,9 @@ public abstract class BaseStats : MonoBehaviour
     [Header("Stats")]
 
     public Stat[] statsArray = new Stat[Enum.GetValues(typeof(StatEnum)).Length];
+    public int id;
 
-    public abstract void TakeDamage(float amount, DamageCollider damageCollider);
+    public abstract BaseStats TakeDamage(float amount, DamageCollider damageCollider);
 
     public void SetCurrentValueToMaxValue()
     {
@@ -50,24 +51,23 @@ public class StatValues
         return baseValue + statLevel * amountPerLevel;
     }
 
-    public void ChangeCurrentStat(float changeAmount, float maxAmount,float minAmount)
+    public float ChangeCurrentStat(float changeAmount)
     {
         currentValue += changeAmount;
-        currentValue = currentValue > maxAmount ? maxAmount :
-            currentValue < minAmount ? minAmount : currentValue;
+        currentValue = Mathf.Clamp(currentValue, 0, GetMaxValue());
 
         OnStatChange?.Invoke(currentValue);
+        return currentValue;
     }
 
     public int ChangeStatLevel(int changeAmount)
     {
         float currentValueinPercent = currentValue / GetMaxValue();
         statLevel += changeAmount;
-        statLevel = statLevel > statLevleMinMax ? statLevleMinMax :
-            statLevel < -statLevleMinMax ? -statLevleMinMax : statLevel;
+        statLevel = Mathf.Clamp(statLevel, -statLevleMinMax, statLevleMinMax);
 
         OnLevelChange?.Invoke(statLevel, GetMaxValue());
-        ChangeCurrentStat(currentValueinPercent * GetMaxValue() - currentValue, baseValue + statLevleMinMax * amountPerLevel, 0);
+        ChangeCurrentStat(currentValueinPercent * GetMaxValue() - currentValue);
 
         return statLevel;
     }

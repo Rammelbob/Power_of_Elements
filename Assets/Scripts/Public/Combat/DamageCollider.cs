@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DamageCollider : CombatCollider
 {
     BaseStats myStats;
+
+    public static event Action<int> kill;
 
     public override void Awake()
     {
@@ -21,7 +24,11 @@ public class DamageCollider : CombatCollider
             if (stats != null)
             {
                 //stats.DamageCalculation(other.gameObject, this);
-                //stats.TakeDamage(myStats.CurrentWeaponDamage(), this);
+                var temp = stats.TakeDamage(10, this);
+                if (temp != null)
+                {
+                    kill?.Invoke(temp.id);
+                }
             }
         }
     }
