@@ -305,6 +305,14 @@ public class InputManager : MonoBehaviour
     
     private void HandleToggleInventory()
     {
+
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            playerManager.ui_Skillpoint_Handler.ToggleInventory(true);
+            Cursor.lockState = CursorLockMode.None;
+            playerInput.CharacterControls.Disable();
+        }
+
         if (toggleInventory)
         {
             toggleInventory = false;
@@ -317,8 +325,8 @@ public class InputManager : MonoBehaviour
             }
             else
             {
-                Cursor.lockState = CursorLockMode.None;
                 playerManager.ui_Inventory_Handler.ToggleInventory(true);
+                Cursor.lockState = CursorLockMode.None;
                 playerInput.CharacterControls.Disable();
                 playerInput.UI.Enable();
             }

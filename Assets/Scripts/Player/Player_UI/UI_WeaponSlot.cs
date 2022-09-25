@@ -8,6 +8,7 @@ public class UI_WeaponSlot : UI_ItemSlot
     public event Action<PlayerWeaponItem> UnequipWeapon;
     public PlayerWeaponItem currentWeapon;
 
+
     public override void UnEquip(UI_Item itemToUnequip, UI_ItemSlot newParnetSlot)
     {
         if (newParnetSlot.GetSlotType() != ItemTypeEnum.Weapon)

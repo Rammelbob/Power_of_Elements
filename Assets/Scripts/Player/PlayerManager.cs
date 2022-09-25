@@ -11,6 +11,7 @@ public class PlayerManager : MonoBehaviour
     public PlayerAnimatorManager playerAnimatorManager;
     public PlayerAttacker playerAttacker;
     public UI_Inventory_Handler ui_Inventory_Handler;
+    public UI_Skillpoint_Handler ui_Skillpoint_Handler;
 
     [Header("Player Flags")]
     public bool isInteracting;
@@ -29,6 +30,7 @@ public class PlayerManager : MonoBehaviour
         playerAnimatorManager = GetComponent<PlayerAnimatorManager>();
         playerAttacker = GetComponent<PlayerAttacker>();
         ui_Inventory_Handler = GetComponentInChildren<UI_Inventory_Handler>();
+        ui_Skillpoint_Handler = GetComponentInChildren<UI_Skillpoint_Handler>();
     }
 
     private void Update()

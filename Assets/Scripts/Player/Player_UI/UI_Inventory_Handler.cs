@@ -266,4 +266,5 @@ public class UI_Inventory_Handler : UI_ItemSlot
     {
         Equip(newItem, this, false);
     }
+
 }

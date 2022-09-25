@@ -10,7 +10,7 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
     public ItemTypeEnum slotType;
     public Transform itemParent;
 
-    public  ItemTypeEnum GetSlotType()
+    public ItemTypeEnum GetSlotType()
     {
         return slotType;
     }
@@ -21,10 +21,10 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
         if (ui_Item)
         {
             if (ui_Item.isEquiped)
-               ui_Item.parentSlot.UnEquip(ui_Item, this);
+                ui_Item.parentSlot.UnEquip(ui_Item, this);
             else
                 SetItemAsChild(ui_Item);
-        }   
+        }
     }
 
     public virtual void SetItemAsChild(UI_Item newItem)
@@ -48,7 +48,7 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
         EventSystem.current.SetSelectedGameObject(null);
     }
 
-    public virtual void Equip(UI_Item itemToEquip,UI_ItemSlot parentSlot,bool isEquiped)
+    public virtual void Equip(UI_Item itemToEquip, UI_ItemSlot parentSlot, bool isEquiped)
     {
         itemToEquip.transform.SetParent(itemParent);
         itemToEquip.parentSlot = parentSlot;

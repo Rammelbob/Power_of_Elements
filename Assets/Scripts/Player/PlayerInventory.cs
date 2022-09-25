@@ -19,21 +19,27 @@ public class PlayerInventory : MonoBehaviour
     {
         playerManager = GetComponent<PlayerManager>();
         weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
-        SetCurrentWeapon(0);
+        LoadWeapon(deafaultWeapon);
         foreach (var item in itemsToAdd)
         {
             playerManager.ui_Inventory_Handler.AddItem(item);
+            playerManager.ui_Skillpoint_Handler.AddItem(item);
         }
     }
 
     public void SetCurrentWeapon(int input)
     {
+        if(playerManager.ui_Inventory_Handler == null)
+        {
+            return;
+        }
+
         if (input < playerManager.ui_Inventory_Handler.weaponSlots.Count)
         {
             PlayerWeaponItem slotWeapon = playerManager.ui_Inventory_Handler.GetPlayerWeaponItemIndex(input);
             if (slotWeapon == null)
                 LoadWeapon(deafaultWeapon);
-            else if(slotWeapon != currentWeapon)
+            else if (slotWeapon != currentWeapon)
                 LoadWeapon(slotWeapon);
         }
     }
