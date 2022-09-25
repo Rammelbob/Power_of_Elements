@@ -6,27 +6,44 @@ public class EnemyStats : BaseStats
 {
     BaseStatusBar hpBar;
     PlayerAnimatorManager anim;
+    public float weaponpower;
 
     private void Awake()
     {
         anim = GetComponent<PlayerAnimatorManager>();
         hpBar = GetComponentInChildren<BaseStatusBar>();
         //hpBar.UpdateMaxSliderValue();
+        elementalTrahshold = elementalTrahsholdBase;
         SetCurrentValueToMaxValue();
     }
 
-    public override BaseStats TakeDamage(float amount, DamageCollider damageCollider)
+    public override BaseStats TakeDamage(float amount, ElementsEnum elementalDamageType)
     {
-        //damage calc Switch case für den elemental multiplier und def
-
-        //healthPoints.LoseStat(amount, 0, hpBar.UpdateSliderValue);
-        //anim.PlayPlayerTargetAnimation("Take Damage", true, 0.1f, true, true);
-        //if (healthPoints.currentValue == 0)
-        //    anim.PlayPlayerTargetAnimation("Death", true, 0.1f, true, true);
+        amount /= GetStatByEnum(StatEnum.Defense).statvalues.currentValue;
         if (GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(-amount) <= 0)
         {
             return this;
         }
+
+        if ((elementalTrahshold -= amount) < 0)
+        {
+            switch(elementalDamageType)
+            {
+                case ElementsEnum.Fire:
+                    GetStatByEnum(StatEnum.Stamina).statvalues.ChangeStatLevel(-1);
+                    break;
+                case ElementsEnum.Earth:
+                    GetStatByEnum(StatEnum.Defense).statvalues.ChangeStatLevel(-1);
+                    break;
+            }
+            elementalTrahsholdBase *= 2;
+            elementalTrahshold = elementalTrahsholdBase;
+        }
         return null;
+    }
+
+    public override void DoDamage(BaseStats targetHit)
+    {
+        targetHit.TakeDamage(weaponpower*GetStatByEnum(StatEnum.Attack).statvalues.currentValue,ElementsEnum.Fire);
     }
 }

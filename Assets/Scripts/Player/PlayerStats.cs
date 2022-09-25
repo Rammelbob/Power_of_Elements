@@ -10,6 +10,7 @@ public class PlayerStats : BaseStats
     public AdvancedStatusBar advancedStaminaBar;
 
     PlayerManager playerManager;
+    public static event Action<int> kill;
 
     private void Awake()
     {
@@ -25,6 +26,8 @@ public class PlayerStats : BaseStats
 
         advancedHPBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.HealthPoints).statvalues.GetMaxValue());
         advancedStaminaBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.Stamina).statvalues.GetMaxValue());
+
+        elementalTrahshold = elementalTrahsholdBase;
         SetCurrentValueToMaxValue();
     }
 
@@ -69,7 +72,7 @@ public class PlayerStats : BaseStats
         playerManager.playerAnimatorManager.animator.SetFloat("movementSpeedMultiplier", currentAmount);
     }
 
-    public override BaseStats TakeDamage(float amount,DamageCollider damageCollider)
+    public override BaseStats TakeDamage(float amount, ElementsEnum elementalDamageType)
     {
         //damage calc Switch case für den elemental multiplier und def
 
@@ -93,5 +96,14 @@ public class PlayerStats : BaseStats
         //}
         //healthPoints.LoseStat(amount, 0, advancedHPBar.UpdateSliderValue);
         return this;
+    }
+
+    public override void DoDamage(BaseStats targetHit)
+    {
+        var temp = targetHit.TakeDamage(playerManager.playerAttacker.currentAttack.attackDamage * GetStatByEnum(StatEnum.Attack).statvalues.currentValue,playerManager.playerInventory.currentWeapon.element);
+        if (temp != null)
+        {
+            kill?.Invoke(temp.id);   
+        } 
     }
 }

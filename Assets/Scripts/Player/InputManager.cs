@@ -28,7 +28,6 @@ public class InputManager : MonoBehaviour
     bool toggleInventory;
     bool changeElement;
 
-    public bool blockInput;
     public bool lightAttack;
     public bool heavyAttack;
     public bool speacialAttack;
@@ -67,9 +66,6 @@ public class InputManager : MonoBehaviour
             playerInput.CharacterControls.LightAttack.performed += OnLightAttack;
             playerInput.CharacterControls.HeavyAttack.performed += OnHeavyAttack;
             playerInput.CharacterControls.SpecialAttack.performed += OnSpecialAttack;
-
-            playerInput.CharacterControls.Block.performed += OnBlock;
-            playerInput.CharacterControls.Block.canceled += OnBlock;
 
             playerInput.CharacterControls.MoveCamera.canceled += OnMousMove;
             playerInput.CharacterControls.MoveCamera.performed += OnMousMove;
@@ -129,11 +125,6 @@ public class InputManager : MonoBehaviour
     void OnElementalMovement(InputAction.CallbackContext context)
     {
         elementalMovement = context.ReadValueAsButton();
-    }
-
-    void OnBlock(InputAction.CallbackContext context)
-    {
-        blockInput = context.ReadValueAsButton();
     }
 
     void OnMousMove(InputAction.CallbackContext context)
@@ -224,11 +215,6 @@ public class InputManager : MonoBehaviour
                     return;
                 playerManager.playerAttacker.HandleHeavyAttack(playerManager.playerInventory.currentWeapon);
             }
-        }
-
-        if (blockInput)
-        {
-            playerManager.playerAttacker.StartBlock();
         }
     }
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttacker : MonoBehaviour,ICombat
+public class PlayerAttacker : MonoBehaviour
 {
     PlayerManager playerManager;
     public PlayerAttack currentAttack;
@@ -69,24 +69,5 @@ public class PlayerAttacker : MonoBehaviour,ICombat
             playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(weapon.running_Attack.attackName, true, 0.1f, true, true);
             currentAttack = weapon.running_Attack;
         }
-    }
-
-    public void StartBlock()
-    {
-        if (!playerManager.isBlocking)
-        {
-            playerManager.playerInventory.ShowCurrentWeapon(true);
-            playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Shield_Block_Idle", true, 0.2f, false, true);
-        }   
-    }
-
-    public void DoAttack(List<GameObject> hitList)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void GetAttacked(float damage, ElementsEnum damageType, bool isStagger)
-    {
-        throw new System.NotImplementedException();
     }
 }

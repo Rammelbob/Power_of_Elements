@@ -19,7 +19,7 @@ public class Goal
     {
         if (isKillGoal)
         {
-            DamageCollider.kill += AddCurrent;
+            PlayerStats.kill += AddCurrent;
         }
     }
 
@@ -44,7 +44,7 @@ public class Goal
     {
         completed = true;
         Debug.Log("goal complete");
-        DamageCollider.kill -= AddCurrent;
+        PlayerStats.kill -= AddCurrent;
         GoalCompleted?.Invoke();
        
     }

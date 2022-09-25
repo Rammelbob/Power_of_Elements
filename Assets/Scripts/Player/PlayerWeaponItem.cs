@@ -17,7 +17,6 @@ public class PlayerWeaponItem : BaseItem
 
     [Header("WeaponItems")]
     public GameObject rightHandWeapon;
-    public GameObject leftHandWeapon;
 
     [Header("Light Attack")]
     public PlayerAttack first_Light_Attack;

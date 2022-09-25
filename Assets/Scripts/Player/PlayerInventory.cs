@@ -6,7 +6,7 @@ using System;
 public class PlayerInventory : MonoBehaviour
 {
     public SkinnedMeshRenderer skin;
-    WeaponSlotManager weaponSlotManager;
+    public WeaponSlotManager weaponSlotManager;
     PlayerManager playerManager;
 
     public PlayerWeaponItem currentWeapon;
@@ -50,9 +50,7 @@ public class PlayerInventory : MonoBehaviour
         if (currentWeapon)
         {
             if (currentWeapon.rightHandWeapon)
-                weaponSlotManager.LoadNewWeaponOnSlot(false, currentWeapon);
-            if (currentWeapon.leftHandWeapon)
-                weaponSlotManager.LoadNewWeaponOnSlot(true, currentWeapon);
+                weaponSlotManager.LoadNewWeaponOnSlot(currentWeapon);
         }
     }
 
@@ -61,9 +59,7 @@ public class PlayerInventory : MonoBehaviour
         if (currentWeapon)
         {
             if (currentWeapon.rightHandWeapon)
-                weaponSlotManager.ShowCurrentWeapon(false, showWeapon);
-            if (currentWeapon.leftHandWeapon)
-                weaponSlotManager.ShowCurrentWeapon(true, showWeapon);
+                weaponSlotManager.ShowCurrentWeapon(showWeapon);
         }
     }
 }
