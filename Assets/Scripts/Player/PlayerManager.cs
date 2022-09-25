@@ -49,7 +49,6 @@ public class PlayerManager : MonoBehaviour
     {
         playerLocomotion.HandleAllMovement();
         playerAnimatorManager.animator.SetBool("isGrounded", playerLocomotion.isGrounded);
-        playerAnimatorManager.animator.SetBool("isBlocking", inputManager.blockInput);
     }
 
     private void LateUpdate()

@@ -83,14 +83,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Block"",
-                    ""type"": ""Button"",
-                    ""id"": ""10f3ac3f-02fd-45a3-a875-65759eb133e6"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""SpecialAttack"",
                     ""type"": ""Button"",
                     ""id"": ""1c49e257-bd54-406a-a39d-061af53c53c1"",
@@ -476,17 +468,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SpecialAttack"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""00a4fede-c40f-4d80-be03-e69dfb03915f"",
-                    ""path"": ""<Keyboard>/b"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Block"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -979,7 +960,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_CharacterControls_ChangeElement = m_CharacterControls.FindAction("ChangeElement", throwIfNotFound: true);
         m_CharacterControls_Talk = m_CharacterControls.FindAction("Talk", throwIfNotFound: true);
         m_CharacterControls_MoveCamera = m_CharacterControls.FindAction("MoveCamera", throwIfNotFound: true);
-        m_CharacterControls_Block = m_CharacterControls.FindAction("Block", throwIfNotFound: true);
         m_CharacterControls_SpecialAttack = m_CharacterControls.FindAction("SpecialAttack", throwIfNotFound: true);
         m_CharacterControls_HeavyAttack = m_CharacterControls.FindAction("HeavyAttack", throwIfNotFound: true);
         m_CharacterControls_LightAttack = m_CharacterControls.FindAction("LightAttack", throwIfNotFound: true);
@@ -1051,7 +1031,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterControls_ChangeElement;
     private readonly InputAction m_CharacterControls_Talk;
     private readonly InputAction m_CharacterControls_MoveCamera;
-    private readonly InputAction m_CharacterControls_Block;
     private readonly InputAction m_CharacterControls_SpecialAttack;
     private readonly InputAction m_CharacterControls_HeavyAttack;
     private readonly InputAction m_CharacterControls_LightAttack;
@@ -1067,7 +1046,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @ChangeElement => m_Wrapper.m_CharacterControls_ChangeElement;
         public InputAction @Talk => m_Wrapper.m_CharacterControls_Talk;
         public InputAction @MoveCamera => m_Wrapper.m_CharacterControls_MoveCamera;
-        public InputAction @Block => m_Wrapper.m_CharacterControls_Block;
         public InputAction @SpecialAttack => m_Wrapper.m_CharacterControls_SpecialAttack;
         public InputAction @HeavyAttack => m_Wrapper.m_CharacterControls_HeavyAttack;
         public InputAction @LightAttack => m_Wrapper.m_CharacterControls_LightAttack;
@@ -1104,9 +1082,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @MoveCamera.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnMoveCamera;
                 @MoveCamera.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnMoveCamera;
                 @MoveCamera.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnMoveCamera;
-                @Block.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnBlock;
-                @Block.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnBlock;
-                @Block.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnBlock;
                 @SpecialAttack.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnSpecialAttack;
                 @SpecialAttack.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnSpecialAttack;
                 @SpecialAttack.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnSpecialAttack;
@@ -1144,9 +1119,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @MoveCamera.started += instance.OnMoveCamera;
                 @MoveCamera.performed += instance.OnMoveCamera;
                 @MoveCamera.canceled += instance.OnMoveCamera;
-                @Block.started += instance.OnBlock;
-                @Block.performed += instance.OnBlock;
-                @Block.canceled += instance.OnBlock;
                 @SpecialAttack.started += instance.OnSpecialAttack;
                 @SpecialAttack.performed += instance.OnSpecialAttack;
                 @SpecialAttack.canceled += instance.OnSpecialAttack;
@@ -1285,7 +1257,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnChangeElement(InputAction.CallbackContext context);
         void OnTalk(InputAction.CallbackContext context);
         void OnMoveCamera(InputAction.CallbackContext context);
-        void OnBlock(InputAction.CallbackContext context);
         void OnSpecialAttack(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnLightAttack(InputAction.CallbackContext context);

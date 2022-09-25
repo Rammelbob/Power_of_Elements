@@ -5,10 +5,8 @@ using UnityEngine.VFX;
 
 public class WeaponSlotManager : MonoBehaviour
 {
-    public WeaponHolderSlot leftHandSlot;
     public WeaponHolderSlot rightHandSlot;
 
-    CombatCollider leftHandCollider;
     CombatCollider rightHandCollider;
 
     GameObject combatVFXBuffer;
@@ -20,47 +18,28 @@ public class WeaponSlotManager : MonoBehaviour
         WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
         foreach (WeaponHolderSlot weaponSlot in weaponHolderSlots)
         {
-            if (weaponSlot.isLeftHandSlot)
-            {
-                leftHandSlot = weaponSlot;
-            }
-            else if (weaponSlot.isRightHandSlot)
+            if (weaponSlot.isRightHandSlot)
             {
                 rightHandSlot = weaponSlot;
             }
         }
     }
 
-    public void LoadNewWeaponOnSlot(bool isLeft, PlayerWeaponItem weapon)
+    public void LoadNewWeaponOnSlot(PlayerWeaponItem weapon)
     {
-        if (isLeft)
-        {
-            leftHandSlot.LoadNewWeaponModel(weapon.leftHandWeapon);
-            LoadLeftWeaponDamageCollider();
-        }
-        else
-        {
-            rightHandSlot.LoadNewWeaponModel(weapon.rightHandWeapon);
-            LoadRightWeaponDamageCollider();
-            LoadWeaponVFX(weapon.attackVisualEffect);
-        }
+
+        rightHandSlot.LoadNewWeaponModel(weapon.rightHandWeapon);
+        LoadRightWeaponDamageCollider();
+        LoadWeaponVFX(weapon.attackVisualEffect);
     }
 
-    public void ShowCurrentWeapon(bool isLeft, bool showWeapon)
+    public void ShowCurrentWeapon(bool showWeapon)
     {
-        if (isLeft)
-            leftHandSlot.ShowCurrentWeapon(showWeapon);
-        else
-            rightHandSlot.ShowCurrentWeapon(showWeapon);
+        rightHandSlot.ShowCurrentWeapon(showWeapon);
     }
 
 
     #region Handle Weapons Collider
-    private void LoadLeftWeaponDamageCollider()
-    {
-        leftHandCollider = leftHandSlot.currentWeaponModel.GetComponentInChildren<ShieldCollider>();
-    }
-
     private void LoadRightWeaponDamageCollider()
     {
         rightHandCollider = rightHandSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
@@ -71,24 +50,12 @@ public class WeaponSlotManager : MonoBehaviour
         combatVFXBuffer = visualEffect;
     }
 
-    public void OpenLeftDamageCollider()
-    {
-        if (leftHandCollider)
-            leftHandCollider.EnableCombatCollider();
-    }
-
     public void OpenRightDamageCollider()
     {
         if (rightHandCollider)
             rightHandCollider.EnableCombatCollider();
 
         PlayVFX();
-    }
-
-    public void CloseLeftDamageCollider()
-    {
-        if (leftHandCollider)
-            leftHandCollider.DisableCombatCollider();
     }
 
     public void CloseRightDamageCollider()

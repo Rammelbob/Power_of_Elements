@@ -70,14 +70,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Block",
-                    "type": "Button",
-                    "id": "10f3ac3f-02fd-45a3-a875-65759eb133e6",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "SpecialAttack",
                     "type": "Button",
                     "id": "1c49e257-bd54-406a-a39d-061af53c53c1",
@@ -463,17 +455,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "SpecialAttack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "00a4fede-c40f-4d80-be03-e69dfb03915f",
-                    "path": "<Keyboard>/b",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Block",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

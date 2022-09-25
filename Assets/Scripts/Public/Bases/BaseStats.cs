@@ -10,8 +10,12 @@ public abstract class BaseStats : MonoBehaviour
 
     public Stat[] statsArray = new Stat[Enum.GetValues(typeof(StatEnum)).Length];
     public int id;
+    public float elementalTrahshold;
+    protected float elementalTrahsholdBase = 50;
 
-    public abstract BaseStats TakeDamage(float amount, DamageCollider damageCollider);
+
+    public abstract BaseStats TakeDamage(float amount,ElementsEnum elementalDamageType);
+    public abstract void DoDamage(BaseStats targetHit);
 
     public void SetCurrentValueToMaxValue()
     {
