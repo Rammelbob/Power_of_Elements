@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: Dialogue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 360, y: 152}
+  position: {x: 344, y: 24}
   ports:
     keys:
     - entry
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Name: Choice
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -40, y: 104}
+  position: {x: -8, y: 88}
   ports:
     keys:
     - entry
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Name: Dialogue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 136, y: -200}
+  position: {x: 200, y: -312}
   ports:
     keys:
     - entry
@@ -229,7 +229,7 @@ MonoBehaviour:
   entry: 0
   exit: 0
   speakerName: 
-  dialogueLine: test<i>test</i>
+  dialogueLine: Alles klar, schau dich um!
 --- !u!114 &-1443643046688695709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Name: Event
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 552, y: -184}
+  position: {x: 712, y: -200}
   ports:
     keys:
     - entry

@@ -11,7 +11,7 @@ public class NPC_DialogueHandler : MonoBehaviour
 
     private void Awake()
     {
-        nodeParser = GameObject.Find("DialogueCanvas").GetComponent<NodeParser>();
+        nodeParser = GameObject.Find("Dialogue").GetComponent<NodeParser>();
     }
 
     private void OnTriggerEnter(Collider other)

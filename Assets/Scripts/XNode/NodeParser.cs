@@ -20,7 +20,7 @@ public class NodeParser : MonoBehaviour
 
     public DialogueOptionsParser optionsParser;
 
-    private Canvas canvas;
+    private GameObject dialogueObj;
 
     private void Awake()
     {
@@ -30,9 +30,9 @@ public class NodeParser : MonoBehaviour
 
     void Start()
     {
-        canvas = GameObject.Find("DialogueCanvas").GetComponent<Canvas>();
+        dialogueObj = GameObject.Find("DialogueSprites");
     }
-    
+
     public void SetDialogueGraph(DialogueGraph graph, NPC_DialogueHandler speaker)
     {
         this.graph = graph;
@@ -69,7 +69,7 @@ public class NodeParser : MonoBehaviour
     {
         if (!canTalk) { return; }
 
-        canvas.enabled = true;
+        dialogueObj.SetActive(true);
 
         BaseNode baseNode;
 
@@ -107,7 +107,7 @@ public class NodeParser : MonoBehaviour
                 break;
 
             case NodeType.End:
-                canvas.enabled = false;
+                dialogueObj.SetActive(false);
 
                 var endNode = (EndNode)baseNode;
                 if (endNode.nextDialogueGraph != null)
