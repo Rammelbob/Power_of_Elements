@@ -23,7 +23,7 @@ public class PlayerInventory : MonoBehaviour
         foreach (var item in itemsToAdd)
         {
             playerManager.ui_Inventory_Handler.AddItem(item);
-            playerManager.ui_Skillpoint_Handler.AddItem(item);
+           // playerManager.ui_Skillpoint_Handler.AddItem(item);
         }
     }
 
