@@ -15,9 +15,7 @@ public class DialogueOptionsParser : MonoBehaviour
     Button lastSelected;
     NodeParser nodeParser;
 
-    [Header("Stats")]
     public Transform scrollviewParent;
-    public GameObject statPrefab;
     public ScrollRect statScrollRect;
 
 
