@@ -8896,7 +8896,7 @@ MonoBehaviour:
   CameraDistance: 6
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 247
+    m_Bits: 1271
   IgnoreTag: 
   CameraRadius: 0.2
 --- !u!114 &1007480750
@@ -12190,7 +12190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyStateManager: {fileID: 686741870}
-  staminaPercentToExit: 0
+  staminaPercentToExit: 0.75
 --- !u!1 &1360150643
 GameObject:
   m_ObjectHideFlags: 0
@@ -12750,7 +12750,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7788944, y: 1}
+    m_SensorSize: {x: 1.7780269, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -12895,8 +12895,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyStateManager: {fileID: 686741870}
-  combatRange: 6
-  chaseOrDodgeValue: 2.5
   rotationSpeed: 5
   dodgeAction: {fileID: 11400000, guid: a2d2e1713d1672f44b9ce5c8c1778ffb, type: 2}
   enemyAttacks:
@@ -13701,7 +13699,7 @@ GameObject:
   - component: {fileID: 1758169729}
   - component: {fileID: 1758169732}
   - component: {fileID: 1758169733}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy_Movement_Test_Unit_01
   m_TagString: Enemy
   m_Icon: {fileID: 0}
