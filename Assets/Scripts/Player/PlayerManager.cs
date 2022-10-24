@@ -59,7 +59,6 @@ public class PlayerManager : MonoBehaviour
         canRotate = playerAnimatorManager.animator.GetBool("canRotate");
         isInteracting = playerAnimatorManager.animator.GetBool("isInteracting");
         useRootMotion = playerAnimatorManager.animator.GetBool("useRootMotion");
-        isBlocking = playerAnimatorManager.animator.GetBool("isBlocking");
         unloadWeapons = playerAnimatorManager.animator.GetBool("unLoadWeapon");
     }
 }

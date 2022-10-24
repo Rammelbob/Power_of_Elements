@@ -15,17 +15,17 @@ public class PlayerStats : BaseStats
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
-        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnStatChange += OnHealthPointChange;
-        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnLevelChange += OnHealthPointLevelChange;
+        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnStatChange += advancedHPBar.UpdateSliderValue;
+        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnLevelChange += advancedHPBar.SetSliderSizeWithLvl;
 
-        GetStatByEnum(StatEnum.Stamina).statvalues.OnStatChange += OnStaminaChange;
-        GetStatByEnum(StatEnum.Stamina).statvalues.OnLevelChange += OnStaminaLevelChange;
+        GetStatByEnum(StatEnum.Stamina).statvalues.OnStatChange += advancedStaminaBar.UpdateSliderValue;
+        GetStatByEnum(StatEnum.Stamina).statvalues.OnLevelChange += advancedStaminaBar.SetSliderSizeWithLvl;
 
         GetStatByEnum(StatEnum.MovementSpeed).statvalues.OnStatChange += OnMovementSpeedChange;
         GetStatByEnum(StatEnum.AttackSpeed).statvalues.OnStatChange += OnAttackSpeedChange;
 
-        advancedHPBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.HealthPoints).statvalues.GetMaxValue());
-        advancedStaminaBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.Stamina).statvalues.GetMaxValue());
+        advancedHPBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.HealthPoints).statvalues.GetCurrentMaxValue());
+        advancedStaminaBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.Stamina).statvalues.GetCurrentMaxValue());
 
         elementalTrahshold = elementalTrahsholdBase;
         SetCurrentValueToMaxValue();
@@ -33,35 +33,16 @@ public class PlayerStats : BaseStats
 
     private void OnDisable()
     {
-        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnStatChange -= OnHealthPointChange;
-        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnLevelChange -= OnHealthPointLevelChange;
+        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnStatChange -= advancedHPBar.UpdateSliderValue;
+        GetStatByEnum(StatEnum.HealthPoints).statvalues.OnLevelChange -= advancedHPBar.SetSliderSizeWithLvl;
 
-        GetStatByEnum(StatEnum.Stamina).statvalues.OnStatChange -= OnStaminaChange;
-        GetStatByEnum(StatEnum.Stamina).statvalues.OnLevelChange -= OnStaminaLevelChange;
+        GetStatByEnum(StatEnum.Stamina).statvalues.OnStatChange -= advancedStaminaBar.UpdateSliderValue;
+        GetStatByEnum(StatEnum.Stamina).statvalues.OnLevelChange -= advancedStaminaBar.SetSliderSizeWithLvl;
 
         GetStatByEnum(StatEnum.MovementSpeed).statvalues.OnStatChange -= OnMovementSpeedChange;
         GetStatByEnum(StatEnum.AttackSpeed).statvalues.OnStatChange -= OnAttackSpeedChange;
     }
 
-    private void OnHealthPointChange(float currentAmount)
-    {
-        advancedHPBar.UpdateSliderValue(currentAmount);
-    }
-
-    private void OnHealthPointLevelChange(int level, float maxAmount)
-    {
-        advancedHPBar.SetSliderSizeWithLvl(level, maxAmount);
-    }
-
-    private void OnStaminaChange(float currentAmount)
-    {
-        advancedStaminaBar.UpdateSliderValue(currentAmount);
-    }
-
-    private void OnStaminaLevelChange(int level, float maxAmount)
-    {
-        advancedStaminaBar.SetSliderSizeWithLvl(level, maxAmount);
-    }
     private void OnAttackSpeedChange(float currentAmount)
     {
         playerManager.playerAnimatorManager.animator.SetFloat("attackSpeedMultiplier", currentAmount);
@@ -103,7 +84,8 @@ public class PlayerStats : BaseStats
         var temp = targetHit.TakeDamage(playerManager.playerAttacker.currentAttack.attackDamage * GetStatByEnum(StatEnum.Attack).statvalues.currentValue,playerManager.playerInventory.currentWeapon.element);
         if (temp != null)
         {
-            kill?.Invoke(temp.id);   
+            kill?.Invoke(temp.id);
+            Destroy(temp.gameObject);
         } 
     }
 }

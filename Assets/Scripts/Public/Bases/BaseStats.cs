@@ -30,6 +30,11 @@ public abstract class BaseStats : MonoBehaviour
     {
         return statsArray.Where(i => i.statType == statEnum).First();
     }
+
+    public bool CanUseStamina(float staminaToUse)
+    {
+        return GetStatByEnum(StatEnum.Stamina).statvalues.currentValue >= staminaToUse;
+    }
 }
 
 [Serializable]
@@ -46,11 +51,11 @@ public class StatValues
 
     public void SetCurrentValueToMaxValue()
     {
-        currentValue = GetMaxValue();
+        currentValue = GetCurrentMaxValue();
         OnStatChange?.Invoke(currentValue);
     }
 
-    public float GetMaxValue()
+    public float GetCurrentMaxValue()
     {
         return baseValue + statLevel * amountPerLevel;
     }
@@ -58,7 +63,7 @@ public class StatValues
     public float ChangeCurrentStat(float changeAmount)
     {
         currentValue += changeAmount;
-        currentValue = Mathf.Clamp(currentValue, 0, GetMaxValue());
+        currentValue = Mathf.Clamp(currentValue, 0, GetCurrentMaxValue());
 
         OnStatChange?.Invoke(currentValue);
         return currentValue;
@@ -66,12 +71,12 @@ public class StatValues
 
     public int ChangeStatLevel(int changeAmount)
     {
-        float currentValueinPercent = currentValue / GetMaxValue();
+        float currentValueinPercent = currentValue / GetCurrentMaxValue();
         statLevel += changeAmount;
         statLevel = Mathf.Clamp(statLevel, -statLevleMinMax, statLevleMinMax);
 
-        OnLevelChange?.Invoke(statLevel, GetMaxValue());
-        ChangeCurrentStat(currentValueinPercent * GetMaxValue() - currentValue);
+        OnLevelChange?.Invoke(statLevel, GetCurrentMaxValue());
+        ChangeCurrentStat(currentValueinPercent * GetCurrentMaxValue() - currentValue);
 
         return statLevel;
     }
@@ -82,6 +87,11 @@ public class Stat
 {
     public StatEnum statType;
     public StatValues statvalues;
+
+    public float GetCurrentAmountInPercent()
+    {
+        return statvalues.currentValue / statvalues.GetCurrentMaxValue();
+    }
 }
 
 

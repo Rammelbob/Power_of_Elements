@@ -78,8 +78,8 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void HandleRotation()
     {
-        //if (!playerManager.canRotate)
-        //    return;
+        if (!playerManager.canRotate)
+            return;
 
 
         playerRotation = new Quaternion();

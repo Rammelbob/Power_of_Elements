@@ -15,12 +15,9 @@ public class EnemyMovementState : EnemyBaseState
 
     public override void UpdateState()
     {
-        if (enemyStateManager.isInteracting)
-            return;
-
         HandleMovmentChecks();
 
-        if (enemyStateManager.idleState.distanceToTarget < enemyStateManager.combatState.combatRange)
+        if (enemyStateManager.idleState.distanceToTarget < enemyStateManager.combatState.attackRange)
         {
             enemyStateManager.SwitchState(enemyStateManager.combatState);
         }

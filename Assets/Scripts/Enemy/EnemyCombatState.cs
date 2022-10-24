@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class EnemyCombatState : EnemyBaseState
 {
-    public float combatRange;
-    public float chaseOrDodgeValue;
     public float rotationSpeed;
-    
+
+    public EnemyAttack dodgeAction;
+    public List<EnemyAttack> enemyAttacks;
+    public float attackRange;
+    public EnemyAttack currentAttack;
+    EnemyAttack selectedAttack;
+
+
 
     public override void EnterState()
     {
@@ -21,14 +26,43 @@ public class EnemyCombatState : EnemyBaseState
         if (enemyStateManager.isInteracting)
             return;
 
+        selectedAttack = enemyAttacks[Random.Range(0, enemyAttacks.Count)];
+
         enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
-        if (enemyStateManager.idleState.distanceToTarget  < combatRange - chaseOrDodgeValue)
+        if (enemyStateManager.idleState.distanceToTarget < attackRange)
         {
-            enemyStateManager.animatorManager.PlayTargetAnimation("Enemy_Dodge_Back", true, 0.1f, true);
+            if (Random.Range(0, 101) % 10 == 0)
+            {
+                if (enemyStateManager.enemyStats.CanUseStamina(dodgeAction.staminaCost))
+                {
+                    enemyStateManager.animatorManager.PlayTargetAnimation(dodgeAction.name, true, 0.1f, true);
+                    enemyStateManager.enemyStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-dodgeAction.staminaCost);
+                }
+                else
+                {
+                    enemyStateManager.SwitchState(enemyStateManager.exhaustedState);
+                }
+
+            }
+            else
+            {
+                if (enemyStateManager.enemyStats.CanUseStamina(selectedAttack.staminaCost))
+                {
+                    enemyStateManager.animatorManager.PlayTargetAnimation(selectedAttack.name, true, 0.1f, true);
+                    enemyStateManager.enemyStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-selectedAttack.staminaCost);
+                }
+                else
+                {
+                    enemyStateManager.SwitchState(enemyStateManager.exhaustedState);
+                }
+            }
+
         }
-        else if(enemyStateManager.idleState.distanceToTarget  > combatRange + chaseOrDodgeValue)
+        else
         {
-            enemyStateManager.SwitchState(enemyStateManager.attackState);
+            enemyStateManager.movementState.EnableMovement();
+            if (!enemyStateManager.movementState.HandleMovmentChecks())
+                enemyStateManager.SwitchState(enemyStateManager.movementState);
         }
        
     }

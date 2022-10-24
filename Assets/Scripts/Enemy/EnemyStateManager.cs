@@ -10,13 +10,14 @@ public class EnemyStateManager : MonoBehaviour
     public EnemyIdleState idleState;
     public EnemyMovementState movementState;
     public EnemyCombatState combatState;
-    public EnemyAttackState attackState;
+    public EnemyExhaustedState exhaustedState;
     public NavMeshAgent agent;
     public BaseAnimationManager animatorManager;
     public Animator animator;
     public Vector3 startPosition;
     public Transform body;
     public Rigidbody rb;
+    public EnemyStats enemyStats;
 
     [Header("Enemy Flags")]
     public bool isInteracting;
@@ -30,7 +31,7 @@ public class EnemyStateManager : MonoBehaviour
         idleState = GetComponentInChildren<EnemyIdleState>();
         movementState = GetComponentInChildren<EnemyMovementState>();
         combatState = GetComponentInChildren<EnemyCombatState>();
-        attackState = GetComponentInChildren<EnemyAttackState>();
+        exhaustedState = GetComponentInChildren<EnemyExhaustedState>();
         startPosition = transform.position;
     }
 
@@ -41,6 +42,9 @@ public class EnemyStateManager : MonoBehaviour
 
     void Update()
     {
+        if (isInteracting)
+            return;
+
         currentState.UpdateState();
     }
 

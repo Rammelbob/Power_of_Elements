@@ -14,7 +14,7 @@ public class EnemyIdleState : EnemyBaseState
 
     public override void EnterState()
     {
-        enemyStateManager.animatorManager.animator.SetFloat("movementSpeed", 0, 0.1f, Time.deltaTime);
+        enemyStateManager.animatorManager.animator.SetFloat("movementSpeed", 0, 0, Time.deltaTime);
         enemyStateManager.rb.isKinematic = true;
     }
 
