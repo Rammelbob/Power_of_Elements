@@ -24,20 +24,27 @@ public class PlayerAttacker : MonoBehaviour
             {
                 if (currentAttack.nextLightAttack != null)
                 {
-                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(currentAttack.nextLightAttack.attackName, true, 0.01f, true, true);
-                    currentAttack = currentAttack.nextLightAttack;
-                    playerManager.playerInventory.ShowCurrentWeapon(true);
+                    DoAttack(currentAttack.nextLightAttack);
                 }
             }
             else                                                                                   
             {
                 if (currentAttack.nextHeavyAttack != null)
                 {
-                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(currentAttack.nextHeavyAttack.attackName, true, 0.01f, true, true);
-                    currentAttack = currentAttack.nextHeavyAttack;
-                    playerManager.playerInventory.ShowCurrentWeapon(true);
+                    DoAttack(currentAttack.nextHeavyAttack);
                 }
             }
+        }
+    }
+
+    void DoAttack(PlayerAttack playerAttack)
+    {
+        if (playerManager.playerStats.CanUseStamina(playerAttack.staminaCost))
+        {
+            playerManager.playerInventory.ShowCurrentWeapon(true);
+            playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(playerAttack.attackName, true, 0.1f, true, true);
+            playerManager.playerStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-playerAttack.staminaCost);
+            currentAttack = playerAttack;
         }
     }
 
@@ -45,9 +52,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (weapon.first_Light_Attack != null)
         {
-            playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(weapon.first_Light_Attack.attackName, true, 0.1f, true, true);
-            currentAttack = weapon.first_Light_Attack;
-            playerManager.playerInventory.ShowCurrentWeapon(true);
+            DoAttack(weapon.first_Light_Attack);
         }
     }
     
@@ -55,9 +60,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (weapon.first_Heavy_Attack != null)
         {
-            playerManager.playerInventory.ShowCurrentWeapon(true);
-            playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(weapon.first_Heavy_Attack.attackName, true, 0.1f, true, true);
-            currentAttack = weapon.first_Heavy_Attack;
+            DoAttack(weapon.first_Heavy_Attack);
         }
     }
 
@@ -65,9 +68,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (weapon.running_Attack != null)
         {
-            playerManager.playerInventory.ShowCurrentWeapon(true);
-            playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(weapon.running_Attack.attackName, true, 0.1f, true, true);
-            currentAttack = weapon.running_Attack;
+            DoAttack(weapon.running_Attack);
         }
     }
 }

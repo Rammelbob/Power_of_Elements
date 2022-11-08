@@ -41,6 +41,7 @@ public class UI_Inventory_Handler : UI_ItemSlot
     UI_ItemSlot ui_ItemSlotTemp;
     PlayerManager playerManager;
     int currency = 0;
+    int skillPoints = 0;
 
     private void Awake()
     {
@@ -160,6 +161,9 @@ public class UI_Inventory_Handler : UI_ItemSlot
                 TradableItem tradableItem = (TradableItem)itemToAdd;
                 AddCurrency(tradableItem.currencyValue);
                 break;
+            case ItemTypeEnum.SkillPoint:
+                AddSkillPoint();
+                break;
             default:
                 CreateNewItem(itemToAdd);
                 break;
@@ -186,6 +190,11 @@ public class UI_Inventory_Handler : UI_ItemSlot
     {
         currency += amount;
         currencyText.text = currency.ToString();
+    }
+
+    private void AddSkillPoint()
+    {
+        skillPoints++;
     }
 
     #endregion

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Hammer_Light_02
   m_EditorClassIdentifier: 
   attackName: Hammer_Light_02
-  attackDamage: 0
-  attackForce: 0
-  staminaCost: 0
+  attackDamage: 20
+  staminaCost: 15
   nextLightAttack: {fileID: 11400000, guid: 9f5a85e3b70e32b46bb42f6ea6d88aab, type: 2}
   nextHeavyAttack: {fileID: 0}

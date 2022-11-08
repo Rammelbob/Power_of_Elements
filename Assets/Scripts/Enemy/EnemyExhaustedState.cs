@@ -7,8 +7,7 @@ public class EnemyExhaustedState : EnemyBaseState
     public float staminaPercentToExit;
     public override void EnterState()
     {
-        enemyStateManager.animatorManager.animator.SetFloat("movementSpeed", 0, 0, Time.deltaTime);
-        enemyStateManager.rb.isKinematic = true;
+        enemyStateManager.movementState.DisableMovement();
     }
 
     public override void UpdateState()
@@ -20,8 +19,8 @@ public class EnemyExhaustedState : EnemyBaseState
         enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
         if (enemyStateManager.idleState.distanceToTarget > enemyStateManager.combatState.attackRange)
         {
-            enemyStateManager.movementState.EnableMovement();
-            if (!enemyStateManager.movementState.HandleMovmentChecks())
+            //enemyStateManager.movementState.EnableMovement();
+            //if (!enemyStateManager.movementState.HandleMovmentChecks())
                 enemyStateManager.SwitchState(enemyStateManager.movementState);
         }
     }

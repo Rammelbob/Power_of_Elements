@@ -23,54 +23,50 @@ public class EnemyCombatState : EnemyBaseState
     {
         HandleEnemyRotation(enemyStateManager.idleState.targetPosition.position);
 
-        if (enemyStateManager.isInteracting)
-            return;
 
         selectedAttack = enemyAttacks[Random.Range(0, enemyAttacks.Count)];
 
         enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
         if (enemyStateManager.idleState.distanceToTarget < attackRange)
         {
+            enemyStateManager.movementState.DisableMovement();
             if (Random.Range(0, 101) % 10 == 0)
             {
-                if (enemyStateManager.enemyStats.CanUseStamina(dodgeAction.staminaCost))
-                {
-                    enemyStateManager.animatorManager.PlayTargetAnimation(dodgeAction.name, true, 0.1f, true);
-                    enemyStateManager.enemyStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-dodgeAction.staminaCost);
-                }
-                else
-                {
-                    enemyStateManager.SwitchState(enemyStateManager.exhaustedState);
-                }
-
+                DoAction(dodgeAction);
             }
             else
             {
-                if (enemyStateManager.enemyStats.CanUseStamina(selectedAttack.staminaCost))
-                {
-                    enemyStateManager.animatorManager.PlayTargetAnimation(selectedAttack.name, true, 0.1f, true);
-                    enemyStateManager.enemyStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-selectedAttack.staminaCost);
-                }
-                else
-                {
-                    enemyStateManager.SwitchState(enemyStateManager.exhaustedState);
-                }
+                DoAction(selectedAttack);
             }
 
         }
         else
         {
-            enemyStateManager.movementState.EnableMovement();
-            if (!enemyStateManager.movementState.HandleMovmentChecks())
+            //enemyStateManager.movementState.EnableMovement();
+            //if (!enemyStateManager.movementState.HandleMovmentChecks())
                 enemyStateManager.SwitchState(enemyStateManager.movementState);
         }
        
     }
 
+    public void DoAction(EnemyAttack actionToDo)
+    {
+        if (enemyStateManager.enemyStats.CanUseStamina(actionToDo.staminaCost))
+        {
+            enemyStateManager.animatorManager.PlayTargetAnimation(actionToDo.name, true, 0.1f, true);
+            enemyStateManager.enemyStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-dodgeAction.staminaCost);
+            currentAttack = selectedAttack;
+        }
+        else
+        {
+            enemyStateManager.SwitchState(enemyStateManager.exhaustedState);
+        }
+    }
+
     public void HandleEnemyRotation(Vector3 rotateTowards)
     {
-        //if (!enemyStateManager.canRotate)
-        //    return;
+        if (!enemyStateManager.canRotate)
+            return;
 
         Quaternion targetRotation;
         Quaternion enemyRotation;

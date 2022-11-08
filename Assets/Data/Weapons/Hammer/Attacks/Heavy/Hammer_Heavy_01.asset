@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Hammer_Heavy_01
   m_EditorClassIdentifier: 
   attackName: Hammer_Heavy_01
-  attackDamage: 0
-  attackForce: 0
-  staminaCost: 0
+  attackDamage: 25
+  staminaCost: 20
   nextLightAttack: {fileID: 0}
   nextHeavyAttack: {fileID: 11400000, guid: fcd87d5dc0795e242bf24fc8f420c193, type: 2}

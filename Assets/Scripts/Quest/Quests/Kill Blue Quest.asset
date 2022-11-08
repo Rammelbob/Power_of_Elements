@@ -15,10 +15,10 @@ MonoBehaviour:
   goals:
   - requiredID: 0
     isKillGoal: 1
-    description: kll green 3
+    description: Kill Green 3 times
     completed: 0
     currentAmount: 0
     requiredAmount: 3
-  questName: blue kill
-  description: kill green 3 times
+  questName: Kill Green
+  description: Kill Green 3 times
   completed: 0

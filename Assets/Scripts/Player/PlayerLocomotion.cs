@@ -185,16 +185,19 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (isGrounded && !isClimbing && !playerManager.isInteracting)
         {
-            if (playerManager.inputManager.moveAmount > 0.5)
+            if (playerManager.playerStats.CanUseStamina(staminaUsedJumping))
             {
-                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Jump", false, 0.2f, false, false);
-                SetMoveDir();
-                rb.AddForce(moveDirection * jumpForwardForce, ForceMode.Impulse);
-                rb.AddForce(body.up * jumpUpForce, ForceMode.Impulse);
+                if (playerManager.inputManager.moveAmount > 0.5)
+                {
+                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Jump", false, 0.2f, false, false);
+                    playerManager.playerStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-staminaUsedJumping);
+                    SetMoveDir();
+                    rb.AddForce(moveDirection * jumpForwardForce, ForceMode.Impulse);
+                    rb.AddForce(body.up * jumpUpForce, ForceMode.Impulse);
+                }
+                else
+                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Jumping_Idle", false, 0.1f, true, true);
             }
-            else
-                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Jumping_Idle", false, 0.1f, true, true);
-            
         }
     }
 
@@ -202,13 +205,18 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (isGrounded && !isClimbing && !playerManager.isInteracting)
         {
-            if (playerManager.inputManager.moveAmount > 0.5)
+            if (playerManager.playerStats.CanUseStamina(staminaUsedJumping))
             {
-                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Dodge", true, 0.1f, true, true);
-            }
-            else
-            {
-                playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Dodge_Back", true, 0.1f, true, true);
+                if (playerManager.inputManager.moveAmount > 0.5)
+                {
+                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Dodge", true, 0.1f, true, true);
+                    playerManager.playerStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-staminaUsedJumping);
+                }
+                else
+                {
+                    playerManager.playerAnimatorManager.PlayPlayerTargetAnimation("Dodge_Back", true, 0.1f, true, true);
+                    playerManager.playerStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-staminaUsedJumping);
+                }
             }
         }
     }

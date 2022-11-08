@@ -9,11 +9,11 @@ public class EnemyStats : BaseStats
     public BaseStatusBar elementalBar;
     public EnemyStateManager enemyStateManager;
     public ElementsEnum damageType;
-    PlayerAnimatorManager anim;
+    BaseAnimationManager anim;
 
     private void Awake()
     {
-        anim = GetComponent<PlayerAnimatorManager>();
+        anim = GetComponent<BaseAnimationManager>();
         elementalTrahshold = elementalTrahsholdBase;
         elementalBar.UpdateMaxSliderValue(elementalTrahsholdBase);
         elementalBar.UpdateSliderValue(elementalTrahshold);
@@ -36,9 +36,9 @@ public class EnemyStats : BaseStats
     public override BaseStats TakeDamage(float amount, ElementsEnum elementalDamageType)
     {
         amount /= GetStatByEnum(StatEnum.Defense).statvalues.currentValue;
-        GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(-amount);
+        //GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(-amount);
 
-        if (GetStatByEnum(StatEnum.HealthPoints).statvalues.currentValue <= 0)
+        if (GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(-amount) <= 0)
         {
             return this;
         }
@@ -55,6 +55,7 @@ public class EnemyStats : BaseStats
                     GetStatByEnum(StatEnum.Defense).statvalues.ChangeStatLevel(-1);
                     break;
             }
+            anim.PlayTargetAnimation("Take Damage", true, 0.1f, true);
             elementalTrahsholdBase *= 2;
             elementalBar.UpdateMaxSliderValue(elementalTrahsholdBase);
             elementalTrahshold = elementalTrahsholdBase;

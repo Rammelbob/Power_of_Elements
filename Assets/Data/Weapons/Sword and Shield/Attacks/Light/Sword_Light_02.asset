@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword_Light_02
   m_EditorClassIdentifier: 
   attackName: Sword_Light_02
-  attackDamage: 15
-  attackForce: 0
+  attackDamage: 25
+  staminaCost: 20
   nextLightAttack: {fileID: 11400000, guid: 6662a0f52898fc24786f048dffec15fb, type: 2}
   nextHeavyAttack: {fileID: 0}

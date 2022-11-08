@@ -12,6 +12,7 @@ public abstract class BaseStats : MonoBehaviour
     public int id;
     public float elementalTrahshold;
     protected float elementalTrahsholdBase = 50;
+    public float regenPerSec;
 
 
     public abstract BaseStats TakeDamage(float amount,ElementsEnum elementalDamageType);
@@ -46,6 +47,7 @@ public class StatValues
     public int statLevel;
     int statLevleMinMax = 10;
 
+
     public event Action<float> OnStatChange;
     public event Action<int,float> OnLevelChange;
 
@@ -53,6 +55,11 @@ public class StatValues
     {
         currentValue = GetCurrentMaxValue();
         OnStatChange?.Invoke(currentValue);
+    }
+
+    public bool IsCurrentMax()
+    {
+        return currentValue == GetCurrentMaxValue();
     }
 
     public float GetCurrentMaxValue()

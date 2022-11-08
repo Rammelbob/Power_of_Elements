@@ -183,9 +183,9 @@ public class InputManager : MonoBehaviour
 
         if (lightAttack)
         {
-            if (playerManager.playerLocomotion.isSprinting)
-                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.currentWeapon); 
-            else if (playerManager.canDoCombo)
+            //if (playerManager.playerLocomotion.isSprinting)
+            //    playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.currentWeapon); 
+            if (playerManager.canDoCombo)
             {
                 playerManager.playerAttacker.doWeaponCombo = true;
                 playerManager.playerAttacker.comboLight = true;
@@ -202,9 +202,9 @@ public class InputManager : MonoBehaviour
 
         if (heavyAttack)
         {
-            if (playerManager.playerLocomotion.isSprinting)
-                playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.currentWeapon);
-            else if (playerManager.canDoCombo)
+            //if (playerManager.playerLocomotion.isSprinting)
+            //    playerManager.playerAttacker.HandleRunningAttack(playerManager.playerInventory.currentWeapon);
+            if (playerManager.canDoCombo)
             {
                 playerManager.playerAttacker.doWeaponCombo = true;
                 playerManager.playerAttacker.comboLight = false;

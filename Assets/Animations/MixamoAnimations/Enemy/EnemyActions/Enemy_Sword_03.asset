@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Enemy_Sword_03
   m_EditorClassIdentifier: 
   attackName: Enemy_Sword_03
-  attackDamage: 15
+  attackDamage: 30
   staminaCost: 25

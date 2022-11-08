@@ -12,6 +12,9 @@ public class PlayerStats : BaseStats
     PlayerManager playerManager;
     public static event Action<int> kill;
 
+    float timeOfLastHit;
+    public float timeAfterHitToHeal;
+
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
@@ -53,30 +56,32 @@ public class PlayerStats : BaseStats
         playerManager.playerAnimatorManager.animator.SetFloat("movementSpeedMultiplier", currentAmount);
     }
 
+    public void RestoreStats()
+    {
+        if (!GetStatByEnum(StatEnum.Stamina).statvalues.IsCurrentMax())
+        {
+            GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(regenPerSec * Time.deltaTime);
+        }
+
+        if (!GetStatByEnum(StatEnum.HealthPoints).statvalues.IsCurrentMax())
+        {
+            if (timeOfLastHit < Time.time - timeAfterHitToHeal)
+            {
+                GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(regenPerSec * Time.deltaTime);
+            }
+        }
+    }
+
     public override BaseStats TakeDamage(float amount, ElementsEnum elementalDamageType)
     {
-        //damage calc Switch case für den elemental multiplier und def
-
-        //foreach (DamageCollider item in blockedColliders)
-        //{
-        //    if (item == damageCollider)
-        //    {
-        //        //weapon.leftHandWeapon.shiledHP -= amount;
-        //        //if (weapon.leftHandWeapon.shiledHP >= 0)
-        //        //{
-        //        //    weaponSlotManager.leftHandSlot.UnloadWeaponAndDestroy();
-        //        //}
-        //        //else
-        //        //{
-        //        //    amount = 0;
-        //        //}
-
-        //        //blockedColliders.Remove(item);
-        //        //break;
-        //    }
-        //}
-        //healthPoints.LoseStat(amount, 0, advancedHPBar.UpdateSliderValue);
-        return this;
+        amount /= GetStatByEnum(StatEnum.Defense).statvalues.currentValue;
+        //GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(-amount);
+        timeOfLastHit = Time.time;
+        if (GetStatByEnum(StatEnum.HealthPoints).statvalues.ChangeCurrentStat(-amount) <= 0)
+        {
+            return this;
+        }
+        return null;
     }
 
     public override void DoDamage(BaseStats targetHit)

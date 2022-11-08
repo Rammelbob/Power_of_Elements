@@ -18,6 +18,7 @@ public class EnemyStateManager : MonoBehaviour
     public Transform body;
     public Rigidbody rb;
     public EnemyStats enemyStats;
+    public DamageCollider weaponCollider;
 
     [Header("Enemy Flags")]
     public bool isInteracting;
@@ -42,6 +43,10 @@ public class EnemyStateManager : MonoBehaviour
 
     void Update()
     {
+        enemyStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(enemyStats.regenPerSec * Time.deltaTime);
+        if (idleState.isAngered)
+            combatState.HandleEnemyRotation(idleState.targetPosition.position);
+
         if (isInteracting)
             return;
 

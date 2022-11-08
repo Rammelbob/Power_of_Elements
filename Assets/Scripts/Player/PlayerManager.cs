@@ -36,8 +36,10 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         inputManager.HandleAllInputs();
-
         canDoCombo = playerAnimatorManager.animator.GetBool("canDoCombo");
+
+        playerStats.RestoreStats();
+
         if (unloadWeapons)
         {
             playerInventory.ShowCurrentWeapon(false);

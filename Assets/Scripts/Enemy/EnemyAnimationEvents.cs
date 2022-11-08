@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyAnimationEvents : MonoBehaviour
 {
     Animator animator;
+    public EnemyStateManager enemyStateManager;
 
     private void Awake()
     {
@@ -29,17 +30,17 @@ public class EnemyAnimationEvents : MonoBehaviour
 
     public void DisableRotation()
     {
-        animator.SetBool("canRotat", false);
+        animator.SetBool("canRotate", false);
     }
 
     public void OpenRightDamageCollider()
     {
-        return;
+        enemyStateManager.weaponCollider.EnableCombatCollider();
     }
 
     public void CloseRightDamageCollider()
     {
-        return;
+        enemyStateManager.weaponCollider.DisableCombatCollider(); ;
     }
 
     private void OnAnimatorMove()

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Sword_Attack_Running
   m_EditorClassIdentifier: 
   attackName: Sword_Attack_Running
-  attackDamage: 0
-  attackForce: 0
-  staminaCost: 0
+  attackDamage: 23
+  staminaCost: 20
   nextLightAttack: {fileID: 0}
   nextHeavyAttack: {fileID: 0}
