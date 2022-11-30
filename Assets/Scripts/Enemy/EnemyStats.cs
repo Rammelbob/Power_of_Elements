@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 public class EnemyStats : BaseStats
 {
@@ -9,6 +11,9 @@ public class EnemyStats : BaseStats
     public BaseStatusBar elementalBar;
     public EnemyStateManager enemyStateManager;
     public ElementsEnum damageType;
+    public GameObject itemDrop;
+    public List<BaseItem> possibleItemDrops;
+    public event Action takeDamage;
     BaseAnimationManager anim;
 
     private void Awake()
@@ -42,6 +47,7 @@ public class EnemyStats : BaseStats
         {
             return this;
         }
+        takeDamage?.Invoke();
 
         elementalTrahshold -= amount;
         if (elementalTrahshold < 0)
@@ -68,5 +74,17 @@ public class EnemyStats : BaseStats
     public override void DoDamage(BaseStats targetHit)
     {
         targetHit.TakeDamage(enemyStateManager.combatState.currentAttack.attackDamage * GetStatByEnum(StatEnum.Attack).statvalues.currentValue, damageType);
+    }
+
+    public override void Death()
+    {
+        if (Random.Range(0, 101) % 1 == 0 && possibleItemDrops.Count != 0)
+        {
+            var temp = Instantiate(itemDrop, transform.position, Quaternion.identity);
+            temp.GetComponent<Collectable>().
+                SetCollectableItem(possibleItemDrops[Random.Range(0,possibleItemDrops.Count)]);
+        }
+
+        Destroy(gameObject);
     }
 }

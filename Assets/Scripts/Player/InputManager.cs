@@ -27,6 +27,7 @@ public class InputManager : MonoBehaviour
     bool startDodge;
     bool toggleInventory;
     bool changeElement;
+    bool collect;
 
     public bool lightAttack;
     public bool heavyAttack;
@@ -70,11 +71,15 @@ public class InputManager : MonoBehaviour
             playerInput.CharacterControls.MoveCamera.canceled += OnMousMove;
             playerInput.CharacterControls.MoveCamera.performed += OnMousMove;
 
+            playerInput.CharacterControls.Collect.performed += OnCollect;
+
             playerInput.UI_Toggle.ToggleInventory.performed += OnToggleInventory;
             playerInput.UI_Toggle.ToggleInventory.canceled += OnToggleInventory;
 
             playerInput.UI.Point.performed += OnMouseInput;
             playerInput.UI.Navigate.performed += OnGamePadInput;
+
+           
 
         }
         playerInput.Enable();
@@ -157,6 +162,11 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    void OnCollect(InputAction.CallbackContext context)
+    {
+        collect = context.ReadValueAsButton();
+    }
+
 
     private void OnDisable()
     {
@@ -172,6 +182,7 @@ public class InputManager : MonoBehaviour
         HandleCombatInput();
         HandleElementalChangeInput();
         HandleToggleInventory();
+        HandleCollectInput();
         HandleCameraInput();
         HandleUIInputs();
     }
@@ -316,6 +327,15 @@ public class InputManager : MonoBehaviour
                 playerInput.CharacterControls.Disable();
                 playerInput.UI.Enable();
             }
+        }
+    }
+
+    private void HandleCollectInput()
+    {
+        if (collect)
+        {
+            playerManager.playerInventory.Collect();
+            collect = false;
         }
     }
 

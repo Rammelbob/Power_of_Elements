@@ -16,7 +16,7 @@ public class EnemyExhaustedState : EnemyBaseState
         {
             enemyStateManager.SwitchState(enemyStateManager.combatState);
         }
-        enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
+        enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance, enemyStateManager.idleState.fieldofViewAngle);
         if (enemyStateManager.idleState.distanceToTarget > enemyStateManager.combatState.attackRange)
         {
             //enemyStateManager.movementState.EnableMovement();

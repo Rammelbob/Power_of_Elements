@@ -21,7 +21,13 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: dbe80190c9adea34c8c8845ca4a17934, type: 2}
   attackVisualEffect: {fileID: 3263212075812511074, guid: 691e050dc3a8c654b9f90e0ecabef5ff, type: 3}
   rightHandWeapon: {fileID: 362745588938195219, guid: b4e1918f0a3309c4c8a6c50767fc8af4, type: 3}
-  leftHandWeapon: {fileID: 6529628473412047921, guid: 800d94f55f212054c9e5484c73fea6af, type: 3}
   first_Light_Attack: {fileID: 11400000, guid: 411a830f698efc741b774ad7f33845af, type: 2}
   first_Heavy_Attack: {fileID: 11400000, guid: 9810061b82d21be4da45db4a88e728d8, type: 2}
   running_Attack: {fileID: 11400000, guid: 5cd12a6154e90ec44ba13dbc00b906ae, type: 2}
+  statBuffs:
+  - statType: 2
+    amount: 3
+  - statType: 5
+    amount: 2
+  - statType: 3
+    amount: -4

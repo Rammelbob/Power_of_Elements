@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 
   itemIcone: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   currencyValue: 333
-  itemType: 3
+  itemType: 4
   statBuffs:
   - statType: 4
     amount: 4

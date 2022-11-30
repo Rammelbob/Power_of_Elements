@@ -15,6 +15,11 @@ public class PlayerInventory : MonoBehaviour
     public List<BaseItem> itemsToAdd;
 
 
+    bool canCollect;
+    GameObject collecteable;
+    
+
+
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
@@ -41,14 +46,20 @@ public class PlayerInventory : MonoBehaviour
                 LoadWeapon(deafaultWeapon);
             else if (slotWeapon != currentWeapon)
                 LoadWeapon(slotWeapon);
+
         }
     }
 
     public void LoadWeapon(PlayerWeaponItem weapon)
     {
+        if (currentWeapon != null)
+           playerManager.ui_Inventory_Handler.SubtractStatLevelChange(currentWeapon);
+        
+        
         currentWeapon = weapon;
         skin.material = weapon.material;
         LoadNewElementWeapon();
+        playerManager.ui_Inventory_Handler.AddStatLevelChange(currentWeapon);
     }
 
     public void LoadNewElementWeapon()
@@ -66,6 +77,48 @@ public class PlayerInventory : MonoBehaviour
         {
             if (currentWeapon.rightHandWeapon)
                 weaponSlotManager.ShowCurrentWeapon(showWeapon);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Collectable"))
+        {
+            collecteable = other.gameObject;
+            canCollect = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Collectable"))
+        {
+            collecteable = null;
+            canCollect = false;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Collectable"))
+        {
+            if (!canCollect && collecteable == null)
+            {
+                collecteable = other.gameObject;
+                canCollect = true;
+            }
+           
+        }
+    }
+
+    public void Collect()
+    {
+        if (canCollect && collecteable != null)
+        {
+            playerManager.ui_Inventory_Handler.AddItem(collecteable.GetComponent<Collectable>().GetCollectableItem());
+            Destroy(collecteable);
+            collecteable = null;
+            canCollect = false;
         }
     }
 }

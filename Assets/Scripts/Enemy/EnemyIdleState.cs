@@ -20,14 +20,14 @@ public class EnemyIdleState : EnemyBaseState
 
     public override void UpdateState()
     {
-        if (CheckPlayerInFieldofView(maxFieldofViewDistance))
+        if (CheckPlayerInFieldofView(maxFieldofViewDistance,fieldofViewAngle))
         {
             enemyStateManager.SwitchState(enemyStateManager.movementState);
         }
         
     }
 
-    public bool CheckPlayerInFieldofView(float checkRadius)
+    public bool CheckPlayerInFieldofView(float checkRadius,float viewAngle)
     {
         Collider[] colliderAround = Physics.OverlapSphere(transform.position, checkRadius, targetMask);
         playerInStraightLineTo = false;
@@ -44,7 +44,7 @@ public class EnemyIdleState : EnemyBaseState
                 playerInStraightLineTo = hit.transform.gameObject.CompareTag("Player");
             }
 
-            if (Vector3.Angle(enemyStateManager.body.forward, directionToTarget) < fieldofViewAngle / 2 && playerInStraightLineTo)
+            if (Vector3.Angle(enemyStateManager.body.forward, directionToTarget) < viewAngle / 2 && playerInStraightLineTo)
             {
                 isAngered = true;
                 return true;

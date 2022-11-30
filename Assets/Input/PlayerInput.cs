@@ -105,6 +105,14 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Collect"",
+                    ""type"": ""Button"",
+                    ""id"": ""4f7ad29e-474c-4ac4-87dc-215f19d6387d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -468,6 +476,17 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SpecialAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""83a626f5-5d4f-4b9a-ac6c-1835d5026b6c"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Collect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -963,6 +982,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_CharacterControls_SpecialAttack = m_CharacterControls.FindAction("SpecialAttack", throwIfNotFound: true);
         m_CharacterControls_HeavyAttack = m_CharacterControls.FindAction("HeavyAttack", throwIfNotFound: true);
         m_CharacterControls_LightAttack = m_CharacterControls.FindAction("LightAttack", throwIfNotFound: true);
+        m_CharacterControls_Collect = m_CharacterControls.FindAction("Collect", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1034,6 +1054,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterControls_SpecialAttack;
     private readonly InputAction m_CharacterControls_HeavyAttack;
     private readonly InputAction m_CharacterControls_LightAttack;
+    private readonly InputAction m_CharacterControls_Collect;
     public struct CharacterControlsActions
     {
         private @PlayerInput m_Wrapper;
@@ -1049,6 +1070,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @SpecialAttack => m_Wrapper.m_CharacterControls_SpecialAttack;
         public InputAction @HeavyAttack => m_Wrapper.m_CharacterControls_HeavyAttack;
         public InputAction @LightAttack => m_Wrapper.m_CharacterControls_LightAttack;
+        public InputAction @Collect => m_Wrapper.m_CharacterControls_Collect;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1091,6 +1113,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @LightAttack.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnLightAttack;
                 @LightAttack.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnLightAttack;
                 @LightAttack.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnLightAttack;
+                @Collect.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnCollect;
+                @Collect.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnCollect;
+                @Collect.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnCollect;
             }
             m_Wrapper.m_CharacterControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1128,6 +1153,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @LightAttack.started += instance.OnLightAttack;
                 @LightAttack.performed += instance.OnLightAttack;
                 @LightAttack.canceled += instance.OnLightAttack;
+                @Collect.started += instance.OnCollect;
+                @Collect.performed += instance.OnCollect;
+                @Collect.canceled += instance.OnCollect;
             }
         }
     }
@@ -1260,6 +1288,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnSpecialAttack(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnLightAttack(InputAction.CallbackContext context);
+        void OnCollect(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

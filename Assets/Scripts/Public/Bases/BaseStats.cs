@@ -16,6 +16,9 @@ public abstract class BaseStats : MonoBehaviour
 
 
     public abstract BaseStats TakeDamage(float amount,ElementsEnum elementalDamageType);
+
+    public abstract void Death();
+
     public abstract void DoDamage(BaseStats targetHit);
 
     public void SetCurrentValueToMaxValue()

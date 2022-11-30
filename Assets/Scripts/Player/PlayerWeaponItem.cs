@@ -27,6 +27,9 @@ public class PlayerWeaponItem : BaseItem
     [Header("Running Attack")]
     public PlayerAttack running_Attack;
 
+    [Header("StatBuffs")]
+    public List<ItemStatLevelChange> statBuffs = new List<ItemStatLevelChange>();
+
     public override ItemTypeEnum GetItemType()
     {
         return ItemTypeEnum.Weapon;

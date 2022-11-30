@@ -18,8 +18,9 @@ public class AdvancedStatusBar : BaseStatusBar
 
     public void SetSliderSizeWithLvl(int level,float sliderMaxValue)
     {
+        var offset = ((sliderRect.sizeDelta.x / baseSlider.maxValue) * sliderMaxValue);
+        sliderRect.sizeDelta = new Vector2(offset, sliderRect.sizeDelta.y);
         UpdateMaxSliderValue(sliderMaxValue);
-        sliderRect.offsetMax = new Vector2(level * offSetMaxPerLvl, sliderRect.offsetMax.y);
     }
 
     public void LerpFollowSlider(float delta)

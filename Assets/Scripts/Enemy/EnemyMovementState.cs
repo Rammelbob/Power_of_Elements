@@ -31,13 +31,13 @@ public class EnemyMovementState : EnemyBaseState
     public bool HandleMovmentChecks()
     {
         HandleEnemyMovment(enemyStateManager.agent.velocity.magnitude);
-        if (enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance))
+        if (enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance, enemyStateManager.idleState.fieldofViewAngle))
         {
             SetAgentDestination();
         }
         else
         {
-            enemyStateManager.idleState.CheckPlayerInFieldofView(angerResetDistance);
+            enemyStateManager.idleState.CheckPlayerInFieldofView(angerResetDistance, enemyStateManager.idleState.fieldofViewAngle);
             if (enemyStateManager.idleState.playerInStraightLineTo)
             {
                 SetAgentDestination();

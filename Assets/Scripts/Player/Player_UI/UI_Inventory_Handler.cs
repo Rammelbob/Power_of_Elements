@@ -260,6 +260,26 @@ public class UI_Inventory_Handler : UI_ItemSlot
                 .statvalues.ChangeStatLevel(-statBuff.amount));
         }
     }
+
+    public void AddStatLevelChange(PlayerWeaponItem equipmentItem)
+    {
+        foreach (var statBuff in equipmentItem.statBuffs)
+        {
+            ChangeUILevel(statBuff.statType,
+                playerManager.playerStats.GetStatByEnum(statBuff.statType)
+                .statvalues.ChangeStatLevel(statBuff.amount));
+        }
+    }
+
+    public void SubtractStatLevelChange(PlayerWeaponItem equipmentItem)
+    {
+        foreach (var statBuff in equipmentItem.statBuffs)
+        {
+            ChangeUILevel(statBuff.statType,
+                playerManager.playerStats.GetStatByEnum(statBuff.statType)
+                .statvalues.ChangeStatLevel(-statBuff.amount));
+        }
+    }
     #endregion
 
     public PlayerWeaponItem GetPlayerWeaponItemIndex(int index)

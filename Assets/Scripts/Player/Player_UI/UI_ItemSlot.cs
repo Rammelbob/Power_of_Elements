@@ -9,6 +9,7 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
 {
     public ItemTypeEnum slotType;
     public Transform itemParent;
+    
 
     public ItemTypeEnum GetSlotType()
     {

@@ -29,6 +29,11 @@ public class PlayerStats : BaseStats
 
         advancedHPBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.HealthPoints).statvalues.GetCurrentMaxValue());
         advancedStaminaBar.UpdateMaxSliderValue(GetStatByEnum(StatEnum.Stamina).statvalues.GetCurrentMaxValue());
+        advancedHPBar.SetSliderSizeWithLvl(GetStatByEnum(StatEnum.HealthPoints).statvalues.statLevel,
+            GetStatByEnum(StatEnum.HealthPoints).statvalues.GetCurrentMaxValue());
+
+        advancedStaminaBar.SetSliderSizeWithLvl(GetStatByEnum(StatEnum.Stamina).statvalues.statLevel,
+            GetStatByEnum(StatEnum.Stamina).statvalues.GetCurrentMaxValue());
 
         elementalTrahshold = elementalTrahsholdBase;
         SetCurrentValueToMaxValue();
@@ -90,7 +95,12 @@ public class PlayerStats : BaseStats
         if (temp != null)
         {
             kill?.Invoke(temp.id);
-            Destroy(temp.gameObject);
+            temp.Death();
         } 
+    }
+
+    public override void Death()
+    {
+        throw new NotImplementedException();
     }
 }

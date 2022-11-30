@@ -33,6 +33,7 @@ public class EnemyStateManager : MonoBehaviour
         movementState = GetComponentInChildren<EnemyMovementState>();
         combatState = GetComponentInChildren<EnemyCombatState>();
         exhaustedState = GetComponentInChildren<EnemyExhaustedState>();
+        enemyStats.takeDamage += GetAgro;
         startPosition = transform.position;
     }
 
@@ -57,6 +58,11 @@ public class EnemyStateManager : MonoBehaviour
     {
         currentState = state;
         currentState.EnterState();
+    }
+
+    public void GetAgro()
+    {
+        idleState.CheckPlayerInFieldofView(idleState.maxFieldofViewDistance, 360);
     }
 
     private void LateUpdate()

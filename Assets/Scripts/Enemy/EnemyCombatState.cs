@@ -26,7 +26,7 @@ public class EnemyCombatState : EnemyBaseState
 
         selectedAttack = enemyAttacks[Random.Range(0, enemyAttacks.Count)];
 
-        enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance);
+        enemyStateManager.idleState.CheckPlayerInFieldofView(enemyStateManager.idleState.maxFieldofViewDistance, enemyStateManager.idleState.fieldofViewAngle);
         if (enemyStateManager.idleState.distanceToTarget < attackRange)
         {
             enemyStateManager.movementState.DisableMovement();
