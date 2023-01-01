@@ -21,7 +21,7 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
         UI_Item ui_Item = eventData.pointerDrag.GetComponent<UI_Item>();
         if (ui_Item)
         {
-            if (ui_Item.isEquiped)
+            if (ui_Item.itemInfo.values.isEquipped)
                 ui_Item.parentSlot.UnEquip(ui_Item, this);
             else
                 SetItemAsChild(ui_Item);
@@ -49,10 +49,10 @@ public class UI_ItemSlot : MonoBehaviour, IDropHandler
         EventSystem.current.SetSelectedGameObject(null);
     }
 
-    public virtual void Equip(UI_Item itemToEquip, UI_ItemSlot parentSlot, bool isEquiped)
+    public virtual void Equip(UI_Item itemToEquip, UI_ItemSlot parentSlot, bool isEquipped)
     {
         itemToEquip.transform.SetParent(itemParent);
         itemToEquip.parentSlot = parentSlot;
-        itemToEquip.isEquiped = isEquiped;
+        itemToEquip.itemInfo.values.isEquipped = isEquipped;
     }
 }

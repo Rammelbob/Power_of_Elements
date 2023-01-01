@@ -7,7 +7,7 @@ using System;
 public class UI_EquipmentSlot : UI_ItemSlot
 {
     public event Action<EquipmentItem> AddStatLevelChanges, SubtractStatLevelChanges;
-    EquipmentItem equipmentItem;
+    public EquipmentItem equipmentItem;
 
     public override void UnEquip(UI_Item itemToUnequip, UI_ItemSlot newParnetSlot)
     {

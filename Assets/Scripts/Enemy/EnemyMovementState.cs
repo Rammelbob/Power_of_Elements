@@ -48,6 +48,7 @@ public class EnemyMovementState : EnemyBaseState
             if (angerResetEnd <= Time.time)
             {
                 enemyStateManager.idleState.isAngered = false;
+                enemyStateManager.idleState.targetPosition = enemyStateManager.startPosition;
                 SetAgentDestination();
                 return false;
             }
@@ -58,7 +59,7 @@ public class EnemyMovementState : EnemyBaseState
     private void SetAgentDestination()
     {
         if (enemyStateManager.idleState.isAngered)
-            enemyStateManager.agent.SetDestination(enemyStateManager.idleState.targetPosition.position);
+            enemyStateManager.agent.SetDestination(enemyStateManager.idleState.targetPosition);
         else
             enemyStateManager.agent.SetDestination(enemyStateManager.startPosition);
 

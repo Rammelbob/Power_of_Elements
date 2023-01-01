@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 5224998949629946182}
   - component: {fileID: 4382674119929203861}
   m_Layer: 0
-  m_Name: SM_Wep_Sword_16 1
-  m_TagString: Weapon
+  m_Name: Enemy_Weapon
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

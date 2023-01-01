@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class SavingandLoading : MonoBehaviour
 {
-    private string Savepath => $"{Application.persistentDataPath}/save.txt";
+    private string Savepath => $"{Application.persistentDataPath}/save1.txt";
 
     [ContextMenu("Save")]
     private void Save()

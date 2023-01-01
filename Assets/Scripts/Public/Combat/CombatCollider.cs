@@ -5,6 +5,7 @@ using UnityEngine;
 public class CombatCollider : MonoBehaviour
 {
     Collider combatCollider;
+    AudioSource audioSource;
 
     public virtual void Awake()
     {
@@ -12,15 +13,27 @@ public class CombatCollider : MonoBehaviour
         combatCollider.gameObject.SetActive(true);
         combatCollider.isTrigger = true;
         combatCollider.enabled = false;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void EnableCombatCollider()
     {
         combatCollider.enabled = true;
+        if (audioSource != null)
+        {
+            audioSource.time = 0.19f;
+            audioSource.Play();
+        }
     }
 
     public void DisableCombatCollider()
     {
         combatCollider.enabled = false;
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
+       
     }
 }

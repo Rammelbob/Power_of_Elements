@@ -73,7 +73,12 @@ public class EnemyStats : BaseStats
 
     public override void DoDamage(BaseStats targetHit)
     {
-        targetHit.TakeDamage(enemyStateManager.combatState.currentAttack.attackDamage * GetStatByEnum(StatEnum.Attack).statvalues.currentValue, damageType);
+        
+        var temp = targetHit.TakeDamage(enemyStateManager.combatState.currentAttack.attackDamage * GetStatByEnum(StatEnum.Attack).statvalues.currentValue, damageType);
+        if (temp != null)
+        {
+            temp.Death();
+        }
     }
 
     public override void Death()

@@ -14,7 +14,7 @@ public class DamageCollider : CombatCollider
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))
+        if ((other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy")) && !other.gameObject.CompareTag(gameObject.tag))
         {
             myStats = GetComponentInParent<BaseStats>();
             BaseStats stats = other.GetComponent<BaseStats>();

@@ -21,7 +21,7 @@ public class EnemyCombatState : EnemyBaseState
 
     public override void UpdateState()
     {
-        HandleEnemyRotation(enemyStateManager.idleState.targetPosition.position);
+        HandleEnemyRotation(enemyStateManager.idleState.targetPosition);
 
 
         selectedAttack = enemyAttacks[Random.Range(0, enemyAttacks.Count)];

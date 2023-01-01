@@ -13,7 +13,6 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
     public GameObject counter;
     public BaseItem itemInfo;
     public UI_ItemSlot parentSlot;
-    public bool isEquiped;
     int count;
     RectTransform rectTransform;
     Canvas canvas;
@@ -55,7 +54,7 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
 
     public void SetItem(BaseItem itemToSet)
     {
-        itemImage.sprite = itemToSet.itemIcone;
+        itemImage.sprite = itemToSet.values.itemIcone;
         SetItemCounter(1);
         itemInfo = itemToSet;
     }
@@ -95,7 +94,7 @@ public class UI_Item : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragH
 
     public void OnSelect(BaseEventData eventData)
     {
-        if (!isEquiped)
+        if (!itemInfo.values.isEquipped)
             OnUIItemSelect?.Invoke(GetComponent<RectTransform>());
     }
 }

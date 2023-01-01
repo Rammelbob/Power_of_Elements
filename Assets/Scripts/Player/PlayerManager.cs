@@ -39,12 +39,6 @@ public class PlayerManager : MonoBehaviour
         canDoCombo = playerAnimatorManager.animator.GetBool("canDoCombo");
 
         playerStats.RestoreStats();
-
-        if (unloadWeapons)
-        {
-            playerInventory.ShowCurrentWeapon(false);
-            playerAnimatorManager.animator.SetBool("unLoadWeapon", false);
-        }
     }
 
     private void FixedUpdate()
@@ -62,5 +56,11 @@ public class PlayerManager : MonoBehaviour
         isInteracting = playerAnimatorManager.animator.GetBool("isInteracting");
         useRootMotion = playerAnimatorManager.animator.GetBool("useRootMotion");
         unloadWeapons = playerAnimatorManager.animator.GetBool("unLoadWeapon");
+
+        if (unloadWeapons)
+        {
+            playerInventory.ShowCurrentWeapon(false);
+            playerAnimatorManager.animator.SetBool("unLoadWeapon", false);
+        }
     }
 }

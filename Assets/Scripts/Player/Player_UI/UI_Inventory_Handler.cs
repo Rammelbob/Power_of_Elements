@@ -17,7 +17,6 @@ public class UI_Inventory_Handler : UI_ItemSlot
 
     [Header("Stats")]
     public Transform statParent;
-    public GameObject statPrefab;
     public ScrollRect statScrollRect;
 
     [Header("Open/Close Inventory")]
@@ -34,9 +33,8 @@ public class UI_Inventory_Handler : UI_ItemSlot
     public UI_ItemSlot consumableSlot;
     public List<UI_WeaponSlot> weaponSlots = new List<UI_WeaponSlot>();
     
-    List<UI_Stat> ui_Stats = new List<UI_Stat>();
+    public List<UI_Stat> ui_Stats = new List<UI_Stat>();
     UI_Item ui_Item;
-    UI_Stat ui_Stat;
     GameObject tempGameObject;
     UI_ItemSlot ui_ItemSlotTemp;
     PlayerManager playerManager;
@@ -50,13 +48,9 @@ public class UI_Inventory_Handler : UI_ItemSlot
 
     private void Start()
     {
-        foreach (var stat in playerManager.playerStats.statsArray)
-        {
-            CreateUIStat(stat.statType, stat.statvalues.statLevel);
-        }
+        UpdateStatLevel();
     }
 
-    
     public  void ToggleInventory(bool open)
     {
         inventoryOpen = open;
@@ -87,6 +81,37 @@ public class UI_Inventory_Handler : UI_ItemSlot
                 weaponSlot.UnequipWeapon -= UnEquipWeapon;
             
         }
+
+        if (open)
+        {
+            foreach (var item in playerManager.playerInventory.itemsToAdd)
+            {
+                AddItem(item);
+            }
+            playerManager.playerInventory.itemsToAdd.Clear();
+        }
+    }
+
+    public List<BaseItem> GetCurrentItems()
+    {
+        List<BaseItem> currentItems = new List<BaseItem>();
+        foreach (Transform item in itemParent)
+        {
+            var temp = item.gameObject.GetComponent<UI_Item>();
+            currentItems.Add(temp.itemInfo);
+        }
+
+        foreach (UI_EquipmentSlot slot in equipmentSlots)
+        {
+            currentItems.Add(slot.equipmentItem);
+        }
+
+        foreach (UI_WeaponSlot slot in weaponSlots)
+        {
+            currentItems.Add(slot.currentWeapon);
+        }
+
+        return currentItems;
     }
 
     private void UnEquipWeapon(PlayerWeaponItem weapon)
@@ -95,15 +120,11 @@ public class UI_Inventory_Handler : UI_ItemSlot
     }
 
     #region Change UI
-    private void CreateUIStat(StatEnum statType, int level)
+    private void UpdateStatLevel()
     {
-        tempGameObject = Instantiate(statPrefab, statParent);
-        ui_Stat = tempGameObject.GetComponent<UI_Stat>();
-        if (ui_Stat)
+        foreach (UI_Stat ui_Stat in ui_Stats)
         {
-            ui_Stat.SetStat(statType, level);
-            ui_Stats.Add(ui_Stat);
-
+            ChangeUILevel(ui_Stat.statType, playerManager.playerStats.GetStatByEnum(ui_Stat.statType).statvalues.statLevel);
             ui_Stat.OnUIStatSelect += SetStatScrollViewToSelectedChild;
         }
     }
@@ -184,6 +205,11 @@ public class UI_Inventory_Handler : UI_ItemSlot
             ui_Item.OnItemRightClick += OnRightClick;
             ui_Item.OnUIItemSelect += SetItemScrollViewToSelectedChild;
         }
+        if (ui_Item.itemInfo.values.isEquipped)
+        {
+            ui_Item.itemInfo.values.isEquipped = false;
+            OnRightClick(ui_Item);
+        }
     }
 
     private void AddCurrency(int amount)
@@ -208,7 +234,7 @@ public class UI_Inventory_Handler : UI_ItemSlot
 
     private void OnRightClick(UI_Item item)
     {
-        if (item.isEquiped)
+        if (item.itemInfo.values.isEquipped)
             item.parentSlot.UnEquip(item, this);
         else
             switch(item.itemInfo.GetItemType())
@@ -234,8 +260,8 @@ public class UI_Inventory_Handler : UI_ItemSlot
 
     private void OnLeftClick(UI_Item obj)
     {
-        descriptionText.text = obj.itemInfo.description;
-        descriptionNameText.text = obj.itemInfo.itemName;
+        descriptionText.text = obj.itemInfo.values.description;
+        descriptionNameText.text = obj.itemInfo.values.itemName;
     }
 
     #endregion

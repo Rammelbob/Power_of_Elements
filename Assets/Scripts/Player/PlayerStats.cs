@@ -11,6 +11,7 @@ public class PlayerStats : BaseStats
 
     PlayerManager playerManager;
     public static event Action<int> kill;
+    public Vector3 respawnPoint;
 
     float timeOfLastHit;
     public float timeAfterHitToHeal;
@@ -37,6 +38,7 @@ public class PlayerStats : BaseStats
 
         elementalTrahshold = elementalTrahsholdBase;
         SetCurrentValueToMaxValue();
+        respawnPoint = transform.position;
     }
 
     private void OnDisable()
@@ -101,6 +103,7 @@ public class PlayerStats : BaseStats
 
     public override void Death()
     {
-        throw new NotImplementedException();
+        transform.position = respawnPoint;
+        GetStatByEnum(StatEnum.HealthPoints).statvalues.SetCurrentValueToMaxValue();
     }
 }

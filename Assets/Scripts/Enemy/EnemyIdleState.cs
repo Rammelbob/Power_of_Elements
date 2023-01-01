@@ -7,7 +7,7 @@ public class EnemyIdleState : EnemyBaseState
     public float maxFieldofViewDistance;
     public float fieldofViewAngle;
     public LayerMask targetMask;
-    public Transform targetPosition;
+    public Vector3 targetPosition;
     public float distanceToTarget;
     public bool isAngered;
     public bool playerInStraightLineTo;
@@ -16,6 +16,7 @@ public class EnemyIdleState : EnemyBaseState
     {
         enemyStateManager.animatorManager.animator.SetFloat("movementSpeed", 0, 0, Time.deltaTime);
         enemyStateManager.rb.isKinematic = true;
+        targetPosition = enemyStateManager.startPosition;
     }
 
     public override void UpdateState()
@@ -33,9 +34,9 @@ public class EnemyIdleState : EnemyBaseState
         playerInStraightLineTo = false;
         if (colliderAround.Length != 0)
         {
-            targetPosition = colliderAround[0].transform;
-            Vector3 directionToTarget = (targetPosition.position - transform.position).normalized;
-            distanceToTarget = (targetPosition.position - enemyStateManager.body.position).magnitude;
+            targetPosition = colliderAround[0].transform.position;
+            Vector3 directionToTarget = (targetPosition - transform.position).normalized;
+            distanceToTarget = (targetPosition - enemyStateManager.body.position).magnitude;
 
 
             RaycastHit hit;

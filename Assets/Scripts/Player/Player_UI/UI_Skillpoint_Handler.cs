@@ -114,7 +114,7 @@ public class UI_Skillpoint_Handler : UI_ItemSlot
 
     private void OnRightClick(UI_Item item)
     {
-        if (item.isEquiped)
+        if (item.itemInfo.values.isEquipped)
             item.parentSlot.UnEquip(item, this);
         else
             switch (item.itemInfo.GetItemType())

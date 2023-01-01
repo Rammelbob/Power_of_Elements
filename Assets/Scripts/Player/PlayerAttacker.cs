@@ -41,9 +41,10 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (playerManager.playerStats.CanUseStamina(playerAttack.staminaCost))
         {
+            playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(playerAttack.attackName, true, 0.0f, true, true);
+            playerManager.unloadWeapons = false;
             playerManager.playerInventory.ShowCurrentWeapon(true);
-            playerManager.playerAnimatorManager.PlayPlayerTargetAnimation(playerAttack.attackName, true, 0.1f, true, true);
-            playerManager.playerStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-playerAttack.staminaCost);
+            //playerManager.playerStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(-playerAttack.staminaCost);
             currentAttack = playerAttack;
         }
     }

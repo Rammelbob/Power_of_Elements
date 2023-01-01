@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class PlayerInventory : MonoBehaviour
+public class PlayerInventory : MonoBehaviour, ISaveable
 {
     public SkinnedMeshRenderer skin;
     public WeaponSlotManager weaponSlotManager;
@@ -13,7 +13,6 @@ public class PlayerInventory : MonoBehaviour
     public PlayerWeaponItem deafaultWeapon;
 
     public List<BaseItem> itemsToAdd;
-
 
     bool canCollect;
     GameObject collecteable;
@@ -25,11 +24,6 @@ public class PlayerInventory : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
         weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
         LoadWeapon(deafaultWeapon);
-        foreach (var item in itemsToAdd)
-        {
-            playerManager.ui_Inventory_Handler.AddItem(item);
-           // playerManager.ui_Skillpoint_Handler.AddItem(item);
-        }
     }
 
     public void SetCurrentWeapon(int input)
@@ -115,10 +109,31 @@ public class PlayerInventory : MonoBehaviour
     {
         if (canCollect && collecteable != null)
         {
-            playerManager.ui_Inventory_Handler.AddItem(collecteable.GetComponent<Collectable>().GetCollectableItem());
+            itemsToAdd.Add(collecteable.GetComponent<Collectable>().GetCollectableItem());
             Destroy(collecteable);
             collecteable = null;
             canCollect = false;
         }
+    }
+
+    public object CaptureState()
+    {
+        return new SaveData
+        {
+            currentItems = playerManager.ui_Inventory_Handler.GetCurrentItems()
+        };
+    }
+
+    public void RestoreState(object state)
+    {
+        var saveData = (SaveData)state;
+
+        itemsToAdd = saveData.currentItems;
+    }
+
+    [Serializable]
+    private struct SaveData
+    {
+        public List<BaseItem> currentItems;
     }
 }

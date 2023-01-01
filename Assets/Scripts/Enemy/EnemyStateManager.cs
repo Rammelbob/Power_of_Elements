@@ -46,7 +46,7 @@ public class EnemyStateManager : MonoBehaviour
     {
         enemyStats.GetStatByEnum(StatEnum.Stamina).statvalues.ChangeCurrentStat(enemyStats.regenPerSec * Time.deltaTime);
         if (idleState.isAngered)
-            combatState.HandleEnemyRotation(idleState.targetPosition.position);
+            combatState.HandleEnemyRotation(idleState.targetPosition);
 
         if (isInteracting)
             return;
